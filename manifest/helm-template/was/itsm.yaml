@@ -1,11 +1,8 @@
 image:
-  hub: "s-repo-op:5000"
-  name: "itsmv"
-  tag: "20210817"
-  pullPolicy: "Always"
+  name: "itsm-server"
 
-nameOverride: "itsmv"
-fullnameOverride: "itsmv"
+nameOverride: "itsm-server"
+fullnameOverride: "itsm-server"
 
 deploy:
   resources:
@@ -16,8 +13,3 @@ deploy:
       cpu: 200m
       memory: 256Mi
 
-service:
-  type: ClusterIP
-  port:
-    number: 8080
-    name: http
