@@ -1,0 +1,2 @@
+1. Get the application by running these commands:
+  kubectl --namespace {{ .Release.Namespace }} get pods,service,deploy -l app={{ include "was.fullname" . }}
