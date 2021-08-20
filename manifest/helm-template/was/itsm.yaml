@@ -1,5 +1,5 @@
 image:
-  name: "itsm-server"
+  name: "itsm"
 
 nameOverride: "itsm-server"
 fullnameOverride: "itsm-server"
