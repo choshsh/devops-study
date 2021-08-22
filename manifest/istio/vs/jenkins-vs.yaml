@@ -16,13 +16,4 @@ spec:
             host: jenkins.jenkins.svc.cluster.local
             subset: v2
             port:
-              number: 80
-    - name: "jenkins-https"
-      match:
-        - port: 443
-      route:
-        - destination:
-            host: jenkins.jenkins.svc.cluster.local
-            subset: v2
-            port:
-              number: 443
+              number: 8080
