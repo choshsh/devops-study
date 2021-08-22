@@ -12,9 +12,3 @@ spec:
         protocol: HTTP
       hosts:
         - "*"
-    - port:
-        number: 443
-        name: https-443
-        protocol: HTTPS
-      hosts:
-        - "*"
