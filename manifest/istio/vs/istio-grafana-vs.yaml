@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-grafana-route
+spec:
+  hosts:
+    - "istio-grafana.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "grafana-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: grafana.istio-system.svc.cluster.local
+            subset: v2
+            port:
+              number: 3000
