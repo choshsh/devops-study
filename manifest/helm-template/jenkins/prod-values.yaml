@@ -2,7 +2,7 @@ persistence:
   storageClass: "jenkins"
   size: "5Gi"
 
-commonLabels:
+podLabels:
   version: "v2"
 
 service:
