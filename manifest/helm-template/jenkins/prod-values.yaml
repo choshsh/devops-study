@@ -5,6 +5,9 @@ persistence:
 commonLabels:
   version: "v2"
 
+service:
+  type: NodePort
+
 resources:
   limits:
     memory: "6Gi"
