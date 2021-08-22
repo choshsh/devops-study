@@ -57,6 +57,14 @@ spec:
           env:
             - name: TZ
               value: "Asia/Seoul"
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: 30
+            failureThreshold: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
           volumeMounts:
             - name: jenkins-persistent-storage
               mountPath: /var/jenkins_home
