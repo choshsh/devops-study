@@ -25,7 +25,6 @@ spec:
   selector:
     matchLabels:
       app: jenkins
-      version: v2
   template:
     metadata:
       labels:
