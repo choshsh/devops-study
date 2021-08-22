@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: jenkins
+spec:
+  host: jenkins
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: v2
+      labels:
+        version: v2
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN

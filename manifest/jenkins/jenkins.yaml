@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+spec:
+  selector:
+    app: jenkins
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+    - name: http2
+      port: 50000
+      targetPort: http2
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+        version: v2
+    spec:
+      hostAliases:
+        - ip: "192.168.220.130"
+          hostnames:
+            - "localrepo"
+      containers:
+        - name: jenkins
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          image: jenkins/jenkins:2.307-jdk11
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "6Gi"
+              cpu: "4000m"
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: http2
+              containerPort: 50000
+          env:
+            - name: TZ
+              value: "Asia/Seoul"
+          volumeMounts:
+            - name: jenkins-persistent-storage
+              mountPath: /var/jenkins_home
+      volumes:
+        - name: jenkins-persistent-storage
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
