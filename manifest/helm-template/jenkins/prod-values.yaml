@@ -1,3 +1,5 @@
+jenkinsPassword: "jenkins"
+
 persistence:
   storageClass: "jenkins"
   size: "5Gi"
