@@ -2,6 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: istio-grafana-route
+  namespace: istio-system
 spec:
   hosts:
     - "istio-grafana.choshsh.com"
@@ -13,7 +14,25 @@ spec:
         - port: 80
       route:
         - destination:
-            host: grafana.istio-system.svc.cluster.local
+            host: grafana
             subset: v2
             port:
               number: 3000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: grafana
+  namespace: istio-system
+spec:
+  host: grafana
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: v2
+      labels:
+        version: v2
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
