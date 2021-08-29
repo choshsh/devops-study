@@ -15,7 +15,7 @@ spec:
       route:
         - destination:
             host: kiali
-            subset: v2
+            subset: kiali
             port:
               number: 20001
 ---
@@ -30,9 +30,9 @@ spec:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: v2
+    - name: kiali
       labels:
-        version: v2
+        app: kiali
       trafficPolicy:
         loadBalancer:
           simple: ROUND_ROBIN

@@ -15,7 +15,7 @@ spec:
       route:
         - destination:
             host: grafana
-            subset: v2
+            subset: grafana
             port:
               number: 3000
 ---
@@ -30,9 +30,9 @@ spec:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: v2
+    - name: grafana
       labels:
-        version: v2
+        app: grafana
       trafficPolicy:
         loadBalancer:
           simple: ROUND_ROBIN
