@@ -15,12 +15,13 @@ spec:
   type: ClusterIP
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: jenkins
   labels:
     app: jenkins
 spec:
+  serviceName: jenkins
   replicas: 1
   selector:
     matchLabels:
@@ -45,10 +46,10 @@ spec:
           resources:
             limits:
               memory: "6Gi"
-              cpu: "4000m"
+              cpu: "3000m"
             requests:
               memory: "1Gi"
-              cpu: "500m"
+              cpu: "300m"
           ports:
             - name: http
               containerPort: 8080
@@ -66,9 +67,14 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 5
           volumeMounts:
-            - name: jenkins-persistent-storage
+            - name: jenkins-volume
               mountPath: /var/jenkins_home
-      volumes:
-        - name: jenkins-persistent-storage
-          persistentVolumeClaim:
-            claimName: jenkins-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: jenkins-volume
+      spec:
+        storageClassName: jenkins
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
