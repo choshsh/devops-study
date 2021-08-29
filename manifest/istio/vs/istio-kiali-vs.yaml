@@ -15,14 +15,14 @@ spec:
       route:
         - destination:
             host: kiali
-            subset: kiali
+            subset: kiali-subset
             port:
               number: 20001
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: kiali
+  name: kiali-dr
   namespace: istio-system
 spec:
   host: kiali
@@ -30,7 +30,7 @@ spec:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: kiali
+    - name: kiali-subset
       labels:
         app: kiali
       trafficPolicy:

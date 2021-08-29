@@ -15,14 +15,14 @@ spec:
       route:
         - destination:
             host: grafana
-            subset: grafana
+            subset: grafana-subset
             port:
               number: 3000
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: grafana
+  name: grafana-dr
   namespace: istio-system
 spec:
   host: grafana
@@ -30,7 +30,7 @@ spec:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: grafana
+    - name: grafana-subset
       labels:
         app: grafana
       trafficPolicy:
