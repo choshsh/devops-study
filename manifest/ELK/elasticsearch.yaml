@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: elasitcsearch
+  name: elasticsearch
 spec:
   selector:
-    app: elasitcsearch
+    app: elasticsearch
   ports:
     - name: http
       port: 9200
@@ -14,22 +14,22 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: elasitcsearch
+  name: elasticsearch
   labels:
-    app: elasitcsearch
+    app: elasticsearch
 spec:
-  serviceName: elasitcsearch
+  serviceName: elasticsearch
   replicas: 1
   selector:
     matchLabels:
-      app: elasitcsearch
+      app: elasticsearch
   template:
     metadata:
       labels:
-        app: elasitcsearch
+        app: elasticsearch
     spec:
       containers:
-        - name: elasitcsearch
+        - name: elasticsearch
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
