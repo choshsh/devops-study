@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasitcsearch
+spec:
+  selector:
+    app: elasitcsearch
+  ports:
+    - name: http
+      port: 9200
+      targetPort: http
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasitcsearch
+  labels:
+    app: elasitcsearch
+spec:
+  serviceName: elasitcsearch
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasitcsearch
+  template:
+    metadata:
+      labels:
+        app: elasitcsearch
+    spec:
+      containers:
+        - name: elasitcsearch
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "4Gi"
+              cpu: "3000m"
+            requests:
+              memory: "1Gi"
+              cpu: "300m"
+          ports:
+            - name: http
+              containerPort: 9200
+          env:
+            - name: TZ
+              value: "Asia/Seoul"
+            - name: discovery.type
+              value: "single-node"
+            - name: ELASTIC_PASSWORD
+              value: "elastic"
+            - name: xpack.security.enabled
+              value: "true"
+            - name: xpack.security.audit.enabled
+              value: "true"
+            - name: path.repo
+              value: /usr/share/elasticsearch/data/backup
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            failureThreshold: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: elasticsearch-volume
+              mountPath: /usr/share/elasticsearch/data
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-volume
+      spec:
+        storageClassName: elasticsearch
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi

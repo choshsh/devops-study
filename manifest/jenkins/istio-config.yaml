@@ -13,22 +13,22 @@ spec:
         - port: 80
       route:
         - destination:
-            host: jenkins.jenkins.svc.cluster.local
-            subset: v2
+            host: jenkins
+            subset: jenkins-subset
             port:
               number: 8080
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: jenkins
+  name: jenkins-dr
 spec:
   host: jenkins
   trafficPolicy:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: v2
+    - name: jenkins-subset
       labels:
         version: v2
       trafficPolicy:

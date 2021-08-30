@@ -1,0 +1,73 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: elasticsearch-route
+spec:
+  hosts:
+    - "elasticsearch.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "elasticsearch-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: elasticsearch
+            subset: elasticsearch-subset
+            port:
+              number: 9200
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: elasticsearch-dr
+spec:
+  host: elasticsearch
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: elasticsearch-subset
+      labels:
+        app: elasticsearch
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kibana-route
+spec:
+  hosts:
+    - "kibana.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "kibana-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: kibana
+            subset: kibana-subset
+            port:
+              number: 5601
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: kibana-dr
+spec:
+  host: kibana
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: kibana-subset
+      labels:
+        app: kibana
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
