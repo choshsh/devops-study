@@ -58,14 +58,19 @@ spec:
               value: "true"
             - name: path.repo
               value: /usr/share/elasticsearch/data/backup
+            - name: READINESS_PROBE_TIMEOUT
+              value: "10"
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 30
-            failureThreshold: 5
-            periodSeconds: 5
-            timeoutSeconds: 5
+            exec:
+              command:
+                - bash
+                - -c
+                - /mnt/elastic-internal/scripts/readiness-probe-script.sh
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 12
+            successThreshold: 1
+            timeoutSeconds: 12
           volumeMounts:
             - name: elasticsearch-volume
               mountPath: /usr/share/elasticsearch/data
