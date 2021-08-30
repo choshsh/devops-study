@@ -8,6 +8,7 @@ kind: ServiceAccount
 metadata:
   name: default
 ---
+# 쿠버네티스 플러그인 사용을 위한 권한 설정
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -52,9 +53,6 @@ spec:
     - name: http
       port: 8080
       targetPort: http
-    - name: http2
-      port: 50000
-      targetPort: http2
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -75,6 +73,7 @@ spec:
         app: jenkins
         version: v2
     spec:
+      # Private Image Repository dns 설정
       hostAliases:
         - ip: "192.168.220.130"
           hostnames:
@@ -96,8 +95,6 @@ spec:
           ports:
             - name: http
               containerPort: 8080
-            - name: http2
-              containerPort: 50000
           env:
             - name: TZ
               value: "Asia/Seoul"
