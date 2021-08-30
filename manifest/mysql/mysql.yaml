@@ -9,25 +9,24 @@ spec:
     - port: 3306
       name: http
       targetPort: http
-
       appProtocol: mysql
   type: ClusterIP
   selector:
     app: db
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: db
   labels:
     app: db
 spec:
+  serviceName: db
+  replicas: 1
   selector:
     matchLabels:
       app: db
       version: v2
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -55,9 +54,14 @@ spec:
               name: http
               protocol: TCP
           volumeMounts:
-            - name: db-persistent-storage
+            - name: mysql-volume
               mountPath: /var/lib/mysql
-      volumes:
-        - name: db-persistent-storage
-          persistentVolumeClaim:
-            claimName: db-pv-claim
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-volume
+      spec:
+        storageClassName: db
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
