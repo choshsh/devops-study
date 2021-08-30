@@ -41,7 +41,7 @@ roleRef:
   name: jenkins
 subjects:
   - kind: ServiceAccount
-    name: jenkins
+    name: default
 ---
 apiVersion: v1
 kind: Service
