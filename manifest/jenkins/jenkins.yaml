@@ -53,6 +53,9 @@ spec:
     - name: http
       port: 8080
       targetPort: http
+    - name: http2
+      port: 50000
+      targetPort: http2
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -94,7 +97,9 @@ spec:
               cpu: "300m"
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 8080 # 서비스
+            - name: http2
+              containerPort: 50000 # Master-Slave 노드 간 통신
           env:
             - name: TZ
               value: "Asia/Seoul"
