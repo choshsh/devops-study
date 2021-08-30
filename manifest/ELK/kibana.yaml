@@ -20,13 +20,16 @@ metadata:
 spec:
   replicas: 1
   selector:
-  matchLabels:
-    app: kibana
+    matchLabels:
+      app: kibana
   template:
     metadata:
       labels:
         name: kibana
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
           imagePullPolicy: IfNotPresent
