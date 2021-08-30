@@ -56,6 +56,8 @@ spec:
               value: "true"
             - name: xpack.security.audit.enabled
               value: "true"
+            - name: xpack.security.authc.api_key.enabled
+              value: "true"
             - name: path.repo
               value: /usr/share/elasticsearch/data/backup
           volumeMounts:
