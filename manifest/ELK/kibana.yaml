@@ -48,11 +48,3 @@ spec:
           ports:
             - containerPort: 5601
               name: http
-          readinessProbe:
-            httpGet:
-              path: /api/status
-              port: http
-            initialDelaySeconds: 30
-            failureThreshold: 5
-            periodSeconds: 5
-            timeoutSeconds: 5
