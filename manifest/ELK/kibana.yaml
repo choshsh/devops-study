@@ -16,7 +16,7 @@ kind: Deployment
 metadata:
   name: kibana
   labels:
-    name: kibana
+    app: kibana
 spec:
   replicas: 1
   selector:
@@ -31,9 +31,9 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-        - image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+        - name: kibana
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
           imagePullPolicy: IfNotPresent
-          name: kibana
           resources:
             requests:
               cpu: "100m"
