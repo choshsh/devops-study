@@ -1,0 +1,63 @@
+POD_TEMPLATE = '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: amazoncorretto-16
+    image: amazoncorretto:16.0.2
+    command:
+    - sleep
+    args:
+    - 99d
+  - name: ubuntu
+    image: ubuntu:20.04
+    command:
+    - sleep
+    args:
+    - 99d
+'''
+
+podTemplate(
+    yaml: POD_TEMPLATE,
+    // 매번 gradle과 npm 패키지가 다운로드 되는 것을 막기 위해 PVC를 마운트
+    workspaceVolume: persistentVolumeClaimWorkspaceVolume(
+        claimName: 'jenkins-workspace-pvc', readOnly: false
+    )
+) {
+    node(POD_LABEL) {
+        stage('Test') {
+            def stages = [:]
+            
+            stages['ubuntu'] = {
+                stage('Init'){
+                    sh 'pwd'
+                }
+                stage('Test'){
+                    sh 'uname -a'
+                }
+            }
+            stages['itsm'] = {
+                container('amazoncorretto-16') {
+                    dir('itsm') {
+                        stage('Code'){
+                            git 'https://github.com/SHsteak/itsmv.git'
+                        }
+                        stage('Setup'){
+                            sh 'chmod +x gradlew'
+                            // gradle task 실행 시 
+                            // '... [n] stopped Daemon could not be reused ...' 
+                            // 로그가 출력되는게 보기 싫어서 daemon 디렉토리 삭제
+                            sh 'rm -rf .gradle-caches/daemon'
+                        }
+                        stage('Test'){
+                            // gradle cache 디렉토리를 .gradle-caches로 설정
+                            sh './gradlew -g .gradle-caches clean'
+                           
+                        }
+                    }
+                }
+            }
+            parallel stages
+        }
+    }
+}

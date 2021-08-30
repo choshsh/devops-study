@@ -1,0 +1,65 @@
+replicaCount: 1
+
+image:
+  hub: "choshsh"
+  name: "itsm"
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+deploy:
+  containerPort: 8080
+  labels:
+    version: "v2"
+  args:
+    - --spring.profiles.active=prod
+  probe:
+    path: "/manage/health"
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+service:
+  type: ClusterIP
+  port:
+    number: 8080
+    name: http
+  labels: []
+  externalIPs: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+securityContext:
+  runAsUser: 1000
+  privileged: false
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}

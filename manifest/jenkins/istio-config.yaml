@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: jenkins-route
+spec:
+  hosts:
+    - "jenkins.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "jenkins-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: jenkins
+            subset: jenkins-subset
+            port:
+              number: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: jenkins-dr
+spec:
+  host: jenkins
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: jenkins-subset
+      labels:
+        version: v2
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
