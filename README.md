@@ -16,6 +16,7 @@ DevOps 공부 목적의 프로젝트입니다.
 - [Istio 설치](https://choshsh.notion.site/3-Istio-ab8442964e5944e3881486bc81b2958b)
 - ❗ PersistentVolume manifest를 알맞게 수정
 
+
 ## 시작하기
 
 `argocd-deploy.yaml` 만 수동으로 ArgoCD sync하면 나머지 manifest들은 자동으로 배포된다.
