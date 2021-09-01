@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: itsm-db
+spec:
+  destination:
+    name: ""
+    namespace: dev
+    server: "https://kubernetes.default.svc"
+  source:
+    path: manifest/itsm
+    repoURL: "https://github.com/SHsteak/devops-study.git"
+    targetRevision: dev
+  project: default

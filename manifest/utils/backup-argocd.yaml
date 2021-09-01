@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: argocd-backup
+spec:
+  template:
+    spec:
+      containers:
+        - name: argocd-backup
+          image: argoproj/argocd:v2.1.1
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: backup-volume
+              mountPath: /tmp/backups
+            - name: kubeconfig
+              mountPath: /home/argocd/.kube
+          command:
+            - sh
+            - -c
+            - |
+              argocd admin export --namespace argocd \
+                --kubeconfig /home/argocd/.kube/kubeconfig \
+                > /tmp/backups/argocd_backup_$(date "+%Y-%m-%d").yaml
+      restartPolicy: Never
+      volumes:
+        - name: backup-volume
+          persistentVolumeClaim:
+            claimName: backups
+        - name: kubeconfig
+          secret:
+            secretName: kubeconfig-argocd
+  backoffLimit: 4
