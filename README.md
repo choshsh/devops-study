@@ -23,7 +23,7 @@ DevOps 공부 목적의 프로젝트입니다.
 `dev` namespace 생성 및 Istio injection 설정
 
 ```bash
-kubectl create namespace dev\
+kubectl create namespace dev \
   && kubectl label namespace dev istio-injection=enabled
 ```
 
