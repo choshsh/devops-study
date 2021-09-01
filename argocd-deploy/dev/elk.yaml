@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elk
+spec:
+  destination:
+    name: ""
+    namespace: dev
+    server: "https://kubernetes.default.svc"
+  source:
+    path: manifest/ELK
+    repoURL: "https://github.com/SHsteak/devops-study.git"
+    targetRevision: dev
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false

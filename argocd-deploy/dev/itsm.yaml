@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: itsm-was
+spec:
+  destination:
+    name: ""
+    namespace: dev
+    server: "https://kubernetes.default.svc"
+  source:
+    path: manifest/helm-template/was
+    repoURL: "https://github.com/SHsteak/devops-study.git"
+    targetRevision: dev
+    helm:
+      valueFiles:
+        - dev-values.yaml
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
