@@ -14,7 +14,7 @@ DevOps 공부 목적의 프로젝트입니다.
 - [Kubernetes 클러스터 구성](https://choshsh.notion.site/3-b8c85437bc4c4fb89c91137dd6d4ee7a)
 - [ArgoCD 설치](https://choshsh.notion.site/3-Argo-CD-4d7c138785834ed3a19521d16d26adc7)
 - [Istio 설치](https://choshsh.notion.site/3-Istio-ab8442964e5944e3881486bc81b2958b)
-- ❗PersistentVolume manifest를 알맞게 수정
+- ❗ PersistentVolume manifest를 알맞게 수정
 
 ## 시작하기
 
