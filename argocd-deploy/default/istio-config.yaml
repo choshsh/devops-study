@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: elk
+  name: istio-config
 spec:
   destination:
     name: ""
     namespace: default
     server: "https://kubernetes.default.svc"
   source:
-    path: manifest/ELK
+    path: manifest/istio-config
     repoURL: "https://github.com/SHsteak/devops-study.git"
     targetRevision: dev
     directory:
@@ -17,4 +17,4 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      selfHeal: false
+      selfHeal: true
