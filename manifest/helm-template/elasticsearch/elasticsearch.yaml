@@ -1,0 +1,40 @@
+replicaCount: 1
+
+nameOverride: "elasticsearch"
+fullnameOverride: "elasticsearch"
+
+service:
+  type: NodePort
+  port: 9200
+
+env:
+  - name: discovery.type
+    value: "single-node"
+  - name: ELASTIC_PASSWORD
+    value: "elastic"
+  - name: bootstrap.memory_lock
+    value: "true"
+  - name: xpack.security.enabled
+    value: "true"
+  - name: xpack.security.audit.enabled
+    value: "true"
+  - name: path.repo
+    value: /usr/share/elasticsearch/data/choshsh_backup
+
+deployType: "StatefulSet"
+
+volumeClaimTemplate:
+  storageClassName: "elasticsearch"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+
+resources:
+  limits:
+    cpu: 3000m
+    memory: 12Gi
+  requests:
+    cpu: 200m
+    memory: 500Mi
