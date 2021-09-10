@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: argocd-route
+  namespace: argocd
+spec:
+  hosts:
+    - "argocd.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "argocd-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: argocd-server
+            subset: argocd-subset
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: argocd-dr
+  namespace: istio-system
+spec:
+  host: argocd-server
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: argocd-subset
+      labels:
+        app.kubernetes.io/name: argocd-server
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
