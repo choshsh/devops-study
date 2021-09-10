@@ -4,7 +4,12 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                withKubeConfig([credentialsId: 'd8996426-e941-4cac-b861-6c5718c2400a', serverUrl: 'https://kubernetes']) {
+                withKubeConfig([
+                    credentialsId: 'd8996426-e941-4cac-b861-6c5718c2400a',
+                    serverUrl: 'https://kubernetes',
+                    namespace: 'jenkins'
+                
+                ]) {
                   sh 'kubectl get po -n jenkins'
                 }
             }
