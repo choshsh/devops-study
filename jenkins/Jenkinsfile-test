@@ -1,0 +1,16 @@
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'jenkins/pod_template/test.yaml'
+    }
+  }
+  stages {
+    stage('Test') {
+      steps {
+        container('ubuntu') {
+          sh 'hostname'
+        }
+      }
+    }
+  }
+}
