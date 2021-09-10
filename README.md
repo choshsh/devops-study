@@ -21,21 +21,21 @@ DevOps 공부 목적의 프로젝트입니다.
 
 `argocd-deploy.yaml` 만 수동으로 ArgoCD sync하면 나머지 manifest들은 자동으로 배포된다.
 
-`dev` namespace 생성 및 Istio injection 설정
+- `dev` namespace 생성 및 Istio injection 설정
 
 ```bash
 kubectl create namespace dev \
   && kubectl label namespace dev istio-injection=enabled
 ```
 
-`argocd-deploy.yaml` 배포
+- `argocd-deploy.yaml` 배포
 
 ```bash
 kubectl apply -n argocd \
   -f https://raw.githubusercontent.com/SHsteak/devops-study/master/argocd-deploy.yaml
 ```
 
-ArgoCD 상태 확인
+- ArgoCD 상태 확인
 
 ```bash
 $ kubectl get applications.argoproj.io -n argocd
