@@ -1,0 +1,13 @@
+pipeline {
+    agent { label 'MASTER' }
+
+    stages {
+        stage('Hello') {
+            steps {
+                withKubeConfig([credentialsId: 'd8996426-e941-4cac-b861-6c5718c2400a', serverUrl: 'https://kubernetes']) {
+                  sh 'kubectl get po -n jenkins'
+                }
+            }
+        }
+    }
+}

@@ -15,6 +15,20 @@ spec:
     - sleep
     args:
     - 99d
+  - name: alpine
+    image: alpine
+    command:
+    - sleep
+    args:
+    - 99d
+    volumeMounts:
+    - name: kubeconfig
+      mountPath: /root/.kube
+      readOnly: true
+  volumes:
+  - name: kubeconfig
+    secret:
+      secretName: kubeconfig-test
 '''
 
 podTemplate(
@@ -57,7 +71,31 @@ podTemplate(
                     }
                 }
             }
+            stages['alpine'] = {
+                container('alpine') {
+                    stage('Init'){
+                        sh '''
+                            pwd
+                            ls -al $HOME
+                        '''
+                    }
+                    stage('Test'){
+                        sh '''
+                            apk --no-cache add curl
+                            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/linux/amd64/kubectl
+                            chmod +x ./kubectl
+                            mv ./kubectl /usr/local/bin/kubectl
+                            kubectl get po -A
+                        '''
+                    }
+                }
+            }
             parallel stages
+        }
+        stage('Terminate'){
+            container('alpine') {
+                sh 'hostname'
+            }
         }
     }
 }
