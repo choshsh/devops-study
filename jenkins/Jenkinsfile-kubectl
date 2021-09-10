@@ -10,7 +10,7 @@ pipeline {
                     namespace: 'jenkins'
                 
                 ]) {
-                  sh 'kubectl get po -n jenkins'
+                  sh 'kubectl get po'
                 }
             }
         }
