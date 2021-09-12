@@ -67,8 +67,8 @@ spec:
     - metadata:
         name: elasticsearch-volume
       spec:
-        storageClassName: elasticsearch
-        accessModes: ["ReadWriteOnce"]
+        storageClassName: nfs-client
+        accessModes: ["ReadWriteMany"]
         resources:
           requests:
             storage: 5Gi
