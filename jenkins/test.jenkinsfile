@@ -8,8 +8,8 @@ pipeline {
         stage('Test') {
             parallel {
                 stage('itsm') {
-                    dir('itsm') {
-                        stages {
+                    stages {
+                       dir('itsm') {
                             stage("Code"){
                                 steps{
                                     container('amazoncorretto-16') {
