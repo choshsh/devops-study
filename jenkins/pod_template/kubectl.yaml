@@ -6,11 +6,11 @@ spec:
         - sleep
       args:
         - 99d
-  #     volumeMounts:
-  #       - name: kubeconfig
-  #         mountPath: /root/.kube
-  #         readOnly: true
-  # volumes:
-  #   - name: kubeconfig
-  #     secret:
-  #       secretName: kubeconfig-test
+      volumeMounts:
+        - name: kubeconfig
+          mountPath: /root/.kube
+          readOnly: true
+  volumes:
+    - name: kubeconfig
+      secret:
+        secretName: kubeconfig-test
