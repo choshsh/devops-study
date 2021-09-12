@@ -12,7 +12,7 @@ pipeline {
                     steps {
                         script {
                             container('amazoncorretto-16') {
-                                dir('itsm') {
+                                dir('workspace/itsm') {
                                     stage('Code'){
                                         git 'https://github.com/SHsteak/itsmv.git'
                                     }
@@ -37,7 +37,7 @@ pipeline {
                     steps {
                         script {
                             container('ubuntu') {
-                                dir('ubuntu') {
+                                dir('workspace/ubuntu') {
                                     stage('Init'){
                                         sh 'hostname'
                                     }
