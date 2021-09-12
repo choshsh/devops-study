@@ -1,18 +1,22 @@
 pipeline {
-    agent { label 'MASTER' }
-
-    stages {
-        stage('Hello') {
-            steps {
-                withKubeConfig([
-                    credentialsId: 'd8996426-e941-4cac-b861-6c5718c2400a',
-                    serverUrl: 'https://kubernetes',
-                    namespace: 'jenkins'
-                
-                ]) {
-                  sh 'kubectl get po'
-                }
+  agent {
+    kubernetes {
+      yamlFile 'jenkins/pod_template/kubectl.yaml'
+    }
+  }
+  stages {
+    stage('Test') {
+      steps {
+        container('kubectl') {
+            withKubeConfig([
+                credentialsId: 'd8996426-e941-4cac-b861-6c5718c2400a',
+                serverUrl: 'https://kubernetes',
+                namespace: 'jenkins'
+            ]) {
+                sh 'kubectl get po -A'
             }
         }
+      }
     }
+  }
 }

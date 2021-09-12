@@ -1,0 +1,16 @@
+spec:
+  containers:
+    - name: kubectl
+      image: choshsh/kubectl:v1.21.1-alpine
+      command:
+        - sleep
+      args:
+        - 99d
+  #     volumeMounts:
+  #       - name: kubeconfig
+  #         mountPath: /root/.kube
+  #         readOnly: true
+  # volumes:
+  #   - name: kubeconfig
+  #     secret:
+  #       secretName: kubeconfig-test
