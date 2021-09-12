@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    metadata:
+      name: kaniko
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          args:
+            - "--dockerfile=dockerfiles/kubectl"
+            - "--context=git://github.com/SHsteak/devops-study.git#refs/heads/dev"
+            - "--destination=choshsh/kubectl:latest"
+          volumeMounts:
+            - name: kaniko-secret
+              mountPath: /secret
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secret/kaniko-secret.json
+      restartPolicy: Never
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: dockerhub
