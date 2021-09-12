@@ -10,7 +10,7 @@ pipeline {
             stage('itsm') {
                 container('amazoncorretto-16') {
                     dir('itsm') {
-                        stage('Code'){
+                        steps('Code'){
                             sh 'pwd'
                         }
                     }
@@ -18,7 +18,7 @@ pipeline {
             }
             stage('ubuntu') {
                 container('ubuntu') {
-                    stage('Init'){
+                    steps('Init'){
                         sh '''
                             pwd
                             ls -al $HOME
