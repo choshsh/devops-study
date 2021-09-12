@@ -1,28 +1,18 @@
 spec:
   containers:
-  - name: amazoncorretto-16
-    image: amazoncorretto:16.0.2
-    command:
-    - sleep
-    args:
-    - 99d
-  - name: ubuntu
-    image: ubuntu:20.04
-    command:
-    - sleep
-    args:
-    - 99d
-  - name: alpine
-    image: alpine
-    command:
-    - sleep
-    args:
-    - 99d
-    volumeMounts:
-    - name: kubeconfig
-      mountPath: /root/.kube
-      readOnly: true
+    - name: amazoncorretto-16
+      image: amazoncorretto:16.0.2
+      command:
+        - sleep
+      args:
+        - 99d
+    - name: ubuntu
+      image: ubuntu:20.04
+      command:
+        - sleep
+      args:
+        - 99d
   volumes:
-  - name: kubeconfig
-    secret:
-      secretName: kubeconfig-test
+    - name: workspace
+      secret:
+        secretName: jenkins-workspace-pvc
