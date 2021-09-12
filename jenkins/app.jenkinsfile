@@ -42,7 +42,7 @@ pipeline {
                                         sh 'hostname'
                                     }
                                     stage('Setup'){
-                                        sh 'cat /etc/*-release >./test.txt'
+                                        sh 'ip a'
                                     }
                                 }
                             }
