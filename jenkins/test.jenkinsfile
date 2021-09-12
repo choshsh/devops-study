@@ -6,8 +6,8 @@ pipeline {
   }
   stages {
     stage('Test') {
-        parallel() {
-            stage('itsm') = {
+        parallel {
+            stage('itsm') {
                 container('amazoncorretto-16') {
                     dir('itsm') {
                         stage('Code'){
@@ -16,7 +16,7 @@ pipeline {
                     }
                 }
             }
-            stage('ubuntu') = {
+            stage('ubuntu') {
                 container('ubuntu') {
                     stage('Init'){
                         sh '''
