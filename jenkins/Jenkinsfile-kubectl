@@ -10,7 +10,7 @@ pipeline {
         container('kubectl') {
             withKubeConfig([
                 credentialsId: 'd8996426-e941-4cac-b861-6c5718c2400a',
-                serverUrl: 'https://kubernetes',
+                serverUrl: 'https://kubernetes.default.svc.cluster.local',
                 namespace: 'jenkins'
             ]) {
                 sh 'kubectl get po -A'
