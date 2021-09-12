@@ -42,7 +42,7 @@ pipeline {
                                         sh 'hostname'
                                     }
                                     stage('Setup'){
-                                        sh 'ip a'
+                                        sh 'uname -a'
                                     }
                                 }
                             }
