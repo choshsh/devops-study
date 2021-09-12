@@ -9,9 +9,9 @@ pipeline {
             parallel {
                 stage('itsm') {
                     stages {
-                       dir('itsm') {
-                            stage("Code"){
-                                steps{
+                        stage("Code"){
+                            steps{
+                                dir('itsm') {
                                     container('amazoncorretto-16') {
                                         git 'https://github.com/SHsteak/itsmv.git'
                                     }
