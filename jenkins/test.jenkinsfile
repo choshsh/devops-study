@@ -8,23 +8,25 @@ pipeline {
         stage('Test') {
             parallel {
                 stage('itsm') {
-                    script {
-                        container('amazoncorretto-16') {
-                            dir('itsm') {
-                                stage('Code'){
-                                    git 'https://github.com/SHsteak/itsmv.git'
-                                }
-                                stage('Setup'){
-                                    sh 'chmod +x gradlew'
-                                    // gradle task 실행 시 
-                                    // '... [n] stopped Daemon could not be reused ...' 
-                                    // 로그가 출력되는게 보기 싫어서 daemon 디렉토리 삭제
-                                    sh 'rm -rf .gradle-caches/daemon'
-                                }
-                                stage('Test'){
-                                    // gradle cache 디렉토리를 .gradle-caches로 설정
-                                    sh './gradlew -g .gradle-caches clean'
-                                
+                    steps {
+                        script {
+                            container('amazoncorretto-16') {
+                                dir('itsm') {
+                                    stage('Code'){
+                                        git 'https://github.com/SHsteak/itsmv.git'
+                                    }
+                                    stage('Setup'){
+                                        sh 'chmod +x gradlew'
+                                        // gradle task 실행 시 
+                                        // '... [n] stopped Daemon could not be reused ...' 
+                                        // 로그가 출력되는게 보기 싫어서 daemon 디렉토리 삭제
+                                        sh 'rm -rf .gradle-caches/daemon'
+                                    }
+                                    stage('Test'){
+                                        // gradle cache 디렉토리를 .gradle-caches로 설정
+                                        sh './gradlew -g .gradle-caches clean'
+                                    
+                                    }
                                 }
                             }
                         }
