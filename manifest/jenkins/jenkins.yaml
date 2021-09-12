@@ -118,8 +118,8 @@ spec:
     - metadata:
         name: jenkins-volume
       spec:
-        storageClassName: jenkins
-        accessModes: ["ReadWriteOnce"]
+        storageClassName: nfs-client
+        accessModes: ["ReadWriteMany"]
         resources:
           requests:
             storage: 10Gi
