@@ -1,17 +1,21 @@
 pipeline {
     agent {
         kubernetes {
-        yamlFile 'jenkins/pod_template/test.yaml'
+            yamlFile 'jenkins/pod_template/test.yaml'
         }
     }
     stages {
         stage('Test') {
             parallel {
                 stage('itsm') {
-                    steps {
-                        container('amazoncorretto-16') {
-                            dir('itsm') {
-                                sh 'pwd'
+                    dir('itsm') {
+                        stages {
+                            stage("Code"){
+                                steps{
+                                    container('amazoncorretto-16') {
+                                        git 'https://github.com/SHsteak/itsmv.git'
+                                    }
+                                }
                             }
                         }
                     }
