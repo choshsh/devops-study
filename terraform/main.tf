@@ -5,13 +5,14 @@ locals {
 module "vpc" {
   source = "./vpc"
 
-  workspace = local.workspace
+  workspace  = local.workspace
+  cidr_block = var.cidr_block
 }
 
 module "eks" {
   source = "./eks"
 
-  eks_cluster_version = "1.21"
+  eks_cluster_version = var.eks_cluster_version
   private_subnet_ids  = module.vpc.private_subnet_ids
   workspace           = local.workspace
   depends_on          = [module.vpc]
