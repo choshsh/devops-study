@@ -2,6 +2,7 @@ pipeline {
     agent {
         kubernetes {
             yamlFile 'jenkins/pod_template/test.yaml'
+            workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'jenkins-workspace-pvc', readOnly: false)
         }
     }
     stages {

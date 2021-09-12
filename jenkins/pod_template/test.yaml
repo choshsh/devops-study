@@ -6,16 +6,9 @@ spec:
         - sleep
       args:
         - 99d
-      volumeMounts:
-        - name: workspace-volume
-          mountPath: /home/jenkins/agent
     - name: ubuntu
       image: ubuntu:20.04
       command:
         - sleep
       args:
         - 99d
-  volumes:
-    - name: workspace-volume
-      persistentVolumeClaim:
-        claimName: jenkins-workspace-pvc
