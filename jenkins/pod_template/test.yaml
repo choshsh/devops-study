@@ -17,5 +17,5 @@ spec:
         - 99d
   volumes:
     - name: workspace
-      secret:
-        secretName: jenkins-workspace-pvc
+      persistentVolumeClaim:
+        claimName: jenkins-workspace-pvc
