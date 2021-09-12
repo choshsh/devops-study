@@ -34,11 +34,17 @@ pipeline {
                 }
                 stage('ubuntu') {
                     steps {
-                        container('ubuntu') {
-                            sh '''
-                                pwd
-                                ls -al $HOME
-                            '''
+                        script {
+                            container('ubuntu') {
+                                dir('ubuntu') {
+                                    stage('Init'){
+                                        sh 'hostname'
+                                    }
+                                    stage('Setup'){
+                                        sh 'cat /etc/\*-release >./test.txt'
+                                    }
+                                }
+                            }
                         }
                     }
                 }
