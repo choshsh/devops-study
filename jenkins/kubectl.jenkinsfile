@@ -6,11 +6,11 @@ pipeline {
   }
 
   parameters {
-    string(name: 'FUNC', defaultValue: '', description: 'Bash script function name')
+    string(name: 'FUNC', defaultValue: '0', description: 'Bash script function name')
     string(name: 'NAMESPACE', defaultValue: 'default', description: 'Namespace')
-    string(name: 'RESOURCE', defaultValue: '', description: 'Resource Name (ex. deployment, svc)')
-    string(name: 'NAME', defaultValue: '', description: 'Name')
-    string(name: 'REPLICAS', defaultValue: '', description: 'Number to scale deployment')
+    string(name: 'RESOURCE', defaultValue: '0', description: 'Resource Name (ex. deployment, svc)')
+    string(name: 'NAME', defaultValue: '0', description: 'Name')
+    string(name: 'REPLICAS', defaultValue: '0', description: 'Number to scale deployment')
   }
 
   stages {
@@ -40,7 +40,7 @@ pipeline {
 
                   chmod +x kubectl_func.sh
                   
-                  ./kubectl_func.sh \$FUNC
+                  ./kubectl_func.sh ${FUNC}
                 '''
               }
             }
