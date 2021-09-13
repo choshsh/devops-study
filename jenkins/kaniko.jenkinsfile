@@ -7,8 +7,8 @@ pipeline {
 
   parameters {
     string(name: 'git', defaultValue: 'github.com/SHsteak/devops-study.git#refs/heads/dev', description: 'Git repository URL')
-    string(name: 'dockerfile', defaultValue: '', description: 'dockerfile path in Git repository')
-    string(name: 'destination', defaultValue: '', description: 'ImageRepository/imageName:Tag')
+    string(name: 'dockerfile', defaultValue: 'dockerfiles/kubectl', description: 'dockerfile path in Git repository')
+    string(name: 'destination', defaultValue: 'choshsh/kubectl:v1.21.1-alpine', description: 'ImageRepository/imageName:Tag')
   }
 
   environment {
@@ -24,7 +24,7 @@ pipeline {
         script {
           container('kubectl') {
             sh 'pwd'
-            sh 'll'
+            sh 'ls -al'
             // sh '''
             //     sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
             //     sed -i "s/context=.*/context=\$git/"
