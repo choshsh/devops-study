@@ -26,11 +26,11 @@ pipeline {
             dir('manifest/utils') {
               sh 'pwd'
               sh 'ls -al'
-                // sh '''
-                //     sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
-                //     sed -i "s/context=.*/context=\$git/"
-                //     sed -i "s/destination=.*/destination=\$destination/"
-                // '''
+              sh '''
+                sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
+                sed -i "s/context=.*/context=git\/\/\$git/"
+                sed -i "s/destination=.*/destination=\$destination/"
+              '''
               sh 'cat kaniko.yaml'
             }
           }
