@@ -12,10 +12,6 @@ pipeline {
   }
 
   environment {
-    git = "${params.git}"
-    dockerfile = "${params.dockerfile}"
-    destination = "${params.destination}"
-    authSecret = "${params.authSecret}"
     builNumber = "${currentBuild.number}"
   }
 
@@ -26,12 +22,17 @@ pipeline {
           container('kubectl') {
             dir('manifest/utils') {
               stage('Setup yamlFile') {
+                def dockerfile = params.dockerfile
+                def git = params.git
+                def destination = params.destination
+
                 sh '''
                     sed -i "s~name: kaniko~name: kaniko-\$builNumber~" kaniko.yaml
                     sed -i "s~app: kaniko~app: kaniko-\$builNumber~" kaniko.yaml
-                    sed -i "s~--dockerfile=.*~--dockerfile=\$dockerfile\\"~" kaniko.yaml
-                    sed -i "s~--context=.*~--context=git://\$git\\"~" kaniko.yaml
-                    sed -i "s~--destination=.*~--destination=\$destination\\"~" kaniko.yaml
+                    
+                    sed -i "s~--dockerfile=.*~--dockerfile=${dockerfile}\\"~" kaniko.yaml
+                    sed -i "s~--context=.*~--context=git://${git}\\"~" kaniko.yaml
+                    sed -i "s~--destination=.*~--destination=${destination}\\"~" kaniko.yaml
                 '''
                 sh 'cat kaniko.yaml'
               }
