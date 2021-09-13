@@ -19,19 +19,22 @@ pipeline {
   }
 
   stages {
-    stage('Image build & push') {
+    stage('Building Container By Kaniko') {
       steps {
         script {
           container('kubectl') {
             dir('manifest/utils') {
-              sh 'pwd'
-              sh 'ls -al'
-              sh '''
-                sed -i "s~--dockerfile=.*~--dockerfile=\$dockerfile\\"~" kaniko.yaml
-                sed -i -e "s~--context=.*~--context=git://\$git\\"~" kaniko.yaml
-                sed -i -e "s~--destination=.*~--destination=\$destination\\"~" kaniko.yaml
-              '''
-              sh 'cat kaniko.yaml'
+              stage('Setup yamlFile') {
+                sh '''
+                    sed -i "s~--dockerfile=.*~--dockerfile=\$dockerfile\\"~" kaniko.yaml
+                    sed -i -e "s~--context=.*~--context=git://\$git\\"~" kaniko.yaml
+                    sed -i -e "s~--destination=.*~--destination=\$destination\\"~" kaniko.yaml
+                '''
+                sh 'cat kaniko.yaml'
+              }
+              stage('Build & Push') {
+                sh 'kubectl apply -n jenkins -f kaniko.yaml'
+              }
             }
           }
         }
