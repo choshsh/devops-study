@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: loki-grafana-route
+  namespace: loki-grafana
+spec:
+  hosts:
+    - "loki-grafana.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "loki-grafana-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: loki-grafana
+            subset: loki-grafana-subset
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: loki-grafana-dr
+  namespace: loki-grafana
+spec:
+  host: loki-grafana
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: loki-grafana-subset
+      labels:
+        app.kubernetes.io/name: grafana
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
