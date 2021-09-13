@@ -21,14 +21,16 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        container('Build Image & Push') {
-          sh 'curl -LO https://raw.githubusercontent.com/SHsteak/devops-study/dev/manifest/utils/kaniko.yaml >./kaniko.yaml'
-          sh '''
-            sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
-            sed -i "s/context=.*/context=\$git/"
-            sed -i "s/destination=.*/destination=\$destination/"
-          '''
-          sh 'cat kaniko.yaml'
+        script {
+          container('Build Image & Push') {
+            sh 'pwd'
+            // sh '''
+            //     sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
+            //     sed -i "s/context=.*/context=\$git/"
+            //     sed -i "s/destination=.*/destination=\$destination/"
+            // '''
+            sh 'cat kaniko.yaml'
+          }
         }
       }
     }
