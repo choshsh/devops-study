@@ -1,0 +1,61 @@
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'jenkins/pod_template/kubectl.yaml'
+    }
+  }
+
+  parameters {
+    string(name: 'git', defaultValue: 'github.com/SHsteak/devops-study.git#refs/heads/dev', description: 'Git repository URL')
+    string(name: 'dockerfile', defaultValue: '', description: 'dockerfile path in Git repository')
+    string(name: 'destination', defaultValue: '', description: 'ImageRepository/imageName:Tag')
+    string(name: 'authSecret', defaultValue: 'dockercred', description: 'Image repository auth cred')
+  }
+
+  environment {
+    git = "${params.git}"
+    dockerfile = "${params.dockerfile}"
+    destination = "${params.destination}"
+    authSecret = "${params.authSecret}"
+  }
+
+  stages {
+    stage('Test') {
+      steps {
+        container('kubectl') {
+          sh '''
+            cat << | kubectl apply -n jenkins -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    metadata:
+      name: kaniko
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          args:
+            - "--dockerfile="\$dockerfile""
+            - "--context=git://"\$git""
+            - "--destination="\$destination"
+          volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker/
+      restartPolicy: Never
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: "\$authSecret"
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+          '''
+        }
+      }
+    }
+  }
+}
