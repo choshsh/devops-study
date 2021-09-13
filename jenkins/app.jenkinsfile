@@ -14,7 +14,7 @@ pipeline {
               container('amazoncorretto-16') {
                 dir('workspace/itsm') {
                   stage('Code'){
-                      git 'https://github.com/SHsteak/itsmv.git'
+                      git 'https://github.com/choshsh/itsmv.git'
                   }
                   stage('Setup'){
                     sh 'chmod +x gradlew'

@@ -32,7 +32,7 @@ kubectl create namespace dev \
 
 ```bash
 kubectl apply -n argocd \
-  -f https://raw.githubusercontent.com/SHsteak/devops-study/master/argocd-deploy.yaml
+  -f https://raw.githubusercontent.com/choshsh/devops-study/master/argocd-deploy.yaml
 ```
 
 - ArgoCD 상태 확인
