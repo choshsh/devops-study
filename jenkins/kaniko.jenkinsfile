@@ -16,6 +16,7 @@ pipeline {
     dockerfile = "${params.dockerfile}"
     destination = "${params.destination}"
     authSecret = "${params.authSecret}"
+    builNumber = "${currentBuild.number}"
   }
 
   stages {
@@ -26,6 +27,8 @@ pipeline {
             dir('manifest/utils') {
               stage('Setup yamlFile') {
                 sh '''
+                    sed -i "s~--name: kaniko~--name: kaniko-\$builNumber~" kaniko.yaml
+                    sed -i "s~--app: kaniko~--app: kaniko-\$builNumber~" kaniko.yaml
                     sed -i "s~--dockerfile=.*~--dockerfile=\$dockerfile\\"~" kaniko.yaml
                     sed -i -e "s~--context=.*~--context=git://\$git\\"~" kaniko.yaml
                     sed -i -e "s~--destination=.*~--destination=\$destination\\"~" kaniko.yaml
@@ -34,6 +37,9 @@ pipeline {
               }
               stage('Build & Push') {
                 sh 'kubectl apply -n jenkins -f kaniko.yaml'
+              }
+              stage('Tail log') {
+                sh 'kubectl logs -n jenkins -l "kaniko-\$builNumber"'
               }
             }
           }
