@@ -19,5 +19,5 @@ function get_istio(){
 if [ -z "$1" ]; then
   echo "Parameter is not valid."
 else
-  $1 $2 $3 $4 $5
+  $1
 fi

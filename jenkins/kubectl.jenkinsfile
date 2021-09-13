@@ -35,8 +35,13 @@ pipeline {
                 def NAME = params.NAME
 
                 sh '''
+                  export NAMESPACE=\$NAMESPACE
+                  export RESOURCE=\$RESOURCE
+                  export NAME=\$NAME
+
                   chmod +x kubectl_func.sh
-                  ./kubectl_func.sh \$FUNC \$NAME \$NAMESPACE
+                  
+                  ./kubectl_func.sh \$FUNC
                 '''
               }
             }
