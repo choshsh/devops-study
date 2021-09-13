@@ -9,7 +9,7 @@ spec:
     server: "https://kubernetes.default.svc"
   source:
     path: manifest/helm-template/was
-    repoURL: "https://github.com/SHsteak/devops-study.git"
+    repoURL: "https://github.com/choshsh/devops-study.git"
     targetRevision: dev
     helm:
       valueFiles:

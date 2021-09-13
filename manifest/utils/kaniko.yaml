@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko
+spec:
+  ttlSecondsAfterFinished: 30
+  template:
+    metadata:
+      name: kaniko
+      labels:
+        app: kaniko
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          args:
+            - "--dockerfile=dockerfiles/kubectl"
+            - "--context=git://github.com/choshsh/devops-study.git#refs/heads/dev"
+            - "--destination=choshsh/kubectl:v1.21.1-alpine"
+          volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker/
+      restartPolicy: Never
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: dockercred
+            items:
+              - key: .dockerconfigjson
+                path: config.json

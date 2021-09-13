@@ -1,0 +1,53 @@
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'jenkins/pod_template/kubectl.yaml'
+    }
+  }
+
+  parameters {
+    string(name: 'FUNC', defaultValue: '0', description: 'Bash script function name')
+    string(name: 'NAMESPACE', defaultValue: 'default', description: 'Namespace')
+    string(name: 'RESOURCE', defaultValue: '0', description: 'Resource Name (ex. deployment, svc)')
+    string(name: 'NAME', defaultValue: '0', description: 'Name')
+    string(name: 'REPLICAS', defaultValue: '0', description: 'Number to scale deployment')
+  }
+  
+  environment {
+    FUNC = "${params.FUNC}"
+    NAMESPACE = "${params.NAMESPACE}"
+    RESOURCE = "${params.RESOURCE}"
+    NAME = "${params.NAME}"
+    REPLICAS = "${params.REPLICAS}"
+  }
+
+  stages {
+    stage('Test') {
+      steps {
+        script {
+          container('kubectl') {
+            stage("Validate Parameter") {
+              if( !params.FUNC || !params.NAMESPACE || !params.RESOURCE || !params.NAME ){
+                echo 'Parameter is invalid'
+                return
+              }else{
+                echo 'Parameter is valid'
+              }
+            }
+            stage("Exec kubectl") {
+              dir('script') {
+                sh '''
+                  echo $NAMESPACE
+
+                  chmod +x kubectl_func.sh
+                  
+                  ./kubectl_func.sh $FUNC
+                '''
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

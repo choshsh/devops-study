@@ -21,8 +21,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Environment = "${local.workspace}"
-      Owner       = "choshsh"
+      Env   = "${local.workspace}"
+      Owner = "choshsh"
     }
   }
 }

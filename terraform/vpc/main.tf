@@ -2,6 +2,7 @@ locals {
   subnet_count_pair = 2    # (public, priate) subnet 페어의 개수
   ports_in          = [22] # inbound 허용 포트
   ports_out         = [0]  # outbound 허용 포트 (전체)
+  cidr_block_split  = split(".", var.cidr_block)
   tags = {
     Type = "network"
   }
@@ -14,7 +15,7 @@ data "aws_availability_zones" "available-zones" {
 
 # VPC
 resource "aws_vpc" "my-vpc" {
-  cidr_block = "192.168.0.0/16"
+  cidr_block = var.cidr_block
 
   tags = merge(local.tags, {
     Name = "${var.workspace}-vpc"
@@ -31,7 +32,7 @@ resource "aws_subnet" "public" {
   vpc_id = aws_vpc.my-vpc.id
 
   count             = local.subnet_count_pair
-  cidr_block        = "192.168.${count.index * 16}.0/20"
+  cidr_block        = "${local.cidr_block_split[0]}.${local.cidr_block_split[1]}.${count.index}.0/27"
   availability_zone = data.aws_availability_zones.available-zones.names[count.index]
 
   tags = merge(local.tags, {
@@ -104,7 +105,7 @@ resource "aws_subnet" "private" {
   vpc_id = aws_vpc.my-vpc.id
 
   count             = local.subnet_count_pair
-  cidr_block        = "192.168.${(count.index + local.subnet_count_pair) * 16}.0/20"
+  cidr_block        = "${local.cidr_block_split[0]}.${local.cidr_block_split[1]}.${count.index + local.subnet_count_pair}.0/27"
   availability_zone = data.aws_availability_zones.available-zones.names[count.index]
 
   tags = merge(local.tags, {

@@ -1,38 +1,38 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: istio-kiali-route
-  namespace: istio-system
+  name: loki-grafana
+  namespace: default
 spec:
   hosts:
-    - "istio-kiali.choshsh.com"
+    - "loki-grafana.choshsh.com"
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "kiali-http"
+    - name: "loki-grafana-http"
       match:
         - port: 80
       route:
         - destination:
-            host: kiali
-            subset: kiali-subset
+            host: loki-grafana
+            subset: loki-grafana-subset
             port:
-              number: 20001
+              number: 80
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: kiali-dr
-  namespace: istio-system
+  name: loki-grafana
+  namespace: default
 spec:
-  host: kiali
+  host: loki-grafana
   trafficPolicy:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: kiali-subset
+    - name: loki-grafana-subset
       labels:
-        app: kiali
+        app.kubernetes.io/name: grafana
       trafficPolicy:
         loadBalancer:
           simple: ROUND_ROBIN

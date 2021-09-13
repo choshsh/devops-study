@@ -1,0 +1,52 @@
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'jenkins/pod_template/kubectl.yaml'
+    }
+  }
+
+  parameters {
+    string(name: 'git', defaultValue: 'github.com/choshsh/devops-study.git#refs/heads/dev', description: 'Git repository URL')
+    string(name: 'dockerfile', defaultValue: 'dockerfiles/kubectl', description: 'dockerfile path in Git repository')
+    string(name: 'destination', defaultValue: 'choshsh/kubectl:v1.21.1-alpine', description: 'ImageRepository/imageName:Tag')
+  }
+
+  environment {
+    builNumber = "${currentBuild.number}"
+  }
+
+  stages {
+    stage('Building Container By Kaniko') {
+      steps {
+        script {
+          container('kubectl') {
+            dir('manifest/utils') {
+              stage('Setup yamlFile') {
+                def dockerfile = params.dockerfile
+                def git = params.git
+                def destination = params.destination
+
+                sh '''
+                    sed -i "s~name: kaniko~name: kaniko-\$builNumber~" kaniko.yaml
+                    sed -i "s~app: kaniko~app: kaniko-\$builNumber~" kaniko.yaml
+                    
+                    sed -i "s~--dockerfile=.*~--dockerfile=${dockerfile}\\"~" kaniko.yaml
+                    sed -i "s~--context=.*~--context=git://${git}\\"~" kaniko.yaml
+                    sed -i "s~--destination=.*~--destination=${destination}\\"~" kaniko.yaml
+                '''
+                sh 'cat kaniko.yaml'
+              }
+              stage('Build & Push') {
+                sh 'kubectl apply -n jenkins -f kaniko.yaml'
+              }
+              stage('Tail log') {
+                sh 'sleep 10'
+                sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$builNumber"'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

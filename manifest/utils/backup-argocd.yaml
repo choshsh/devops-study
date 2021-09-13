@@ -16,6 +16,7 @@ spec:
               mountPath: /tmp/backups
             - name: kubeconfig
               mountPath: /home/argocd/.kube
+              readOnly: true
           command:
             - sh
             - -c
