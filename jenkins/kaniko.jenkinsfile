@@ -24,7 +24,7 @@ pipeline {
       steps {
         container('kubectl') {
           sh '''
-            cat <<EOF | kubectl apply -n jenkins -f -
+cat <<EOF | kubectl apply -n jenkins -f -
 apiVersion: batch/v1
 kind: Job
 metadata:
