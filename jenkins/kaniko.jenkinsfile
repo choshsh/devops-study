@@ -9,7 +9,6 @@ pipeline {
     string(name: 'git', defaultValue: 'github.com/SHsteak/devops-study.git#refs/heads/dev', description: 'Git repository URL')
     string(name: 'dockerfile', defaultValue: '', description: 'dockerfile path in Git repository')
     string(name: 'destination', defaultValue: '', description: 'ImageRepository/imageName:Tag')
-    string(name: 'authSecret', defaultValue: 'dockercred', description: 'Image repository auth cred')
   }
 
   environment {
@@ -22,39 +21,12 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        container('kubectl') {
-          sh '''
-cat <<EOF | kubectl apply -n jenkins -f -
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: kaniko
-spec:
-  ttlSecondsAfterFinished: 60
-  template:
-    metadata:
-      name: kaniko
-    spec:
-      containers:
-        - name: kaniko
-          image: gcr.io/kaniko-project/executor:latest
-          args:
-            - "--dockerfile=\$dockerfile"
-            - "--context=git://\$git"
-            - "--destination=\$destination"
-          volumeMounts:
-            - name: kaniko-secret
-              mountPath: /kaniko/.docker/
-      restartPolicy: Never
-      volumes:
-        - name: kaniko-secret
-          secret:
-            secretName: \$authSecret
-            items:
-              - key: .dockerconfigjson
-                path: config.json
-EOF                
-          '''
+        container('Build Image & Push') {
+          sh 'curl -fsSLhttps://github.com/SHsteak/devops-study/blob/dev/manifest/utils/kaniko.yaml >./kaniko.yaml'
+          sh 'sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
+          sh 'sed -i "s/context=.*/context=\$git/"
+          sh 'sed -i "s/destination=.*/destination=\$destination/"
+          sh 'cat kaniko.yaml'
         }
       }
     }
