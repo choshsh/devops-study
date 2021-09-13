@@ -5,8 +5,12 @@ pipeline {
     }
   }
 
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
+
   parameters {
-    string(name: 'FUNC', defaultValue: '0', description: 'Bash script function name')
+    string(name: 'FUNC', defaultValue: 'get_all', description: 'Bash script function name')
     string(name: 'NAMESPACE', defaultValue: 'default', description: 'Namespace')
     string(name: 'RESOURCE', defaultValue: '0', description: 'Resource Name (ex. deployment, svc)')
     string(name: 'NAME', defaultValue: '0', description: 'Name')
