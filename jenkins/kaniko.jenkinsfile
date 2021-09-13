@@ -39,7 +39,7 @@ pipeline {
                 sh 'kubectl apply -n jenkins -f kaniko.yaml'
               }
               stage('Tail log') {
-                sh 'kubectl logs -f -n jenkins -l "kaniko-\$builNumber"'
+                sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$builNumber"'
               }
             }
           }
