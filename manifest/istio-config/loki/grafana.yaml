@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: loki-grafana-route
-  namespace: loki-grafana
+  namespace: default
 spec:
   hosts:
     - "loki-grafana.choshsh.com"
@@ -23,7 +23,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: loki-grafana-dr
-  namespace: loki-grafana
+  namespace: default
 spec:
   host: loki-grafana
   trafficPolicy:
