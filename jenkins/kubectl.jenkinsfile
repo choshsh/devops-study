@@ -41,7 +41,7 @@ pipeline {
 
                   chmod +x kubectl_func.sh
                   
-                  ./kubectl_func.sh ${FUNC}
+                  ./kubectl_func.sh get_all
                 '''
               }
             }
