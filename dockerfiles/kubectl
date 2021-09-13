@@ -3,7 +3,6 @@ FROM alpine:latest
 RUN apk --no-cache add curl \
     && curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/linux/amd64/kubectl \
     && chmod +x ./kubectl \
-    && mv ./kubectl /usr/local/bin/kubectl \
-    && apk del curl
+    && mv ./kubectl /usr/local/bin/kubectl
 
 CMD ["/bin/sh"]
