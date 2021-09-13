@@ -35,6 +35,8 @@ pipeline {
                 def NAME = params.NAME
 
                 sh '''
+                  echo ${NAMESPACE}
+                  echo \${NAMESPACE}
                   export NAMESPACE=\$NAMESPACE
                   export RESOURCE=\$RESOURCE
                   export NAME=\$NAME
