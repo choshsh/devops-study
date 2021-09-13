@@ -23,9 +23,11 @@ pipeline {
       steps {
         container('Build Image & Push') {
           sh 'curl -fsSLhttps://github.com/SHsteak/devops-study/blob/dev/manifest/utils/kaniko.yaml >./kaniko.yaml'
-          sh 'sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
-          sh 'sed -i "s/context=.*/context=\$git/"
-          sh 'sed -i "s/destination=.*/destination=\$destination/"
+          sh '''
+            sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
+            sed -i "s/context=.*/context=\$git/"
+            sed -i "s/destination=.*/destination=\$destination/"
+          '''
           sh 'cat kaniko.yaml'
         }
       }
