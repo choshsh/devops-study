@@ -27,16 +27,17 @@ pipeline {
               }
             }
             stage("Exec kubectl") {
-              def FUNC = params.FUNC
-              def NAMESPACE = params.NAMESPACE
-              def RESOURCE = params.RESOURCE
-              def NAME = params.NAME
+              dir('script') {
+                def FUNC = params.FUNC
+                def NAMESPACE = params.NAMESPACE
+                def RESOURCE = params.RESOURCE
+                def NAME = params.NAME
 
-              sh '''
-                curl -fsSL https://raw.githubusercontent.com/SHsteak/devops-study/master/script/kubectl_func.sh >./kubectl_func.sh
-                chmod +x kubectl_func.sh
-                ./kubectl_func.sh get_all \$FUNC \$NAME \$NAMESPACE
-              '''
+                sh '''
+                  chmod +x kubectl_func.sh
+                  ./kubectl_func.sh \$FUNC \$NAME \$NAMESPACE
+                '''
+              }
             }
           }
         }
