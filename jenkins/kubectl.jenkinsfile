@@ -28,6 +28,7 @@ pipeline {
             }
             stage("Exec kubectl") {
               dir('script') {
+                sh 'pwd && ls -al'
                 def FUNC = params.FUNC
                 def NAMESPACE = params.NAMESPACE
                 def RESOURCE = params.RESOURCE
