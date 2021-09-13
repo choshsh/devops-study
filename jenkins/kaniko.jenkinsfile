@@ -19,11 +19,12 @@ pipeline {
   }
 
   stages {
-    stage('Test') {
+    stage('Image build & push') {
       steps {
         script {
-          container('Build Image & Push') {
+          container('kubectl') {
             sh 'pwd'
+            sh 'll'
             // sh '''
             //     sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/"
             //     sed -i "s/context=.*/context=\$git/"
