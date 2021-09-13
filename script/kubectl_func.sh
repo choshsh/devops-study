@@ -10,7 +10,7 @@
 # }
 
 function get_all(){
-  kubectl get all -n $NAMESPACE
+  kubectl get all -A
 }
 
 # function get_istio(){
