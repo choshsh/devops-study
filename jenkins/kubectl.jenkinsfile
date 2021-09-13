@@ -28,18 +28,15 @@ pipeline {
             }
             stage("Exec kubectl") {
               dir('script') {
-                sh 'pwd && ls -al'
                 def FUNC = params.FUNC
                 def NAMESPACE = params.NAMESPACE
                 def RESOURCE = params.RESOURCE
                 def NAME = params.NAME
 
                 sh '''
-                  echo ${NAMESPACE}
-                  echo \${NAMESPACE}
-                  export NAMESPACE=\$NAMESPACE
-                  export RESOURCE=\$RESOURCE
-                  export NAME=\$NAME
+                  export NAMESPACE=${NAMESPACE}
+                  export RESOURCE=${RESOURCE}
+                  export NAME=${NAME}
 
                   chmod +x kubectl_func.sh
                   
