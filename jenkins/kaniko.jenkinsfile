@@ -39,9 +39,9 @@ spec:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:latest
           args:
-            - "--dockerfile="\$dockerfile""
-            - "--context=git://"\$git""
-            - "--destination="\$destination"
+            - "--dockerfile=\$dockerfile"
+            - "--context=git://\$git"
+            - "--destination=\$destination"
           volumeMounts:
             - name: kaniko-secret
               mountPath: /kaniko/.docker/
@@ -49,7 +49,7 @@ spec:
       volumes:
         - name: kaniko-secret
           secret:
-            secretName: "\$authSecret"
+            secretName: \$authSecret
             items:
               - key: .dockerconfigjson
                 path: config.json
