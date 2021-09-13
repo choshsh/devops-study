@@ -4,11 +4,41 @@ pipeline {
       yamlFile 'jenkins/pod_template/kubectl.yaml'
     }
   }
+
+  parameters {
+    string(name: 'FUNC', defaultValue: '', description: 'Bash script function name')
+    string(name: 'NAMESPACE', defaultValue: 'default', description: 'Namespace')
+    string(name: 'RESOURCE', defaultValue: '', description: 'Resource Name (ex. deployment, svc)')
+    string(name: 'NAME', defaultValue: '', description: 'Name')
+    string(name: 'REPLICAS', defaultValue: '', description: 'Number to scale deployment')
+  }
+
   stages {
     stage('Test') {
       steps {
-        container('kubectl') {
-            sh 'kubectl get po -A'
+        script {
+          container('kubectl') {
+            stage("Validate Parameter") {
+              if( !params.FUNC || !params.NAMESPACE || !params.RESOURCE || !params.NAME ){
+                echo 'Parameter is invalid'
+                return
+              }else{
+                echo 'Parameter is valid'
+              }
+            }
+            stage("Exec kubectl") {
+              def FUNC = params.FUNC
+              def NAMESPACE = params.NAMESPACE
+              def RESOURCE = params.RESOURCE
+              def NAME = params.NAME
+
+              sh '''
+                curl -fsSL https://raw.githubusercontent.com/SHsteak/devops-study/master/script/kubectl_func.sh >./kubectl_func.sh
+                chmod +x kubectl_func.sh
+                ./kubectl_func.sh get_all \$FUNC \$NAME \$NAMESPACE
+              '''
+            }
+          }
         }
       }
     }
