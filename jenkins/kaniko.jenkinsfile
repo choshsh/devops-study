@@ -27,9 +27,9 @@ pipeline {
               sh 'pwd'
               sh 'ls -al'
               sh '''
-                sed -i "s/dockerfile=.*/dockerfile=\$dockerfile/" kaniko.yaml
-                sed -i "s/context=.*/context=git:\\/\\/\$git/" kaniko.yaml
-                sed -i "s/destination=.*/destination=\$destination/" kaniko.yaml
+                sed -i -e "s/dockerfile=.*/dockerfile=\$dockerfile/" kaniko.yaml
+                sed -i -e "s/context=.*/context=git:\\/\\/\$git/" kaniko.yaml
+                sed -i -e "s/destination=.*/destination=\$destination/" kaniko.yaml
               '''
               sh 'cat kaniko.yaml'
             }
