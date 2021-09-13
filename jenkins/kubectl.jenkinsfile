@@ -37,6 +37,7 @@ pipeline {
                   export NAMESPACE=${NAMESPACE}
                   export RESOURCE=${RESOURCE}
                   export NAME=${NAME}
+                  echo $NAMESPACE
 
                   chmod +x kubectl_func.sh
                   
