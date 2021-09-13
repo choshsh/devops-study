@@ -3,11 +3,12 @@ kind: Job
 metadata:
   name: kaniko
 spec:
-  ttlSecondsAfterFinished: 60
+  ttlSecondsAfterFinished: 30
   template:
     metadata:
       name: kaniko
-      app: kaniko
+      labels:
+        app: kaniko
     spec:
       containers:
         - name: kaniko
