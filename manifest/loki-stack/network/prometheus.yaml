@@ -1,0 +1,79 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: loki-prometheus-server
+  namespace: default
+spec:
+  hosts:
+    - "loki-prometheus-server.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "loki-prometheus-server-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: loki-prometheus-server
+            subset: loki-prometheus-server-subset
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: loki-prometheus-server
+  namespace: default
+spec:
+  host: loki-prometheus-server
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: loki-prometheus-server-subset
+      labels:
+        app: prometheus
+        component: server
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: loki-prometheus-alertmanager
+  namespace: default
+spec:
+  hosts:
+    - "loki-prometheus-alertmanager.choshsh.com"
+  gateways:
+    - default/choshsh-gateway
+  http:
+    - name: "loki-prometheus-alertmanager-http"
+      match:
+        - port: 80
+      route:
+        - destination:
+            host: loki-prometheus-alertmanager
+            subset: loki-prometheus-alertmanager-subset
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: loki-prometheus-alertmanager
+  namespace: default
+spec:
+  host: loki-prometheus-alertmanager
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+  subsets:
+    - name: loki-prometheus-alertmanager-subset
+      labels:
+        app: prometheus
+        component: alertmanager
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN

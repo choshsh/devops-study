@@ -1,0 +1,65 @@
+grafana.enabled: false
+promtail.enabled: true
+
+prometheus:
+  enabled: true
+  global:
+    scrape_interval: 15s
+
+  alertmanager.persistentVolume:
+    enabled: false
+    storageClass: nfs-client
+
+  server.persistentVolume:
+    enabled: false
+    storageClass: nfs-client
+
+  # Prometheus 알람 규칙
+  serverFiles:
+    alerting_rules.yml:
+      groups:
+        - name: Deployment
+          rules:
+            - alert: Deployment Down
+              expr: kube_deployment_status_replicas{namespace="dev"} < 1
+              for: 10s
+              labels:
+                severity: Critical
+              annotations:
+                namespace: "{{ $labels.namespace }}"
+                deployment: "{{ $labels.deployment }}"
+                summary: "{{ $labels.deployment }} down"
+                logging: "http://loki-grafana.choshsh.com/d/dmO1A1Snz/logging-dashboard-via-loki?orgId=1&refresh=10s&from=now-5m&to=now"
+                description: "{{ $labels.deployment }} 10초 동안 replicas 개수: {{ $value }}"
+
+  # Alertmanager 알람 설정
+  alertmanagerFiles:
+    alertmanager.yml:
+      global: {}
+      # slack_api_url: "slack url"
+
+      receivers:
+        - name: slack-default
+          slack_configs:
+            - channel: "#devops"
+              send_resolved: true
+              title_link: "http://loki-prometheus-alertmanager.choshsh.com/#/alerts"
+              title: |-
+                [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
+              text: >-
+                {{ range .Alerts -}}
+                *Alert:* {{ .Annotations.summary }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+
+                *Description:* {{ .Annotations.description }}
+
+                *Details:*
+                  • *namespace:* `{{ .Annotations.namespace }}`
+                  • *deployment:* `{{ .Annotations.deployment }}`
+                  • *logging:* {{ .Annotations.logging }}
+                {{ end }}
+
+      route:
+        group_wait: 15s
+        group_interval: 30s
+        receiver: slack-default
+        repeat_interval: 3h

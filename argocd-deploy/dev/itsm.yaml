@@ -8,7 +8,7 @@ spec:
     namespace: dev
     server: "https://kubernetes.default.svc"
   source:
-    path: manifest/helm-template/was
+    path: manifest/was
     repoURL: "https://github.com/choshsh/devops-study.git"
     targetRevision: dev
     helm:
