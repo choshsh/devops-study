@@ -10,11 +10,11 @@ pipeline {
   }
 
   parameters {
-    string(name: 'FUNC', defaultValue: 'get_all', description: 'Bash script function name')
-    string(name: 'NAMESPACE', defaultValue: 'default', description: 'Namespace')
-    string(name: 'RESOURCE', defaultValue: '0', description: 'Resource Name (ex. deployment, svc)')
-    string(name: 'NAME', defaultValue: '0', description: 'Name')
-    string(name: 'REPLICAS', defaultValue: '0', description: 'Number to scale deployment')
+    string(name: 'FUNC', defaultValue: '', description: 'Bash script function name')
+    string(name: 'NAMESPACE', defaultValue: '', description: 'Namespace')
+    string(name: 'RESOURCE', defaultValue: '', description: 'Resource Name (ex. deployment, svc)')
+    string(name: 'NAME', defaultValue: '', description: 'Name')
+    string(name: 'REPLICAS', defaultValue: '', description: 'Number to scale deployment')
   }
   
   environment {
@@ -31,7 +31,7 @@ pipeline {
         script {
           container('kubectl') {
             stage("Validate Parameter") {
-              if( !params.FUNC || !params.NAMESPACE || !params.RESOURCE || !params.NAME ){
+              if( !params.FUNC || !params.NAMESPACE || !params.RESOURCE ){
                 echo 'Parameter is invalid'
                 return
               }else{

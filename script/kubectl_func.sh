@@ -9,12 +9,20 @@ function scale(){
   kubectl scale deployment $NAME --replicas=$REPLICAS -n $NAMESPACE
 }
 
-function get_all(){
-  kubectl get po -n $NAMESPACE
+function get_resource(){
+  if [ -z "$NAME" ]; then
+    kubectl get $RESOURCE -n $NAMESPACE
+  else
+    kubectl get $RESOURCE $NAME -n $NAMESPACE
+  fi
 }
 
 function get_istio(){
-  kubectl get vs,dr $NAME -n $NAMESPACE
+  if [ -z "$NAME" ]; then
+    kubectl get vs,dr -n $NAMESPACE
+  else
+    kubectl get vs, dr $NAME -n $NAMESPACE
+  fi
 }
 
 if [ -z "$1" ]; then
