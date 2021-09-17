@@ -41,7 +41,7 @@ pipeline {
             stage("Exec kubectl") {
               dir('script') {
                 sh '''
-                  printf "NAMESPACE: $NAMESPACE\nRESOURCE: $RESOURCE\nNAME: $NAME"
+                  printf "NAMESPACE: $NAMESPACE\nRESOURCE: $RESOURCE\nNAME: $NAME\n"
 
                   chmod +x kubectl_func.sh                  
                   ./kubectl_func.sh $FUNC
