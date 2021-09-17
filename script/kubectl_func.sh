@@ -10,7 +10,7 @@
 # }
 
 function get_all(){
-  kubectl get all -n default
+  kubectl get po -n default
 }
 
 # function get_istio(){
@@ -22,3 +22,5 @@ if [ -z "$1" ]; then
 else
   $1
 fi
+
+exit 0
