@@ -41,6 +41,10 @@ pipeline {
             stage("Exec kubectl") {
               dir('script') {
                 sh '''
+                  pwd
+
+                  ls -al
+                  
                   echo $NAMESPACE
 
                   chmod +x kubectl_func.sh
