@@ -5,6 +5,7 @@ metadata:
 spec:
   destination:
     name: ""
+    namespace: default
     server: "https://kubernetes.default.svc"
   source:
     path: manifest/loki-stack
@@ -26,6 +27,7 @@ metadata:
 spec:
   destination:
     name: ""
+    namespace: default
     server: "https://kubernetes.default.svc"
   source:
     path: manifest/loki-stack/network
