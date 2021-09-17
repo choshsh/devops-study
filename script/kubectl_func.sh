@@ -5,9 +5,9 @@
 # @param NAME       resource name
 # @param REPLICAS   scale replicas count
 
-# function scale(){
-#   kubectl scale deployment $NAME --replicas=$REPLICAS -n $NAMESPACE
-# }
+function scale(){
+  kubectl scale deployment $NAME --replicas=$REPLICAS -n $NAMESPACE
+}
 
 function get_all(){
   kubectl get po -n $NAMESPACE
