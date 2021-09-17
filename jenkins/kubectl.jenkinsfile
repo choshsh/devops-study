@@ -31,7 +31,7 @@ pipeline {
         script {
           container('kubectl') {
             stage("Validate Parameter") {
-              if( !params.FUNC || !params.NAMESPACE || !params.RESOURCE ){
+              if( !params.FUNC || !params.NAMESPACE ){
                 echo 'Parameter is invalid'
                 return
               }else{
