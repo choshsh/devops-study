@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-stack
+spec:
+  destination:
+    name: ""
+    server: "https://kubernetes.default.svc"
+  source:
+    path: manifest/loki-stack
+    repoURL: "https://github.com/choshsh/devops-study.git"
+    targetRevision: dev
+    helm:
+      valueFiles:
+        - values-choshsh.yaml
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-stack-network
+spec:
+  destination:
+    name: ""
+    server: "https://kubernetes.default.svc"
+  source:
+    path: manifest/loki-stack/network
+    repoURL: "https://github.com/choshsh/devops-study.git"
+    targetRevision: dev
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
