@@ -34,7 +34,7 @@ prometheus:
   alertmanagerFiles:
     alertmanager.yml:
       global:
-        slack_api_url: "Your slack url"
+        slack_api_url: "https://hooks.slack.com/services/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"
 
       receivers:
         - name: slack-default
