@@ -2,7 +2,7 @@ spec:
   containers:
     - name: kubectl
       image: choshsh/kubectl:v1.21.1-alpine
-      imagePullPolicy: Always
+      #imagePullPolicy: Always
       command:
         - sleep
       args:
