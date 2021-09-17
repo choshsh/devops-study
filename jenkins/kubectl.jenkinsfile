@@ -51,7 +51,7 @@ pipeline {
 
                   cat kubectl_func.sh
                   
-                  ./kubectl_func.sh $FUNC
+                  /bin/sh -c "./kubectl_func.sh $FUNC"
                 '''
               }
             }
