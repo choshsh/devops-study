@@ -10,7 +10,7 @@
 # }
 
 function get_all(){
-  kubectl get po -n default
+  kubectl get po -n $NAMESPACE
 }
 
 # function get_istio(){
@@ -18,7 +18,7 @@ function get_all(){
 # }
 
 if [ -z "$1" ]; then
-  echo "Parameter is not valid."
+  echo "Please input function name."
 else
   $1
 fi
