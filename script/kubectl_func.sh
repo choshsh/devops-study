@@ -13,9 +13,9 @@ function get_all(){
   kubectl get po -n $NAMESPACE
 }
 
-# function get_istio(){
-#   kubectl get vs,dr $NAME -n $NAMESPACE
-# }
+function get_istio(){
+  kubectl get vs,dr $NAME -n $NAMESPACE
+}
 
 if [ -z "$1" ]; then
   echo "Please input function name."
