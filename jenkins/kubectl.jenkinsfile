@@ -41,17 +41,11 @@ pipeline {
             stage("Exec kubectl") {
               dir('script') {
                 sh '''
-                  pwd
-
-                  ls -al
-
+                  kubectl get po
                   echo $NAMESPACE
-
                   chmod +x kubectl_func.sh
-
-                  cat kubectl_func.sh
                   
-                  /bin/sh -c "./kubectl_func.sh $FUNC"
+                  ./kubectl_func.sh $FUNC
                 '''
               }
             }
