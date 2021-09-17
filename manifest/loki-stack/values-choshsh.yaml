@@ -3,6 +3,8 @@ promtail.enabled: true
 
 prometheus:
   enabled: true
+  global:
+    scrape_interval: 15s
 
   alertmanager.persistentVolume:
     enabled: false
@@ -33,8 +35,8 @@ prometheus:
   # Alertmanager 알람 설정
   alertmanagerFiles:
     alertmanager.yml:
-      global:
-        slack_api_url: "https://hooks.slack.com/services/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"
+      global: {}
+      # slack_api_url: "slack url"
 
       receivers:
         - name: slack-default
@@ -57,7 +59,7 @@ prometheus:
                 {{ end }}
 
       route:
-        group_wait: 10s
+        group_wait: 15s
         group_interval: 30s
         receiver: slack-default
         repeat_interval: 3h
