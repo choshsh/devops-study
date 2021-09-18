@@ -20,7 +20,7 @@ pipeline {
         stage('Init master') {
           steps {
             container('master') {
-              sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 1 -r 1 --run-time 5s -H https://www.naver.com'
+              sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 1 -r 1 --run-time 10s -H https://www.naver.com --csv=result'
             }
           }
         }
@@ -28,7 +28,7 @@ pipeline {
           steps {
             container("${STAGE_NAME}") {
               sleep(time: 3, unit: "SECONDS") 
-              sh 'locust -f script/locust.py --worker --master-host localhost'
+              sh 'locust -f script/locust.py --worker --master-host localhost > /dev/null 2>&1'
             }
           }
         }
@@ -36,7 +36,7 @@ pipeline {
           steps {
             container("${STAGE_NAME}") {
               sleep(time: 3, unit: "SECONDS")
-              sh 'locust -f script/locust.py --worker --master-host localhost'
+              sh 'locust -f script/locust.py --worker --master-host localhost > /dev/null 2>&1'
             }
           }
         }
@@ -44,7 +44,7 @@ pipeline {
           steps {
             container("${STAGE_NAME}") {
               sleep(time: 3, unit: "SECONDS")
-              sh 'locust -f script/locust.py --worker --master-host localhost'
+              sh 'locust -f script/locust.py --worker --master-host localhost > /dev/null 2>&1'
             }
           }
         }
@@ -53,6 +53,8 @@ pipeline {
   }
   post{
     always {
+      archiveArtifacts artifacts: '*.csv', fingerprint: true
+
       slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
 Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status : ${currentBuild.currentResult}
