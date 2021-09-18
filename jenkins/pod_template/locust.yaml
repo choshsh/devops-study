@@ -21,3 +21,9 @@ spec:
       command:
         - sleep
         - 99d
+    - name: c
+      image: locustio/locust:latest
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+        - 99d

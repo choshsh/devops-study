@@ -41,6 +41,13 @@ pipeline {
             }
           }
         }
+        stage('c') {
+          steps {
+            container("${STAGE_NAME}") {
+              sh 'cat script/locust.py'
+            }
+          }
+        }
       }
     }
   }
