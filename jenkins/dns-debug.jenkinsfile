@@ -35,17 +35,12 @@ pipeline {
         }
       }
       post{
-        success {
-          script {
-            def slackResponse = slackSend(channel: "#devops", message: "SUCCESS: Job '${env.JOB_NAME} #${env.BUILD_NUMBER}' (${env.BUILD_URL})")
-            slackResponse.addReaction("thumbsup")
-          }
-        }
-        failure {
-          script {
-            def slackResponse = slackSend(channel: "#devops", message: "FAILURE: Job '${env.JOB_NAME} #${env.BUILD_NUMBER}' (${env.BUILD_URL})")
-            slackResponse.addReaction("cry")
-          }
+        always {
+          slackSend(message: """
+Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status : ${currentBuild.currentResult}
+URL    : ${env.BUILD_URL}
+          """)
         }
       }
     }
