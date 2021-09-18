@@ -27,13 +27,6 @@ pipeline {
     }
     stage('Load Test') {
       parallel {
-        stage('master') {
-          steps {
-            container("${STAGE_NAME}") {
-              sh 'cat script/locust.py'
-            }
-          }
-        }
         stage('worker01') {
           steps {
             container("${STAGE_NAME}") {
