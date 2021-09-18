@@ -25,7 +25,7 @@ pipeline {
 
             // Check local DNS
             def EXTERNAL_URL = params.EXTERNAL_URL
-            sh "nslookup ${EXTERNAL_URL}"
+            sh "nslookup ${params.EXTERNAL_URL}"
 
             // Check kubernetes service
             if( params.SERVICE ) {
