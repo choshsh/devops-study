@@ -19,6 +19,7 @@ pipeline {
 
   environment {
     builNumber = "${currentBuild.number}"
+    dockerFile = 'https://' + "${params.git.replace('.git', '')}" + '/blob/' + "${params.branch}" + '/' +"${params.dockerfile}"
   }
 
   stages {
@@ -53,13 +54,13 @@ pipeline {
   }
   post{
     always {
-      echo 'https://' + "${params.git.replace('.git', '')}" + '/blob/' + "${params.branch}" + '/' +"${params.dockerfile}"
-      echo "${parmas.destination}:${params.imageTag}"
       slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
 Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status     : ${currentBuild.currentResult}
 URL        : ${env.BUILD_URL}
-Image      : ${parmas.destination}:${params.imageTag}
+Image      : ${parmas.destination}
+Tag        : ${params.imageTag}
+DockerFile : ${env.dockerFile}
       """)
     }
   }
