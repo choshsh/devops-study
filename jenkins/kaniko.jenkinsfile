@@ -31,7 +31,7 @@ pipeline {
                 sh """
                     sed -i "s~name: kaniko~name: kaniko-\$builNumber~" kaniko.yaml
                     sed -i "s~app: kaniko~app: kaniko-\$builNumber~" kaniko.yaml
-                    
+
                     sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
                     sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
                     sed -i "s~--destination=.*~--destination=${params.destination}:${params.imageTag}\\"~" kaniko.yaml
@@ -53,7 +53,7 @@ pipeline {
         always {
           script {
             def dockerfile = "https://${params.git.replace('.git', '')}/blob/${params.branch}/${params.dockerfile}"
-            sh "${dockerfile}"
+            echo "${dockerfile}"
           }
           slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
 Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
