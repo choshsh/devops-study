@@ -29,14 +29,14 @@ pipeline {
       parallel {
         stage('worker01') {
           steps {
-            container("${STAGE_NAME}") {
+            container('worker01') {
               sh 'cat script/locust.py'
             }
           }
         }
         stage('worker02') {
           steps {
-            container("${STAGE_NAME}") {
+            container('worker02') {
               sh 'cat script/locust.py'
             }
           }
