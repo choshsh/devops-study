@@ -2,19 +2,22 @@ spec:
   containers:
     - name: master
       image: locustio/locust:latest
+      imagePullPolicy: IfNotPresent
       ports:
         - name: http
           containerPort: 5557
       command:
         - sleep
         - 99d
-    - name: worker01
+    - name: worker-1
       image: locustio/locust:latest
+      imagePullPolicy: IfNotPresent
       command:
         - sleep
         - 99d
-    - name: worekr02
+    - name: worekr-2
       image: locustio/locust:latest
+      imagePullPolicy: IfNotPresent
       command:
         - sleep
         - 99d
