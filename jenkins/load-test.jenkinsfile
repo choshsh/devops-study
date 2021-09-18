@@ -20,7 +20,7 @@ pipeline {
         stage('Init master') {
           steps {
             container('master') {
-              sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 100 -r 10 --run-time 15s -H https://www.naver.com'
+              sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 1 -r 1 --run-time 5s -H https://www.naver.com'
             }
           }
         }
