@@ -39,15 +39,11 @@ pipeline {
       }
       post{
         always {
-          script {
-            def slackColor = ${currentBuild.currentResult} == 'SUCCESS' ? 'good' : 'danger'
-            slackSend(color: ${slackColor},message: """
-  Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
-  Status : ${currentBuild.currentResult}
-  URL    : ${env.BUILD_URL}
-            """)
-          }
-
+          slackSend(color: ${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}, message: """
+Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status : ${currentBuild.currentResult}
+URL    : ${env.BUILD_URL}
+          """)
         }
       }
     }
