@@ -41,9 +41,7 @@ pipeline {
 Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status : ${currentBuild.currentResult}
 URL    : ${env.BUILD_URL}
-Params : ${params.each { key, value ->
-  key = value 
-}} 
+Params : ${params} 
           """)
         }
       }
