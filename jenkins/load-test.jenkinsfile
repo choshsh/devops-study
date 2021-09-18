@@ -15,12 +15,11 @@ pipeline {
   }
 
   stages {
-    stage('Setup') {
+    stage('Init master') {
       steps {
         script {
           container('master') {
-            sh 'locust -V'
-            sh 'cat script/locust.py'
+            sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 100 -r 10 --run-time 15s -H https://www.naver.com'
           }
         }
       }
@@ -30,21 +29,21 @@ pipeline {
         stage('a') {
           steps {
             container("${STAGE_NAME}") {
-              sh 'cat script/locust.py'
+              sh 'locust -f script/locust.py --worker --master-host localhost'
             }
           }
         }
         stage('b') {
           steps {
             container("${STAGE_NAME}") {
-              sh 'cat script/locust.py'
+              sh 'locust -f script/locust.py --worker --master-host localhost'
             }
           }
         }
         stage('c') {
           steps {
             container("${STAGE_NAME}") {
-              sh 'cat script/locust.py'
+              sh 'locust -f script/locust.py --worker --master-host localhost'
             }
           }
         }
