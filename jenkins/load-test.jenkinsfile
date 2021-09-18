@@ -15,11 +15,44 @@ pipeline {
   }
 
   stages {
-    stage('Load Test') {
+    stage('Setup') {
       steps {
         script {
-          container('locust') {
+          container('master') {
             sh 'locust -V'
+            sh 'cat script/locust.py'
+          }
+        }
+      }
+    }
+    stage('Load Test') {
+      parallel {
+        stage('master') {
+          steps {
+            container("${STAGE_NAME}") {
+              sh 'cat script/locust.py'
+            }
+          }
+        }
+        stage('worker01') {
+          steps {
+            container("${STAGE_NAME}") {
+              sh 'cat script/locust.py'
+            }
+          }
+        }
+        stage('worker02') {
+          steps {
+            container("${STAGE_NAME}") {
+              sh 'cat script/locust.py'
+            }
+          }
+        }
+        stage('worker03') {
+          steps {
+            container("${STAGE_NAME}") {
+              sh 'cat script/locust.py'
+            }
           }
         }
       }

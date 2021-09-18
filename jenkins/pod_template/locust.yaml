@@ -1,6 +1,24 @@
 spec:
   containers:
-    - name: locust
+    - name: master
+      image: locustio/locust:latest
+      ports:
+        - name: http
+          containerPort: 5557
+      command:
+        - sleep
+        - 99d
+    - name: worker01
+      image: locustio/locust:latest
+      command:
+        - sleep
+        - 99d
+    - name: worekr02
+      image: locustio/locust:latest
+      command:
+        - sleep
+        - 99d
+    - name: worekr03
       image: locustio/locust:latest
       command:
         - sleep
