@@ -9,13 +9,13 @@ spec:
       command:
         - sleep
         - 99d
-    - name: worker-1
+    - name: a
       image: locustio/locust:latest
       imagePullPolicy: IfNotPresent
       command:
         - sleep
         - 99d
-    - name: worekr-2
+    - name: b
       image: locustio/locust:latest
       imagePullPolicy: IfNotPresent
       command:

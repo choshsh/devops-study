@@ -27,14 +27,14 @@ pipeline {
     }
     stage('Load Test') {
       parallel {
-        stage('worker-1') {
+        stage('a') {
           steps {
             container("${STAGE_NAME}") {
               sh 'cat script/locust.py'
             }
           }
         }
-        stage('worker-2') {
+        stage('b') {
           steps {
             container("${STAGE_NAME}") {
               sh 'cat script/locust.py'
