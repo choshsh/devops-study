@@ -14,7 +14,7 @@ pipeline {
     string(name: 'branch', defaultValue: 'dev', description: 'Git branch (ex. master, dev)')
     string(name: 'dockerfile', defaultValue: 'dockerfiles/kubectl', description: 'dockerfile path in Git repository')
     string(name: 'destination', defaultValue: 'choshsh/kubectl', description: 'ImageRepository/imageName')
-    string(name: 'imageTag', defaultValue: 'v1.21.1-alpine', description: 'Image Tag')
+    string(name: 'tag', defaultValue: 'v1.21.1-alpine', description: 'Image Tag')
   }
 
   environment {
@@ -35,7 +35,7 @@ pipeline {
 
                     sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
                     sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
-                    sed -i "s~--destination=.*~--destination=${params.destination}:${params.imageTag}\\"~" kaniko.yaml
+                    sed -i "s~--destination=.*~--destination=${params.destination}:${params.tag}\\"~" kaniko.yaml
                 """
                 sh 'cat kaniko.yaml'
               }
@@ -58,6 +58,8 @@ pipeline {
 Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status     : ${currentBuild.currentResult}
 URL        : ${env.BUILD_URL}
+Image      : ${params.destination}
+Tag        : ${params.tag}
 DockerFile : ${env.dockerFile}
       """)
     }
