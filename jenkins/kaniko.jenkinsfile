@@ -10,9 +10,11 @@ pipeline {
   }
 
   parameters {
-    string(name: 'git', defaultValue: 'github.com/choshsh/devops-study.git#refs/heads/dev', description: 'Git repository URL')
+    string(name: 'git', defaultValue: 'github.com/choshsh/devops-study.git', description: 'Git repository URL (ex. github.com/choshsh/devops-study.git)')
+    string(name: 'branch', defaultValue: 'dev', description: 'Git branch (ex. master, dev)')
     string(name: 'dockerfile', defaultValue: 'dockerfiles/kubectl', description: 'dockerfile path in Git repository')
-    string(name: 'destination', defaultValue: 'choshsh/kubectl:v1.21.1-alpine', description: 'ImageRepository/imageName:Tag')
+    string(name: 'destination', defaultValue: 'choshsh/kubectl', description: 'ImageRepository/imageName')
+    string(name: 'imageTag', defaultValue: 'v1.21.1-alpine', description: 'Image Tag')
   }
 
   environment {
@@ -26,29 +28,40 @@ pipeline {
           container('kubectl') {
             dir('manifest/utils') {
               stage('Setup yamlFile') {
-                def dockerfile = params.dockerfile
-                def git = params.git
-                def destination = params.destination
-
                 sh '''
                     sed -i "s~name: kaniko~name: kaniko-\$builNumber~" kaniko.yaml
                     sed -i "s~app: kaniko~app: kaniko-\$builNumber~" kaniko.yaml
                     
-                    sed -i "s~--dockerfile=.*~--dockerfile=${dockerfile}\\"~" kaniko.yaml
-                    sed -i "s~--context=.*~--context=git://${git}\\"~" kaniko.yaml
-                    sed -i "s~--destination=.*~--destination=${destination}\\"~" kaniko.yaml
+                    sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
+                    sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
+                    sed -i "s~--destination=.*~--destination=${params.destination}:${params.imageTag}\\"~" kaniko.yaml
                 '''
                 sh 'cat kaniko.yaml'
               }
-              stage('Build & Push') {
-                sh 'kubectl apply -n jenkins -f kaniko.yaml'
-              }
-              stage('Tail log') {
-                sleep(time: 10, unit: "SECONDS")
-                sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$builNumber"'
-              }
+              // stage('Build & Push') {
+              //   sh 'kubectl apply -n jenkins -f kaniko.yaml'
+              // }
+              // stage('Tail log') {
+              //   sleep(time: 10, unit: "SECONDS")
+              //   sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$builNumber"'
+              // }
             }
           }
+        }
+      }
+      post{
+        always {
+          script {
+            def dockerfile = "https://${params.git.replace('.git', '')}/blob/${params.branch}/${params.dockerfile}"
+            sh "${dockerfile}"
+          }
+          slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
+Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status     : ${currentBuild.currentResult}
+URL        : ${env.BUILD_URL}
+Image      : ${parmas.destination}:${params.imageTag}
+Dockerfile : https://${params.git}/blob/${params.branch}/${params.dockerfile}
+          """)
         }
       }
     }
