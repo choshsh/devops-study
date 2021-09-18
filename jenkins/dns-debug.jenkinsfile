@@ -34,20 +34,20 @@ pipeline {
           }
         }
       }
-    }
-    post{
-        success {
-          script {
-            def slackResponse = slackSend(message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-            slackResponse.addReaction("thumbsup")
+      post{
+          success {
+            script {
+              def slackResponse = slackSend(message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+              slackResponse.addReaction("thumbsup")
+            }
           }
-        }
-        failure {
-          script {
-            def slackResponse = slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-            slackResponse.addReaction("cry")
+          failure {
+            script {
+              def slackResponse = slackSend(message: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+              slackResponse.addReaction("cry")
+            }
           }
-        }
+      }
     }
   }
 }
