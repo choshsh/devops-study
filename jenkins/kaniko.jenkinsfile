@@ -31,7 +31,7 @@ pipeline {
                 sh '''
                     sed -i "s~name: kaniko~name: kaniko-\$builNumber~" kaniko.yaml
                     sed -i "s~app: kaniko~app: kaniko-\$builNumber~" kaniko.yaml
-                    
+                    echo "${params.dockerfile}"
                     sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
                     sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
                     sed -i "s~--destination=.*~--destination=${params.destination}:${params.imageTag}\\"~" kaniko.yaml
