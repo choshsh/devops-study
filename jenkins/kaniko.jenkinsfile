@@ -18,7 +18,7 @@ pipeline {
   }
 
   environment {
-    builNumber = "${currentBuild.number}"
+    buildNumber = "${currentBuild.number}"
     dockerFile = 'https://' + "${params.git.replace('.git', '')}" + '/blob/' + "${params.branch}" + '/' + "${params.dockerfile}"
   }
 
@@ -30,8 +30,8 @@ pipeline {
             dir('manifest/utils') {
               stage('Setup yamlFile') {
                 sh """
-                    sed -i "s~name: kaniko~name: kaniko-\$builNumber~" kaniko.yaml
-                    sed -i "s~app: kaniko~app: kaniko-\$builNumber~" kaniko.yaml
+                    sed -i "s~name: kaniko~name: kaniko-\$buildNumber~" kaniko.yaml
+                    sed -i "s~app: kaniko~app: kaniko-\$buildNumber~" kaniko.yaml
 
                     sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
                     sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
@@ -44,7 +44,7 @@ pipeline {
               }
               stage('Tail log') {
                 sleep(time: 10, unit: "SECONDS")
-                sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$builNumber"'
+                sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$buildNumber"'
               }
             }
           }
