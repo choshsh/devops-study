@@ -1,0 +1,7 @@
+spec:
+  containers:
+    - name: locust
+      image: locustio/locust:latest
+      command:
+        - sleep
+        - 99d
