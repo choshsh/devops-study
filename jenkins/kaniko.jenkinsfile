@@ -49,20 +49,20 @@ pipeline {
           }
         }
       }
-      post{
-        always {
-          script {
-            def dockerfile = "https://${params.git.replace('.git', '')}/blob/${params.branch}/${params.dockerfile}"
-            echo "${dockerfile}"
-          }
-          slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
-Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
-Status     : ${currentBuild.currentResult}
-URL        : ${env.BUILD_URL}
-Image      : ${parmas.destination}:${params.imageTag}
-Dockerfile : https://${params.git}/blob/${params.branch}/${params.dockerfile}
-          """)
-        }
+    }
+  }
+  post{
+    always {
+      script {
+        def dockerfile = "https://${params.git.replace('.git', '')}/blob/${params.branch}/${params.dockerfile}"
+
+        slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
+  Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+  Status     : ${currentBuild.currentResult}
+  URL        : ${env.BUILD_URL}
+  Image      : ${parmas.destination}:${params.imageTag}
+  Dockerfile : ${dockerfile}
+        """)
       }
     }
   }
