@@ -58,8 +58,6 @@ pipeline {
 Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status     : ${currentBuild.currentResult}
 URL        : ${env.BUILD_URL}
-Image      : ${parmas.destination}
-Tag        : ${params.imageTag}
 DockerFile : ${env.dockerFile}
       """)
     }
