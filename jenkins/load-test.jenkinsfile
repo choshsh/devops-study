@@ -10,17 +10,20 @@ pipeline {
   }
 
   parameters {
-    string(name: 'SERVICE', defaultValue: '', description: 'Service to check (ex. sample.default.svc.cluster.local)')
-    string(name: 'EXTERNAL_URL', defaultValue: 'google.com', description: 'External URL to check (ex. google.com)')
+    string(name: 'host', defaultValue: 'https://www.naver.com', description: 'Load-Test Target host (ex. https://www.naver.com)')
+    string(name: 'pyscript', defaultValue: '${params.pyscript}', description: 'Python script path')
+    string(name: 'duration', defaultValue: '1s', description: 'Time to test')
+    string(name: 'max', defaultValue: '1', description: 'Maximum users to create')
+    string(name: 'increase', defaultValue: '1', description: 'Number of users to start per second')
   }
 
   stages {
     stage('Load Test') {
       parallel {
-        stage('Init master') {
+        stage('Init-master') {
           steps {
             container('master') {
-              sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 1 -r 1 --run-time 10s -H https://www.naver.com --csv=result'
+              sh "locust -f ${params.pyscript} --run-time ${params.duration} -H ${params.host} -u ${params.max} -r ${params.increase} --master --headless --expect-workers 3 --csv=result"
             }
           }
         }
@@ -28,7 +31,7 @@ pipeline {
           steps {
             container("${STAGE_NAME}") {
               sleep(time: 3, unit: "SECONDS") 
-              sh 'locust -f script/locust.py --worker --master-host localhost > /dev/null 2>&1'
+              sh "locust -f ${params.pyscript} --worker --master-host localhost > /dev/null 2>&1"
             }
           }
         }
@@ -36,7 +39,7 @@ pipeline {
           steps {
             container("${STAGE_NAME}") {
               sleep(time: 3, unit: "SECONDS")
-              sh 'locust -f script/locust.py --worker --master-host localhost > /dev/null 2>&1'
+              sh "locust -f ${params.pyscript} --worker --master-host localhost > /dev/null 2>&1"
             }
           }
         }
@@ -44,7 +47,7 @@ pipeline {
           steps {
             container("${STAGE_NAME}") {
               sleep(time: 3, unit: "SECONDS")
-              sh 'locust -f script/locust.py --worker --master-host localhost > /dev/null 2>&1'
+              sh "locust -f ${params.pyscript} --worker --master-host localhost > /dev/null 2>&1"
             }
           }
         }
@@ -56,10 +59,13 @@ pipeline {
       archiveArtifacts artifacts: '*.csv', fingerprint: true
 
       slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
-Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
-Status : ${currentBuild.currentResult}
-URL    : ${env.BUILD_URL}
-Params : ${params} 
+Job                : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status             : ${currentBuild.currentResult}
+URL                : ${env.BUILD_URL}
+Host               : ${params.host}
+Duration           : ${params.duration}
+MaxUser            : ${params.max}
+IncreasePerSeconds : ${params.increase}
       """)
     }
   }
