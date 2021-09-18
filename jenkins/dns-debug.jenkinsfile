@@ -35,16 +35,16 @@ pipeline {
           }
         }
       }
-      post{
-        always {
-          slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
+    }
+  }
+  post{
+    always {
+      slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
 Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status : ${currentBuild.currentResult}
 URL    : ${env.BUILD_URL}
 Params : ${params} 
-          """)
-        }
-      }
+      """)
     }
   }
 }
