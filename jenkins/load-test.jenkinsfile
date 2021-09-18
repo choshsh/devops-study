@@ -15,20 +15,19 @@ pipeline {
   }
 
   stages {
-    stage('Init master') {
-      steps {
-        script {
-          container('master') {
-            sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 100 -r 10 --run-time 15s -H https://www.naver.com'
-          }
-        }
-      }
-    }
     stage('Load Test') {
       parallel {
+        stage('Init master') {
+          steps {
+            container('master') {
+              sh 'locust -f script/locust.py --expect-workers 3 --master --headless -u 100 -r 10 --run-time 15s -H https://www.naver.com'
+            }
+          }
+        }
         stage('a') {
           steps {
             container("${STAGE_NAME}") {
+              sleep(time: 3, unit: "SECONDS") 
               sh 'locust -f script/locust.py --worker --master-host localhost'
             }
           }
@@ -36,6 +35,7 @@ pipeline {
         stage('b') {
           steps {
             container("${STAGE_NAME}") {
+              sleep(time: 3, unit: "SECONDS")
               sh 'locust -f script/locust.py --worker --master-host localhost'
             }
           }
@@ -43,6 +43,7 @@ pipeline {
         stage('c') {
           steps {
             container("${STAGE_NAME}") {
+              sleep(time: 3, unit: "SECONDS")
               sh 'locust -f script/locust.py --worker --master-host localhost'
             }
           }
