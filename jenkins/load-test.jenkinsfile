@@ -48,13 +48,6 @@ pipeline {
             }
           }
         }
-        stage('worker03') {
-          steps {
-            container("${STAGE_NAME}") {
-              sh 'cat script/locust.py'
-            }
-          }
-        }
       }
     }
   }

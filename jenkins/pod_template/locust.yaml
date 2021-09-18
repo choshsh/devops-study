@@ -18,8 +18,3 @@ spec:
       command:
         - sleep
         - 99d
-    - name: worekr03
-      image: locustio/locust:latest
-      command:
-        - sleep
-        - 99d
