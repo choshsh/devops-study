@@ -55,7 +55,7 @@ pipeline {
     always {
       script {
         def dockerfile = "https://${params.git.replace('.git', '')}/blob/${params.branch}/${params.dockerfile}"
-
+        echo "${parmas.destination}:${params.imageTag}"
         slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
   Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
   Status     : ${currentBuild.currentResult}
