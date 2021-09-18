@@ -19,12 +19,15 @@ pipeline {
       steps {
         script {
           container('dnsutils') {
+            // Check kubernetes DNS
             sh 'nslookup kubernetes.default'
             sh 'cat /etc/resolv.conf'
 
+            // Check local DNS
             def EXTERNAL_URL = params.EXTERNAL_URL
             sh "nslookup ${EXTERNAL_URL}"
 
+            // Check kubernetes service
             if( params.SERVICE ) {
               def SERVICE = params.SERVICE
               sh "nslookup ${SERVICE}"
@@ -36,11 +39,15 @@ pipeline {
       }
       post{
         always {
-          slackSend(message: """
-Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
-Status : ${currentBuild.currentResult}
-URL    : ${env.BUILD_URL}
-          """)
+          script {
+            def slackColor = ${currentBuild.currentResult} == 'SUCCESS' ? 'good' : 'danger'
+            slackSend(color: ${slackColor},message: """
+  Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+  Status : ${currentBuild.currentResult}
+  URL    : ${env.BUILD_URL}
+            """)
+          }
+
         }
       }
     }
