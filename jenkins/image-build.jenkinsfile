@@ -18,9 +18,8 @@ pipeline {
   }
 
   environment {
-    buildNumber = "${currentBuild.number}"
     dockerFileUrl = 'https://' + "${params.git.replace('.git', '')}" + '/blob/' + "${params.branch}" + '/' + "${params.dockerfile}"
- 
+    pyOutput = "image-build.yaml"
   }
 
   stages {
@@ -28,7 +27,6 @@ pipeline {
       environment {
         pyScript = "script/yaml_editor.py"
         pyInput = "manifest/utils/kaniko.yaml"
-        pyOutput = "image-build.yaml"
       }
       steps {
         container('python') {
