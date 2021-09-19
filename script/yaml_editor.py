@@ -12,13 +12,14 @@ def main(output, yamlFile, keyPath, value):
     # yaml file 변경
     data[keyPath] = value
     print('Edit\t==> key: {}, value: {}'.format(keyPath, value))
+
     # 쓰기
     with open(output, 'w') as w:
         yaml.dump(data[:], w)
         print("Output\t==> {}".format(output))
 
 
-# 직접 cli 실행 시 변수 사용
+# cli에서 실행 시에만 변수 사용
 # py 파일 파라미터를 제외하고 index 1부터 main 함수에 전달
 #
 # @param argv[0] Input py 파일
