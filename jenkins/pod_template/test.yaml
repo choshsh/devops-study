@@ -2,6 +2,7 @@ spec:
   containers:
     - name: amazoncorretto-16
       image: amazoncorretto:16.0.2
+      imagePullPolicy: IfNotPresent
       command:
         - sleep
       args:

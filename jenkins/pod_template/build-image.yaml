@@ -1,5 +1,12 @@
 spec:
   containers:
+    - name: python
+      image: choshsh/python:3.9.7-alpine3.14
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d
     - name: kubectl
       image: choshsh/kubectl:v1.21.1-alpine
       imagePullPolicy: IfNotPresent

@@ -1,0 +1,72 @@
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'jenkins/pod_template/locust.yaml'
+    }
+  }
+
+  options {
+    timeout(time: 5, unit: 'MINUTES')
+  }
+
+  parameters {
+    string(name: 'host', defaultValue: "https://www.naver.com", description: "Load-Test Target host (ex. https://www.naver.com)")
+    string(name: 'pyscript', defaultValue: 'script/locust.py', description: 'Python script path')
+    string(name: 'duration', defaultValue: '1s', description: 'Time to test')
+    string(name: 'max', defaultValue: '1', description: 'Maximum users to create')
+    string(name: 'increase', defaultValue: '1', description: 'Number of users to start per second')
+  }
+
+  stages {
+    stage('Load Test') {
+      parallel {
+        stage('Init-master') {
+          steps {
+            container('master') {
+              sh "locust -f ${params.pyscript} --run-time ${params.duration} -H ${params.host} -u ${params.max} -r ${params.increase} --master --headless --expect-workers 3 --csv=result"
+            }
+          }
+        }
+        stage('a') {
+          steps {
+            container("${STAGE_NAME}") {
+              sleep(time: 2, unit: "SECONDS") 
+              sh "locust -f ${params.pyscript} --worker --master-host localhost > /dev/null 2>&1"
+            }
+          }
+        }
+        stage('b') {
+          steps {
+            container("${STAGE_NAME}") {
+              sleep(time: 2, unit: "SECONDS")
+              sh "locust -f ${params.pyscript} --worker --master-host localhost > /dev/null 2>&1"
+            }
+          }
+        }
+        stage('c') {
+          steps {
+            container("${STAGE_NAME}") {
+              sleep(time: 2, unit: "SECONDS")
+              sh "locust -f ${params.pyscript} --worker --master-host localhost > /dev/null 2>&1"
+            }
+          }
+        }
+      }
+    }
+  }
+  post{
+    always {
+      archiveArtifacts artifacts: '*.csv', fingerprint: true
+
+      slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
+Job                : ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status             : ${currentBuild.currentResult}
+URL                : ${env.BUILD_URL}
+Host               : ${params.host}
+Duration           : ${params.duration}
+MaxUser            : ${params.max}
+IncreasePerSeconds : ${params.increase}
+      """)
+    }
+  }
+}
