@@ -40,40 +40,29 @@ pipeline {
           // Set args - image repository 
           sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/2 --destination=${params.image}:${params.tag}"
           // edit name
-          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /metadata/name kaniko-${buildNumber}"
+          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /metadata/name kaniko-${env.BUILD_NUMBER}"
+          // edit label
+          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/metadata/labels/app kaniko-${env.BUILD_NUMBER}"
           
           sh "cat ${env.pyOutput}"
         }
       }
     }
-    // stage('Building Container By Kaniko') {
-    //   steps {
-    //     script {
-    //       container('kubectl') {
-    //         dir('manifest/utils') {
-    //           stage('Setup yamlFile') {
-    //             sh """
-    //                 sed -i "s~name: kaniko~name: kaniko-\$buildNumber~" kaniko.yaml
-    //                 sed -i "s~app: kaniko~app: kaniko-\$buildNumber~" kaniko.yaml
-
-    //                 sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
-    //                 sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
-    //                 sed -i "s~--destination=.*~--destination=${params.image}:${params.tag}\\"~" kaniko.yaml
-    //             """
-    //             sh 'cat kaniko.yaml'
-    //           }
-    //           stage('Build & Push') {
-    //             sh 'kubectl apply -n jenkins -f kaniko.yaml'
-    //           }
-    //           stage('Tail log') {
-    //             sleep(time: 10, unit: "SECONDS")
-    //             sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$buildNumber"'
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Build & Push') {
+      steps {
+        container('kubectl') {
+          sh "kubectl apply -n jenkins -f ${env.pyOutput}"
+        }
+      }
+    }
+    stage('Tail log') {
+      steps {
+        container('kubectl') {
+          sleep(time: 10, unit: "SECONDS")
+          sh "kubectl logs -f -n jenkins -l app=kaniko-${env.BUILD_NUMBER}"
+        }
+      }
+    }
   }
   post{
     always {
