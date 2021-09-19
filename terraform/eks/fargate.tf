@@ -1,34 +1,15 @@
 locals {
-  profiles = [
-    {
-      name      = "default",
-      namespace = "default",
-      labels = {
-        compute-type = "fargate"
-      }
-    },
-    {
-      name      = "dev",
-      namespace = "dev",
-      labels = {
-        compute-type = "fargate"
-      }
-    },
-    {
-      name      = "kube-dns",
-      namespace = "kube-system",
-      labels = {
-        k8s-app = "kube-dns"
-      }
-    },
-    {
-      name      = "argocd",
-      namespace = "argocd",
-      labels    = {}
-    },
-  ]
+  profiles = concat([{
+    name      = "kube-dns",
+    namespace = "kube-system",
+    labels = {
+      k8s-app = "kube-dns"
+    }
+  }], var.fargate_profiles)
 }
 
+// Fargate를 사용하기 위한 profile 
+// namespace, label로 매핑하여 pod를 fargate로 배포
 resource "aws_eks_fargate_profile" "fargate-profiles" {
   cluster_name           = aws_eks_cluster.my-eks-cluster.name
   pod_execution_role_arn = aws_iam_role.fargate.arn
