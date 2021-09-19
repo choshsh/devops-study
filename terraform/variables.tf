@@ -12,3 +12,13 @@ variable "eks_cluster_version" {
   type        = string
   default     = "1.21"
 }
+
+variable "eks_node_group" {
+  description = "Node-group config"
+  type        = map(string)
+}
+
+variable "fargate_profiles" {
+  description = "Fargate profiles"
+  type        = list(any)
+}

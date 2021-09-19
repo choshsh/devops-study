@@ -28,18 +28,22 @@ resource "aws_eks_cluster" "my-eks-cluster" {
 # EKS 노드 그룹 : Ingress 또는 stateful한 pod 배포용
 resource "aws_eks_node_group" "my-eks-node-group" {
   cluster_name    = aws_eks_cluster.my-eks-cluster.name
-  node_group_name = "example"
+  node_group_name = var.eks_node_group.name
   node_role_arn   = aws_iam_role.node-group.arn
   subnet_ids      = var.private_subnet_ids
+  instance_types  = [var.eks_node_group.instance_type]
+  ami_type        = var.eks_node_group.ami_type
+
   labels = {
-    "node/role" = "ingress"
+    "compute-type" = "ec2"
   }
 
   scaling_config {
-    desired_size = 1
-    max_size     = 1
-    min_size     = 1
+    desired_size = var.eks_node_group.desired_size
+    max_size     = var.eks_node_group.max_size
+    min_size     = var.eks_node_group.min_size
   }
+
 
   update_config {
     max_unavailable = 1
