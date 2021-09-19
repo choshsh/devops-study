@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      yamlFile 'jenkins/pod_template/kubectl.yaml'
+      yamlFile 'jenkins/pod_template/build-image.yaml'
     }
   }
 
@@ -19,38 +19,61 @@ pipeline {
 
   environment {
     buildNumber = "${currentBuild.number}"
-    dockerFile = 'https://' + "${params.git.replace('.git', '')}" + '/blob/' + "${params.branch}" + '/' + "${params.dockerfile}"
+    dockerFileUrl = 'https://' + "${params.git.replace('.git', '')}" + '/blob/' + "${params.branch}" + '/' + "${params.dockerfile}"
+ 
   }
 
   stages {
-    stage('Building Container By Kaniko') {
+    stage('Setup yamlFile') {
+      environment {
+        pyScript = "script/yaml_editor.py"
+        pyInput = "manifest/utils/kaniko.yaml"
+        pyOutput = "image-build.yaml"
+      }
       steps {
-        script {
-          container('kubectl') {
-            dir('manifest/utils') {
-              stage('Setup yamlFile') {
-                sh """
-                    sed -i "s~name: kaniko~name: kaniko-\$buildNumber~" kaniko.yaml
-                    sed -i "s~app: kaniko~app: kaniko-\$buildNumber~" kaniko.yaml
-
-                    sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
-                    sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
-                    sed -i "s~--destination=.*~--destination=${params.image}:${params.tag}\\"~" kaniko.yaml
-                """
-                sh 'cat kaniko.yaml'
-              }
-              stage('Build & Push') {
-                sh 'kubectl apply -n jenkins -f kaniko.yaml'
-              }
-              stage('Tail log') {
-                sleep(time: 10, unit: "SECONDS")
-                sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$buildNumber"'
-              }
-            }
-          }
+        container('python') {
+          // 최초 실행 시 pyInput 파일을 읽고 pyOutput 파일을 생성하고, 이후에는 pyOutput 파일을 읽고 수정함
+          // set args - git repository
+          sh "python ${env.pyScript} ${env.pyInput} ${env.pyOutput} /spec/template/spec/containers/0/args/0 --context=git://${params.git}#refs/heads/${params.branch}"
+          // Set args - dockerfile path of git repository
+          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/1 --dockerfile=${params.dockerfile}"
+          // Set args - image repository 
+          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/2 --destination=${params.image}:${params.tag}"
+          // edit name
+          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /metadata/name kaniko-${buildNumber}"
+          
+          sh "cat ${env.pyOutput}"
         }
       }
     }
+    // stage('Building Container By Kaniko') {
+    //   steps {
+    //     script {
+    //       container('kubectl') {
+    //         dir('manifest/utils') {
+    //           stage('Setup yamlFile') {
+    //             sh """
+    //                 sed -i "s~name: kaniko~name: kaniko-\$buildNumber~" kaniko.yaml
+    //                 sed -i "s~app: kaniko~app: kaniko-\$buildNumber~" kaniko.yaml
+
+    //                 sed -i "s~--dockerfile=.*~--dockerfile=${params.dockerfile}\\"~" kaniko.yaml
+    //                 sed -i "s~--context=.*~--context=git://${params.git}#refs/heads/${params.branch}\\"~" kaniko.yaml
+    //                 sed -i "s~--destination=.*~--destination=${params.image}:${params.tag}\\"~" kaniko.yaml
+    //             """
+    //             sh 'cat kaniko.yaml'
+    //           }
+    //           stage('Build & Push') {
+    //             sh 'kubectl apply -n jenkins -f kaniko.yaml'
+    //           }
+    //           stage('Tail log') {
+    //             sleep(time: 10, unit: "SECONDS")
+    //             sh 'kubectl logs -f -n jenkins -l "app=kaniko-\$buildNumber"'
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
   post{
     always {
@@ -60,7 +83,7 @@ Status     : ${currentBuild.currentResult}
 URL        : ${env.BUILD_URL}
 Image      : ${params.image}
 Tag        : ${params.tag}
-DockerFile : ${env.dockerFile}
+DockerFile : ${env.dockerFileUrl}
       """)
     }
   }
