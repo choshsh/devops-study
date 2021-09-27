@@ -1,11 +1,13 @@
-FROM busybox:latest as builder
-RUN export KUBECTL_VER=v1.21.1 && \
-    wget "https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VER/bin/linux/amd64/kubectl" -O /tmp/kubectl
-
 FROM alpine:latest
+# apk 패키지 설치
 RUN apk update --no-cache && \
     apk add --no-cache \
-    bash
-COPY --from=builder /tmp/kubectl /usr/local/bin/kubectl
-RUN chmod +x /usr/local/bin/kubectl
+    bash \
+    curl
+# kubectl 설치
+RUN export KUBECTL_VERSION=v1.21.1 && \
+    curl -LO "https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
+    chmod +x ./kubectl && \
+    mv ./kubectl /usr/local/bin/kubectl && \
+    apk del curl
 CMD ["/bin/sh"]
