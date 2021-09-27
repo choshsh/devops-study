@@ -24,7 +24,7 @@ pipeline {
   }
 
   stages {
-    stage('Test') {
+    stage('Kubectl') {
       steps {
         script {
           container('kubectl') {
