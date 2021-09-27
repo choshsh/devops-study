@@ -106,7 +106,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /login
-              port: http
+              port: http-service
             initialDelaySeconds: 30
             failureThreshold: 5
             periodSeconds: 5
