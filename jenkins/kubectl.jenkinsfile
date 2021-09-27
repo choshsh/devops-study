@@ -46,10 +46,8 @@ pipeline {
                 if( "${REPLICAS}" != "-1" ){
                   echo "REPLICAS: $REPLICAS"
                 }
-                sh '''
-                  chmod +x kubectl_func.sh                  
-                  ./kubectl_func.sh $FUNC
-                '''
+                sh 'chmod +x kubectl_func.sh'
+                sh './kubectl_func.sh $FUNC'
               }
             }
           }
