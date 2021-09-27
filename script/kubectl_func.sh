@@ -22,13 +22,13 @@ function get_istio(){
 }
 
 function check_coredns(){
-  printf "\n### kube-dns service"
+  printf "\n### kube-dns service\n"
   kubectl -n kube-system describe svc kube-dns
-  printf "\n### kube-dns endpoints"
+  printf "\n### kube-dns endpoints\n"
   kubectl -n kube-system describe endpoints kube-dns
-  printf "\n### coredns deployment"
+  printf "\n### coredns deployment\n"
   kubectl -n kube-system get deploy coredns
-  printf "\n### coredns pod"
+  printf "\n### coredns pod\n"
   kubectl -n kube-system get po -l k8s-app=kube-dns -o wide
 }
 
