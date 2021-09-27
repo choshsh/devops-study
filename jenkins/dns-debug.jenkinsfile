@@ -17,22 +17,20 @@ pipeline {
   stages {
     stage('Debug CoreDNS') {
       parallel {
-        steps {
-          stage('Debug with Pod') {
-            steps {
-              script {
-                container('dnsutils') {
-                  // Check kubernetes DNS
-                  sh 'nslookup kubernetes.default'
-                  sh 'cat /etc/resolv.conf'
-                  // Check local DNS
-                  sh "nslookup ${params.EXTERNAL_URL}"
-                  // Check kubernetes service
-                  if( params.SERVICE ) {
-                    sh "nslookup ${params.SERVICE}"
-                  }
-                  echo 'Check for errors in CoreDNS pod. http://loki-grafana.choshsh.com/d/dmO1A1Snz/logging-dashboard-via-loki?orgId=1&var-namespace=kube-system&var-pod_name=All&var-container_name=All&var-searchable_pattern=error&from=now-30m&to=now'
+        stage('Debug with Pod') {
+          steps {
+            script {
+              container('dnsutils') {
+                // Check kubernetes DNS
+                sh 'nslookup kubernetes.default'
+                sh 'cat /etc/resolv.conf'
+                // Check local DNS
+                sh "nslookup ${params.EXTERNAL_URL}"
+                // Check kubernetes service
+                if( params.SERVICE ) {
+                  sh "nslookup ${params.SERVICE}"
                 }
+                echo 'Check for errors in CoreDNS pod. http://loki-grafana.choshsh.com/d/dmO1A1Snz/logging-dashboard-via-loki?orgId=1&var-namespace=kube-system&var-pod_name=All&var-container_name=All&var-searchable_pattern=error&from=now-30m&to=now'
               }
             }
           }
