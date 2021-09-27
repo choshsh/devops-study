@@ -20,10 +20,11 @@ pipeline {
               container('dnsutils') {
                 // Check kubernetes DNS
                 sh 'nslookup kubernetes.default'
+                // Check DNS in Pod
                 sh 'cat /etc/resolv.conf'
-                // Check local DNS
+                // Check External DNS
                 sh "nslookup ${params.EXTERNAL_URL}"
-                // Check kubernetes service
+                // Check kubernetes service in Pod
                 if( params.SERVICE ) {
                   sh "nslookup ${params.SERVICE}"
                 }
@@ -32,6 +33,7 @@ pipeline {
             }
           }
         }
+        // Trigger kubectl job - check k8s coredns resources
         stage('Check k8s resources') {
           steps {
             build job: 'kubectl', parameters: [
