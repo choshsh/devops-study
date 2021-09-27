@@ -91,10 +91,6 @@ spec:
           resources:
             limits:
               memory: "6Gi"
-              cpu: "3000m"
-            requests:
-              memory: "1Gi"
-              cpu: "300m"
           ports:
             - name: http
               containerPort: 8080 # 서비스

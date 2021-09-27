@@ -7,8 +7,8 @@ metadata:
 spec:
   ports:
     - port: 3306
-      name: http
-      targetPort: http
+      name: tcp
+      targetPort: tcp
       appProtocol: mysql
   type: ClusterIP
   selector:
@@ -51,7 +51,7 @@ spec:
             - --collation-server=utf8mb4_unicode_ci
           ports:
             - containerPort: 3306
-              name: http
+              name: tcp
               protocol: TCP
           volumeMounts:
             - name: mysql-volume
