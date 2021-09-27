@@ -6,23 +6,32 @@
 # @param REPLICAS   scale replicas count
 
 function scale(){
-  kubectl scale deployment $NAME --replicas=$REPLICAS -n $NAMESPACE
-}
-
-function get_resource(){
-  if [ -z "$NAME" ]; then
-    kubectl get $RESOURCE -n $NAMESPACE
+  if [ "$NAME" == "-1" ] || [ "$REPLICAS" == "-1" ]; then
+    echo "Parameter is invalid."
   else
-    kubectl get $RESOURCE $NAME -n $NAMESPACE
+    kubectl -n $NAMESPACE get deployment $NAME
+    kubectl -n $NAMESPACE scale deployment $NAME --replicas=$REPLICAS
+    kubectl -n $NAMESPACE get deployment $NAME
   fi
 }
 
 function get_istio(){
-  if [ -z "$NAME" ]; then
-    kubectl get vs,dr -n $NAMESPACE
+  if [ "$NAME" == "-1" ]; then
+    kubectl -n $NAMESPACE get vs,dr
   else
-    kubectl get vs, dr $NAME -n $NAMESPACE
+    kubectl -n $NAMESPACE get vs, dr $NAME
   fi
+}
+
+function check_coredns(){
+  printf "\n### kube-dns service\n"
+  kubectl -n kube-system describe svc kube-dns
+  printf "\n### kube-dns endpoints\n"
+  kubectl -n kube-system describe endpoints kube-dns
+  printf "\n### coredns deployment\n"
+  kubectl -n kube-system get deploy coredns
+  printf "\n### coredns pod\n"
+  kubectl -n kube-system get po -l k8s-app=kube-dns -o wide
 }
 
 if [ -z "$1" ]; then
