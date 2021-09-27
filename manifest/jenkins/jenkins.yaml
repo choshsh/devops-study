@@ -90,11 +90,7 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "6Gi"
-              cpu: "3000m"
-            requests:
-              memory: "1Gi"
-              cpu: "300m"
+              memory: "4Gi"
           ports:
             - name: http
               containerPort: 8080 # 서비스
@@ -106,7 +102,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /login
-              port: http
+              port: http-service
             initialDelaySeconds: 30
             failureThreshold: 5
             periodSeconds: 5

@@ -12,21 +12,19 @@ pipeline {
   parameters {
     string(name: 'FUNC', defaultValue: '', description: 'Bash script function name')
     string(name: 'NAMESPACE', defaultValue: '', description: 'Namespace')
-    string(name: 'RESOURCE', defaultValue: '', description: 'Resource Name (ex. deployment, svc)')
-    string(name: 'NAME', defaultValue: '', description: 'Name')
-    string(name: 'REPLICAS', defaultValue: '', description: 'Number to scale deployment')
+    string(name: 'NAME', defaultValue: '-1', description: 'Name (-1 replaces null)')
+    string(name: 'REPLICAS', defaultValue: '-1', description: 'Number to scale deployment (-1 replaces null)')
   }
   
   environment {
     FUNC = "${params.FUNC}"
     NAMESPACE = "${params.NAMESPACE}"
-    RESOURCE = "${params.RESOURCE}"
     NAME = "${params.NAME}"
     REPLICAS = "${params.REPLICAS}"
   }
 
   stages {
-    stage('Test') {
+    stage('Kubectl') {
       steps {
         script {
           container('kubectl') {
@@ -40,12 +38,16 @@ pipeline {
             }
             stage("Exec kubectl") {
               dir('script') {
+                echo "FUNC: $FUNC"
                 echo "NAMESPACE: $NAMESPACE"
-                echo "RESOURCE: $RESOURCE"
-                sh '''
-                  chmod +x kubectl_func.sh                  
-                  ./kubectl_func.sh $FUNC
-                '''
+                if( "${NAME}" != "-1" ){
+                  echo "NAME: $NAME"
+                }
+                if( "${REPLICAS}" != "-1" ){
+                  echo "REPLICAS: $REPLICAS"
+                }
+                sh 'chmod +x kubectl_func.sh'
+                sh './kubectl_func.sh $FUNC'
               }
             }
           }
