@@ -1,3 +1,5 @@
+loki.image.tag: 2.3.0
+
 grafana.enabled: false
 promtail.enabled: true
 
@@ -7,11 +9,11 @@ prometheus:
     scrape_interval: 15s
 
   alertmanager.persistentVolume:
-    enabled: false
+    enabled: true
     storageClass: nfs-client
 
   server.persistentVolume:
-    enabled: false
+    enabled: true
     storageClass: nfs-client
 
   # Prometheus 알람 규칙
