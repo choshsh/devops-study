@@ -40,10 +40,10 @@ pipeline {
               dir('script') {
                 echo "FUNC: $FUNC"
                 echo "NAMESPACE: $NAMESPACE"
-                if( ${env.NAME} != "-1" ){
+                if( "${NAME}" != "-1" ){
                   echo "NAME: $NAME"
                 }
-                if( ${env.REPLICAS} != "-1" ){
+                if( "${REPLICAS}" != "-1" ){
                   echo "REPLICAS: $REPLICAS"
                 }
                 sh '''
