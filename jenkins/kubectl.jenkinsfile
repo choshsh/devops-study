@@ -20,7 +20,7 @@ pipeline {
   environment {
     FUNC = "${params.FUNC}"
     NAMESPACE = "${params.NAMESPACE}"
-    RESOURCE = "${params.RESOURCE}"
+    RESOURCE = "${params.RESOURCE ? params.RESOURCE : ''}"
     NAME = "${params.NAME}"
     REPLICAS = "${params.REPLICAS}"
   }
