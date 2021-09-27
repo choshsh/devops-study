@@ -6,7 +6,7 @@
 # @param REPLICAS   scale replicas count
 
 function scale(){
-  if [ "$NAME" == "-1" ] || [ "$REPLICAS" == "-1" ] then
+  if [ "$NAME" == "-1" ] || [ "$REPLICAS" == "-1" ]; then
     echo "Parameter is invalid."
   else
     kubectl scale deployment $NAME --replicas=$REPLICAS -n $NAMESPACE
