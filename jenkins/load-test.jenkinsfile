@@ -4,11 +4,9 @@ pipeline {
       yamlFile 'jenkins/pod_template/locust.yaml'
     }
   }
-
   options {
     timeout(time: 5, unit: 'MINUTES')
   }
-
   parameters {
     string(name: 'host', defaultValue: "https://www.naver.com", description: "Load-Test Target host (ex. https://www.naver.com)")
     string(name: 'pyscript', defaultValue: 'script/locust.py', description: 'Python script path')
@@ -16,7 +14,6 @@ pipeline {
     string(name: 'max', defaultValue: '1', description: 'Maximum users to create')
     string(name: 'increase', defaultValue: '1', description: 'Number of users to start per second')
   }
-
   stages {
     stage('Load Test') {
       parallel {

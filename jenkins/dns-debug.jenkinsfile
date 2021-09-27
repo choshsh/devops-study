@@ -4,16 +4,13 @@ pipeline {
       yamlFile 'jenkins/pod_template/dnsutils.yaml'
     }
   }
-
   options {
     timeout(time: 5, unit: 'MINUTES')
   }
-
   parameters {
     string(name: 'SERVICE', defaultValue: '', description: 'Service to check (ex. sample.default.svc.cluster.local)')
     string(name: 'EXTERNAL_URL', defaultValue: 'google.com', description: 'External URL to check (ex. google.com)')
   }
-
   stages {
     stage('Debug CoreDNS') {
       parallel {
