@@ -38,7 +38,10 @@ pipeline {
             }
             stage("Exec kubectl") {
               dir('script') {
+                echo "FUNC: $FUNC"
                 echo "NAMESPACE: $NAMESPACE"
+                echo "NAME: $NAME"
+                echo "REPLICAS: $REPLICAS"
                 sh '''
                   chmod +x kubectl_func.sh                  
                   ./kubectl_func.sh $FUNC

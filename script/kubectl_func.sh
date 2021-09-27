@@ -9,15 +9,17 @@ function scale(){
   if [ "$NAME" == "-1" ] || [ "$REPLICAS" == "-1" ]; then
     echo "Parameter is invalid."
   else
-    kubectl scale deployment $NAME --replicas=$REPLICAS -n $NAMESPACE
+    kubectl -n $NAMESPACE get deployment $NAME
+    kubectl -n $NAMESPACE scale deployment $NAME --replicas=$REPLICAS
+    kubectl -n $NAMESPACE get deployment $NAME
   fi
 }
 
 function get_istio(){
   if [ "$NAME" == "-1" ]; then
-    kubectl get vs,dr -n $NAMESPACE
+    kubectl -n $NAMESPACE get vs,dr
   else
-    kubectl get vs, dr $NAME -n $NAMESPACE
+    kubectl -n $NAMESPACE get vs, dr $NAME
   fi
 }
 
