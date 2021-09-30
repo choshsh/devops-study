@@ -1,0 +1,4 @@
+Deploy application below:
+{{- range .Values.argocd }}
+  {{ .namespace }}/{{ .name }}
+{{- end }}

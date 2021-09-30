@@ -1,0 +1,28 @@
+{{- $global := .Values.global }}
+{{- range .Values.argocd }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+spec:
+  destination:
+    name: ""
+    namespace: {{ .namespace }}
+    server: {{ $global.server }}
+  source:
+    path: {{ .source.path }}
+    repoURL: {{ $global.repoURL }}
+    targetRevision: {{ $global.targetRevision }}
+    {{- if eq (.source.type | default "") "helm" }}
+    helm: 
+      valueFiles: {{ .source.helm.valueFiles }}
+    {{- else if eq (.source.type | default "") "dir" }}
+    directory:
+      recurse: true
+    {{- end }}
+  project: default
+  {{- with .syncPolicy }}
+  syncPolicy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
