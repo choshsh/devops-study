@@ -2,7 +2,6 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: loki-prometheus-server
-  namespace: default
 spec:
   hosts:
     - "loki-prometheus-server.choshsh.com"
@@ -23,7 +22,6 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: loki-prometheus-server
-  namespace: default
 spec:
   host: loki-prometheus-server
   trafficPolicy:
