@@ -30,7 +30,7 @@ spec:
   subsets:
     - name: jenkins-subset
       labels:
-        version: v2
+        version: v1
       trafficPolicy:
         loadBalancer:
           simple: ROUND_ROBIN
