@@ -70,7 +70,7 @@ argocd:
         selfHeal: true
   # loki-network
   - name: loki-network
-    namespace: default
+    namespace: loki
     source:
       path: manifest/loki-stack/network
       type: dir
