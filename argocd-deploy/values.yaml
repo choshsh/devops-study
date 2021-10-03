@@ -59,11 +59,11 @@ argocd:
   - name: itsm-was
     namespace: dev
     source:
-      path: manifest/itsm
+      path: manifest/was
       type: helm
       helm:
         valueFiles:
-          - dev-values.yaml
+          - values-dev.yaml
     syncPolicy:
       automated:
         prune: true
