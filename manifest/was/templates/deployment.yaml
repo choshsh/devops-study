@@ -54,8 +54,10 @@ spec:
             failureThreshold: 5
             periodSeconds: 5
             timeoutSeconds: 5
+          {{- with .Values.deploy.resources }}
           resources:
-            {{- toYaml .Values.deploy.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
           volumeMounts:
             - name: tz-config
               mountPath: /etc/localtime

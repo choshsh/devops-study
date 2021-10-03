@@ -19,12 +19,13 @@ deploy:
   probe:
     path: "/manage/health"
   resources:
-    limits:
-      cpu: 2000m
-      memory: 2Gi
-    requests:
-      cpu: 200m
-      memory: 256Mi
+    {}
+    # limits:
+    #   cpu: 2000m
+    #   memory: 2Gi
+    # requests:
+    #   cpu: 200m
+    #   memory: 256Mi
 
 service:
   type: ClusterIP
