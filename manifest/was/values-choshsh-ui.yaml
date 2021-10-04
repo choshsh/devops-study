@@ -1,0 +1,9 @@
+image:
+  name: "choshsh-ui"
+
+nameOverride: "choshsh-ui"
+fullnameOverride: "choshsh-ui"
+
+deploy:
+  args:
+    - --spring.profiles.active=dev

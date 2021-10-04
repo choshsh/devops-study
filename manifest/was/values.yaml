@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   hub: "choshsh"
-  name: "itsm"
+  name: "choshsh-ui"
   tag: "latest"
   pullPolicy: "IfNotPresent"
 
