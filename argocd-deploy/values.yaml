@@ -55,15 +55,15 @@ argocd:
       automated:
         prune: false
         selfHeal: false
-  # itsm-was
-  - name: itsm-was
+  # choshsh-ui
+  - name: choshsh-ui
     namespace: dev
     source:
       path: manifest/was
       type: helm
       helm:
         valueFiles:
-          - values-dev.yaml
+          - values-choshsh-ui.yaml
     syncPolicy:
       automated:
         prune: true
