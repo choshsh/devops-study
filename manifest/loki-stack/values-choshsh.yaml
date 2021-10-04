@@ -1,20 +1,32 @@
-loki.image.tag: 2.3.0
+loki:
+  image:
+    tag: 2.3.0
 
 grafana.enabled: false
 promtail.enabled: true
 
 prometheus:
   enabled: true
-  global:
-    scrape_interval: 15s
-
   alertmanager.persistentVolume:
     enabled: true
     storageClass: nfs-client
 
-  server.persistentVolume:
-    enabled: true
-    storageClass: nfs-client
+  server:
+    persistentVolume:
+      enabled: true
+      storageClass: nfs-client
+    global:
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      evaluation_interval: 15s
+
+  # custom scrape
+  extraScrapeConfigs: |
+    - job_name: "springboot-app"
+      metrics_path: /manage/prometheus
+      static_configs:
+        - targets:
+            - choshsh-ui.dev.svc.cluster.local:8080
 
   # Prometheus 알람 규칙
   serverFiles:
