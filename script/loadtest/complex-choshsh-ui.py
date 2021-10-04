@@ -27,4 +27,4 @@ class ComplexItsmUser(HttpUser):
     def on_start(self):
         self.client.verify = False
         res = self.client.post(
-            "/login", json={"userId": "viewer", "userPw": "viewer"})
+            "/api/user/login", json={"userId": "viewer", "userPw": "viewer"})
