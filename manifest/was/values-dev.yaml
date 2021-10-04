@@ -1,5 +1,0 @@
-image:
-  name: "itsm"
-
-nameOverride: "itsm-server"
-fullnameOverride: "itsm-server"
