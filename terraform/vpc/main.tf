@@ -15,7 +15,8 @@ data "aws_availability_zones" "available-zones" {
 
 # VPC
 resource "aws_vpc" "my-vpc" {
-  cidr_block = var.cidr_block
+  cidr_block           = var.cidr_block
+  enable_dns_hostnames = true
 
   tags = merge(local.tags, {
     Name = "${var.workspace}-vpc"
@@ -36,8 +37,7 @@ resource "aws_subnet" "public" {
   availability_zone = data.aws_availability_zones.available-zones.names[count.index]
 
   tags = merge(local.tags, {
-    Name                     = "${var.workspace}-public-${count.index}"
-    "kubernetes.io/role/elb" = 1
+    Name = "${var.workspace}-public-${count.index}"
   })
   depends_on = [aws_subnet.private]
 }
