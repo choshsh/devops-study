@@ -7,22 +7,22 @@ def main(output, yamlFile, keyPath, value):
     # 읽기
     with open(yamlFile) as r:
         data = Nob(yaml.load(r, Loader=yaml.FullLoader))
-        print(f"Input\t==> {yamlFile}")
+        print("Input\t==> {}".format(yamlFile))
 
     # yaml file 변경
     data[keyPath] = value
-    print(f"Edit\t==> key: {keyPath}, value: {value}")
+    print('Edit\t==> key: {}, value: {}'.format(keyPath, value))
 
     # 쓰기
     with open(output, 'w') as w:
         yaml.dump(data[:], w)
-        print(f"Output\t==> {output}")
+        print("Output\t==> {}".format(output))
 
 
 # cli에서 실행 시에만 변수 사용
 # py 파일 파라미터를 제외하고 index 1부터 main 함수에 전달
 #
-# @param argv[0] Input py 파일명이라서 버림
+# @param argv[0] Input py 파일
 # @param argv[1] Output yaml 파일
 # @param argv[2] 변경할 yaml 파일
 # @param argv[3] 변경할 yaml key path
