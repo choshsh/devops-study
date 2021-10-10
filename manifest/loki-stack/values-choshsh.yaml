@@ -20,6 +20,28 @@ prometheus:
       scrape_timeout: 10s
       evaluation_interval: 15s
 
+  # custom scrape
+  # probe metric 수집을 위한 sd 설정
+  extraScrapeConfigs: |
+    - job_name: "kubernetes-nodes-probes"
+      metrics_path: /metrics/probes
+      scheme: https
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecure_skip_verify: true
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      kubernetes_sd_configs:
+        - role: node
+      relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/$1/proxy/metrics/probes
+
   # Prometheus 알람 규칙
   serverFiles:
     alerting_rules.yml:
