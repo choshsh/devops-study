@@ -7,3 +7,9 @@ fullnameOverride: "choshsh-ui"
 deploy:
   args:
     - --spring.profiles.active=dev
+  probe:
+    path: /manage/health
+
+prometheus:
+  enabled: true
+  path: "/manage/prometheus"

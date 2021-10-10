@@ -16,8 +16,9 @@ deploy:
     version: "v2"
   args:
     - --spring.profiles.active=prod
+  # readnissProbe 설정 (path: httpGet 경로)
   probe:
-    path: "/manage/health"
+    path: ""
   resources:
     {}
     # limits:
@@ -34,6 +35,12 @@ service:
     name: http
   labels: []
   externalIPs: []
+  annotations: {}
+
+# prometheus JVM 모니터링 설정
+prometheus:
+  enabled: false
+  path: ""
 
 autoscaling:
   enabled: false
