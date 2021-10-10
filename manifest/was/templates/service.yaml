@@ -4,6 +4,16 @@ metadata:
   name: {{ include "was.fullname" . }}
   labels:
     {{- include "was.labels" . | nindent 4 }}
+  annotations:
+  {{- if .Values.prometheus.enabled }}
+    prometheus.io/path: {{ .Values.prometheus.path | quote }}
+    prometheus.io/port: {{ .Values.deploy.containerPort | quote }}
+    prometheus.io/schema: "http"
+    prometheus.io/scrape: "true"
+  {{- end}}
+  {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

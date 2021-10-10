@@ -20,14 +20,6 @@ prometheus:
       scrape_timeout: 10s
       evaluation_interval: 15s
 
-  # custom scrape
-  extraScrapeConfigs: |
-    - job_name: "springboot-app"
-      metrics_path: /manage/prometheus
-      static_configs:
-        - targets:
-            - choshsh-ui.dev.svc.cluster.local:8080
-
   # Prometheus 알람 규칙
   serverFiles:
     alerting_rules.yml:
