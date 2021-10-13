@@ -1,7 +1,7 @@
 locals {
-  subnet_count_pair = 2    # (public, priate) subnet 페어의 개수
-  ports_in          = [22] # inbound 허용 포트
-  ports_out         = [0]  # outbound 허용 포트 (전체)
+  subnet_count_pair = 2             # (public, priate) subnet 페어의 개수
+  ports_in          = [22, 80, 443] # inbound 허용 포트
+  ports_out         = [0]           # outbound 허용 포트 (전체)
   cidr_block_split  = split(".", var.cidr_block)
   tags = {
     Type = "network"
