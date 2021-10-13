@@ -7,7 +7,7 @@ metadata:
 spec:
   destination:
     name: ""
-    namespace: {{ .namespace }}
+    namespace: {{ .namespace | default "default" }}
     server: {{ $global.server }}
   source:
     path: {{ .source.path }}
