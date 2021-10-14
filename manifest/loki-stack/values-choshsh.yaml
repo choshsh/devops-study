@@ -49,19 +49,70 @@ prometheus:
   serverFiles:
     alerting_rules.yml:
       groups:
-        - name: Deployment
+        - name: Node
           rules:
-            - alert: Deployment Down
-              expr: kube_deployment_status_replicas{namespace="dev"} < 1
+            # Node 다운
+            - alert: Node Down
+              expr: up{job="kubernetes-nodes"} < 1
               for: 10s
               labels:
                 severity: Critical
+                summary: "Node Down"
+                description: "{{ $labels.deployment }} 10초 동안 {{ $labels.kubernetes_io_hostname }} 노드 Down 상태"
+              annotations:
+                hostname: "{{ $labels.kubernetes_io_hostname }}"
+                dashboard: "http://grafana.choshsh.com/d/4b545447f/kubernetes-all-in-one-cluster-monitoring-kr?orgId=1&var-node={{ $labels.kubernetes_io_hostname }}"
+            # Node CPU 높음
+            - alert: Node high CPU load
+              expr: sum by (instance, kubernetes_node) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[5m])) * 100 > 90
+              for: 5m
+              labels:
+                severity: Warning
+                summary: "Node CPU high"
+                description: "{{ $labels.deployment }} 5분 동안 {{ $labels.kubernetes_node }} 노드 CPU 사용량 90% 초과"
+              annotations:
+                hostname: "{{ $labels.kubernetes_node }}"
+                instance: "{{ $labels.instance }}"
+                dashboard: "http://grafana.choshsh.com/d/4b545447f/kubernetes-all-in-one-cluster-monitoring-kr?orgId=1&var-node={{ $labels.kubernetes_node }}"
+        - name: Deploy
+          rules:
+            # Deployment 다운
+            - alert: Deployment Down
+              expr: kube_deployment_status_replicas_available < 1
+              for: 10s
+              labels:
+                severity: Critical
+                summary: "Deployment Down"
+                description: "10초 동안 available pod {{ $value }}개"
               annotations:
                 namespace: "{{ $labels.namespace }}"
                 deployment: "{{ $labels.deployment }}"
-                summary: "{{ $labels.deployment }} down"
-                logging: "http://loki-grafana.choshsh.com/d/dmO1A1Snz/logging-dashboard-via-loki?orgId=1&refresh=10s&from=now-5m&to=now"
-                description: "{{ $labels.deployment }} 10초 동안 replicas 개수: {{ $value }}"
+                dashboard: "http://grafana.choshsh.com/d/XeS0yvN7z/kube-all-resource-log?orgId=1&refresh=10s&from=now-10m&to=now"
+            # Statefulset 다운
+            - alert: Statefulset Down
+              expr: kube_statefulset_status_replicas_current < 1
+              for: 10s
+              labels:
+                severity: Critical
+                summary: "Deployment Down"
+                description: "10초 동안 available pod {{ $value }}개"
+              annotations:
+                namespace: "{{ $labels.namespace }}"
+                deployment: "{{ $labels.deployment }}"
+                dashboard: "http://grafana.choshsh.com/d/XeS0yvN7z/kube-all-resource-log?orgId=1&refresh=10s&from=now-10m&to=now"
+        - name: JVM
+          rules:
+            # JVM HEAP 메모리 높음
+            - alert: Heap memory high
+              expr: sum by (kubernetes_name) (jvm_memory_used_bytes{area="heap"}) / sum by (kubernetes_name) (jvm_memory_max_bytes{area="heap"}) * 100 > 80
+              for: 1m
+              labels:
+                severity: Warning
+                summary: "Heap memory high"
+                description: "1분 동안 heap 메모리 사용률 80% 초과 "
+              annotations:
+                service: "{{ $labels.kubernetes_name }}"
+                dashboard: "http://grafana.choshsh.com/d/ku9BHmOnz/jvm-micrometer?orgId=1&var-application={{ $labels.kubernetes_name }}"
 
   # Alertmanager 알람 설정
   alertmanagerFiles:
@@ -79,18 +130,19 @@ prometheus:
                 [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
               text: >-
                 {{ range .Alerts -}}
-                *Alert:* {{ .Annotations.summary }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+                *Alert:* {{ .Labels.summary }} - `{{ .Labels.severity }}`
 
-                *Description:* {{ .Annotations.description }}
+                *Description:* {{ .Labels.description }}
 
                 *Details:*
-                  • *namespace:* `{{ .Annotations.namespace }}`
-                  • *deployment:* `{{ .Annotations.deployment }}`
-                  • *logging:* {{ .Annotations.logging }}
+                  {{ range $key, $value := .Annotations -}}
+                  • *{{ $key }}:* {{ $value }}
+                  {{ end }}
                 {{ end }}
 
       route:
-        group_wait: 15s
-        group_interval: 30s
         receiver: slack-default
+        group_by: [alertname]
+        group_wait: 10s
+        group_interval: 10s
         repeat_interval: 3h
