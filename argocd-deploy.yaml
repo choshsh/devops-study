@@ -10,12 +10,13 @@ spec:
   source:
     path: argocd-deploy
     repoURL: "https://github.com/choshsh/devops-study.git"
-    targetRevision: dev
+    targetRevision: HEAD
     helm:
       valueFiles:
         - values.yaml
+        - values-prod.yaml
   project: default
   syncPolicy:
     automated:
-      prune: false
-      selfHeal: false
+      prune: true
+      selfHeal: true

@@ -13,7 +13,7 @@ output "eks_name" {
   value       = var.eks_enable > 0 ? module.eks[0].eks_cluster_name : null
 }
 
-output "bestion_endpoint" {
-  description = "Bestion Endpoint"
-  value       = var.eks_enable < 1 ? module.ec2-k8s[0].bestion_endpoint : null
-}
+# output "bestion_endpoint" {
+#   description = "Bestion Endpoint"
+#   value       = var.eks_enable < 1 ? module.ec2-k8s[0].bestion_endpoint : null
+# }
