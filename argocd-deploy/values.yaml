@@ -13,10 +13,10 @@ global:
 
 argocd:
   # istio-config
-  - name: istio-config
+  - name: istio-default
     namespace: default
     source:
-      path: manifest/istio-config
+      path: manifest/istio-default
       type: dir
       directory: true
     syncPolicy:
@@ -49,7 +49,7 @@ argocd:
   - name: choshsh-db
     namespace: default
     source:
-      path: manifest/itsm
+      path: manifest/mysql
       type: dir
     syncPolicy:
       automated:
@@ -74,6 +74,19 @@ argocd:
     source:
       path: manifest/loki-stack/network
       type: dir
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: false
+  # Grafana
+  - name: grafana
+    namespace: monitoring
+    source:
+      path: manifest/grafana
+      type: helm
+      helm:
+        valueFiles:
+          - values-choshsh.yaml
     syncPolicy:
       automated:
         prune: false

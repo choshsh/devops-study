@@ -7,14 +7,17 @@ promtail.enabled: true
 
 prometheus:
   enabled: true
-  alertmanager.persistentVolume:
-    enabled: true
-    storageClass: nfs-client
+  alertmanager:
+    persistentVolume:
+      enabled: true
+      storageClass: nfs-client
+      accessModes: ["ReadWriteMany"]
 
   server:
     persistentVolume:
       enabled: true
       storageClass: nfs-client
+      accessModes: ["ReadWriteMany"]
     global:
       scrape_interval: 15s
       scrape_timeout: 10s
