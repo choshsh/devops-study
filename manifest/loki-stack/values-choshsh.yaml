@@ -94,11 +94,11 @@ prometheus:
               for: 10s
               labels:
                 severity: Critical
-                summary: "Deployment Down"
+                summary: "Statefulset Down"
                 description: "10초 동안 available pod {{ $value }}개"
               annotations:
                 namespace: "{{ $labels.namespace }}"
-                deployment: "{{ $labels.deployment }}"
+                statefulset: "{{ $labels.statefulset }}"
                 dashboard: "http://grafana.choshsh.com/d/XeS0yvN7z/kube-all-resource-log?orgId=1&refresh=10s&from=now-10m&to=now"
         - name: JVM
           rules:
