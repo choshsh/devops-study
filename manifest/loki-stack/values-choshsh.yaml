@@ -64,12 +64,12 @@ prometheus:
                 dashboard: "http://grafana.choshsh.com/d/4b545447f/kubernetes-all-in-one-cluster-monitoring-kr?orgId=1&var-node={{ $labels.kubernetes_io_hostname }}"
             # Node CPU 높음
             - alert: Node high CPU load
-              expr: sum by (instance, kubernetes_node) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[5m])) * 100 > 90
+              expr: (1 - avg by (instance,kubernetes_node) (irate(node_cpu_seconds_total{mode="idle"}[10m]))) * 100 > 80
               for: 5m
               labels:
                 severity: Warning
                 summary: "Node CPU high"
-                description: "{{ $labels.deployment }} 5분 동안 {{ $labels.kubernetes_node }} 노드 CPU 사용량 90% 초과"
+                description: "{{ $labels.deployment }} 5분 동안 {{ $labels.kubernetes_node }} 노드 CPU 사용량 80% 초과"
               annotations:
                 hostname: "{{ $labels.kubernetes_node }}"
                 instance: "{{ $labels.instance }}"
