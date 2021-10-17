@@ -1,3 +1,6 @@
 nfs:
   server: master
   path: /data/dynamic
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
