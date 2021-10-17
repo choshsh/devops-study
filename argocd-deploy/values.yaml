@@ -28,10 +28,6 @@ argocd:
     namespace: jenkins
     source:
       path: manifest/jenkins
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
   # nfs-subdir-external-provisioner
   - name: nfs-subdir-external-provisioner
     namespace: default
@@ -43,18 +39,14 @@ argocd:
           - values-choshsh.yaml
     syncPolicy:
       automated:
-        prune: false
-        selfHeal: false
+        prune: true
+        selfHeal: true
   # itsm-db
   - name: choshsh-db
     namespace: default
     source:
       path: manifest/mysql
       type: dir
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
   # choshsh-ui
   - name: choshsh-ui
     namespace: default
@@ -64,10 +56,6 @@ argocd:
       helm:
         valueFiles:
           - values-choshsh-ui.yaml
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
   # loki-network
   - name: loki-network
     namespace: monitoring
@@ -76,8 +64,8 @@ argocd:
       type: dir
     syncPolicy:
       automated:
-        prune: false
-        selfHeal: false
+        prune: true
+        selfHeal: true
   # Grafana
   - name: grafana
     namespace: monitoring
@@ -87,7 +75,3 @@ argocd:
       helm:
         valueFiles:
           - values-choshsh.yaml
-    syncPolicy:
-      automated:
-        prune: false
-        selfHeal: false
