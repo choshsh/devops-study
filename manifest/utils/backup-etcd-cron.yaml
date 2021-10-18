@@ -18,6 +18,7 @@ metadata:
   name: etcd-backup-cron
   namespace: kube-system
 spec:
+  schedule: "*/30 * * * *"
   concurrencyPolicy: Allow
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -29,7 +30,7 @@ spec:
                 - -c
                 - etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt
                   --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key
-                  snapshot save /backup/etcd-snapshot-$(date +%Y%m%d_%H%M%S_%Z).db
+                  snapshot save /backup/etcd-snapshot.db
               command:
                 - /bin/sh
               env:
@@ -79,6 +80,5 @@ spec:
             - name: backup
               persistentVolumeClaim:
                 claimName: etcd-backup
-  schedule: "0 7 * * *"
   successfulJobsHistoryLimit: 3
   suspend: false
