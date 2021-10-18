@@ -53,7 +53,7 @@ pipeline {
 
   post{
     always {
-      slackSendCustom
+      slackSendCustom()
     }
   }
 }
