@@ -1,3 +1,5 @@
+#!groovy
+
 pipeline {
   agent {
     kubernetes {
@@ -15,7 +17,7 @@ pipeline {
     string(name: 'NAME', defaultValue: '-1', description: 'Name (-1 replaces null)')
     string(name: 'REPLICAS', defaultValue: '-1', description: 'Number to scale deployment (-1 replaces null)')
   }
-  
+
   environment {
     FUNC = "${params.FUNC}"
     NAMESPACE = "${params.NAMESPACE}"
@@ -29,10 +31,10 @@ pipeline {
         script {
           container('kubectl') {
             stage("Validate Parameter") {
-              if( !params.FUNC || !params.NAMESPACE ){
+              if (!params.FUNC || !params.NAMESPACE) {
                 echo 'Parameter is invalid'
                 return
-              }else{
+              } else {
                 echo 'Parameter is valid'
               }
             }
@@ -40,10 +42,10 @@ pipeline {
               dir('script') {
                 echo "FUNC: $FUNC"
                 echo "NAMESPACE: $NAMESPACE"
-                if( "${NAME}" != "-1" ){
+                if ("${NAME}" != "-1") {
                   echo "NAME: $NAME"
                 }
-                if( "${REPLICAS}" != "-1" ){
+                if ("${REPLICAS}" != "-1") {
                   echo "REPLICAS: $REPLICAS"
                 }
                 sh 'chmod +x kubectl_func.sh'

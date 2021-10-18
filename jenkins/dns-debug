@@ -1,3 +1,5 @@
+#!groovy
+
 @Library('choshsh') _
 
 pipeline {
@@ -30,10 +32,10 @@ pipeline {
                 // Check External DNS
                 sh "nslookup ${params.EXTERNAL_URL}"
                 // Check kubernetes service in Pod
-                if( params.SERVICE ) {
+                if (params.SERVICE) {
                   sh "nslookup ${params.SERVICE}"
                 }
-                echo 'Check for errors in CoreDNS pod. http://loki-grafana.choshsh.com/d/dmO1A1Snz/logging-dashboard-via-loki?orgId=1&var-namespace=kube-system&var-pod_name=All&var-container_name=All&var-searchable_pattern=error&from=now-30m&to=now'
+                echo 'Check for errors in CoreDNS pod. http://grafana.choshsh.com/d/XeS0yvN7z/kube-all-resource-log?orgId=1&var-namespace=kube-system&var-pod_name=All&var-container_name=coredns&var-searchable_pattern='
               }
             }
           }
@@ -42,8 +44,8 @@ pipeline {
         stage('Check k8s resources') {
           steps {
             build job: 'kubectl', parameters: [
-              string(name: 'FUNC', value: 'check_coredns'),
-              string(name: 'NAMESPACE', value: "kube-system")
+                    string(name: 'FUNC', value: 'check_coredns'),
+                    string(name: 'NAMESPACE', value: "kube-system")
             ]
           }
         }
@@ -51,7 +53,7 @@ pipeline {
     }
   }
 
-  post{
+  post {
     always {
       slackSendCustom()
     }
