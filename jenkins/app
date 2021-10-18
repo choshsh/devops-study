@@ -1,3 +1,5 @@
+#!groovy
+
 pipeline {
   agent {
     kubernetes {
@@ -9,7 +11,7 @@ pipeline {
   options {
     timeout(time: 10, unit: 'MINUTES')
   }
-  
+
   stages {
     stage('Test') {
       parallel {
@@ -18,17 +20,17 @@ pipeline {
             script {
               container('amazoncorretto-16') {
                 dir('workspace/itsm') {
-                  stage('Code'){
-                      git 'https://github.com/choshsh/itsmv.git'
+                  stage('Code') {
+                    git 'https://github.com/choshsh/itsmv.git'
                   }
-                  stage('Setup'){
+                  stage('Setup') {
                     sh 'chmod +x gradlew'
                     // gradle task 실행 시 
                     // '... [n] stopped Daemon could not be reused ...' 
                     // 로그가 출력되는게 보기 싫어서 daemon 디렉토리 삭제
                     sh 'rm -rf .gradle-caches/daemon'
                   }
-                  stage('Test'){
+                  stage('Test') {
                     // gradle cache 디렉토리를 .gradle-caches로 설정
                     sh './gradlew -g .gradle-caches clean'
                   }
@@ -42,10 +44,10 @@ pipeline {
             script {
               container('ubuntu') {
                 dir('workspace/ubuntu') {
-                  stage('Init'){
+                  stage('Init') {
                     sh 'hostname'
                   }
-                  stage('Setup'){
+                  stage('Setup') {
                     sh 'uname -a'
                   }
                 }

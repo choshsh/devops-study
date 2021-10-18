@@ -1,3 +1,7 @@
+#!groovy
+
+@Library('choshsh') _
+
 pipeline {
   agent {
     kubernetes {
@@ -6,7 +10,7 @@ pipeline {
   }
 
   options {
-      timeout(time: 10, unit: 'MINUTES')
+    timeout(time: 10, unit: 'MINUTES')
   }
 
   parameters {
@@ -41,7 +45,7 @@ pipeline {
           sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /metadata/name kaniko-${env.BUILD_NUMBER}"
           // edit label
           sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/metadata/labels/app kaniko-${env.BUILD_NUMBER}"
-          
+
           sh "cat ${env.pyOutput}"
         }
       }
@@ -62,16 +66,9 @@ pipeline {
       }
     }
   }
-  post{
+  post {
     always {
-      slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
-Job        : ${env.JOB_NAME} #${env.BUILD_NUMBER}
-Status     : ${currentBuild.currentResult}
-URL        : ${env.BUILD_URL}
-Image      : ${params.image}
-Tag        : ${params.tag}
-DockerFile : ${env.dockerFileUrl}
-      """)
+      slackSendCustom()
     }
   }
 }
