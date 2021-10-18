@@ -15,16 +15,16 @@
 
 클러스터 내부/외부 DNS 서비스가 정상인지 점검합니다.
 
-- `Debug CoreDNS` 스테이지는 `[kubectl](https://github.com/choshsh/devops-study/blob/master/jenkins/kubectl)` pipeline 트리거
+- `Debug CoreDNS` 스테이지는 [kubectl pipeline](https://github.com/choshsh/devops-study/blob/master/jenkins/kubectl) 트리거
 
 ### [image-build](https://github.com/choshsh/devops-study/blob/master/jenkins/image-build)
 
 [kaniko](https://github.com/GoogleContainerTools/kaniko#kaniko---build-images-in-kubernetes)를 사용하여 Dockerfile에서 이미지를 빌드하고 push합니다.
 
-- `[kaniko` manifest 필요](https://github.com/choshsh/devops-study/blob/master/manifest/utils/kaniko.yaml)
+- [kaniko manifest](https://github.com/choshsh/devops-study/blob/master/manifest/utils/kaniko.yaml) 필요
 - Dockerfile 필요
-- [pod manifest를 배포할 kube-context 필요](https://choshsh.notion.site/Service-Account-170be563911d47ba8f37f5ad2debc4dd#9bc8a75720ab490381652de3ab8161ca)
-- [docker registry secret 필요](https://choshsh.notion.site/kaniko-8eb722871ad14abba6832974b0cb0118#deed96aa53e24ade92914146b29fdaf7)
+- [pod manifest를 배포할 kube-context](https://www.notion.so/Service-Account-170be563911d47ba8f37f5ad2debc4dd) 필요
+- [docker registry secret](https://www.notion.so/kaniko-8eb722871ad14abba6832974b0cb0118) 필요
 
 ### [kubectl](https://github.com/choshsh/devops-study/blob/master/jenkins/kubectl)
 
@@ -32,7 +32,7 @@ bash 스크립트로 작성된 [간단한 kubectl 명령어](https://github.com/
 
 ## 기타
 
-### python 이미지로 `[yaml_editor.py](https://github.com/choshsh/devops-study/blob/master/script/yaml_editor.py)` 스크립트 실행
+### python 이미지로 [yaml_editor.py](https://github.com/choshsh/devops-study/blob/master/script/yaml_editor.py) 스크립트 실행
 
 pipeline에서 yaml 파일을 동적으로 수정하기 위해 간단한 파이썬 함수를 구현했습니다. kubectl, build-image pipeline에서 기본 yaml 파일을 기반으로 값만 변경해서 사용하기 때문입니다.
 
