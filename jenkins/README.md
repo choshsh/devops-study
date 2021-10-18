@@ -21,14 +21,14 @@
 
 [kaniko](https://github.com/GoogleContainerTools/kaniko#kaniko---build-images-in-kubernetes)를 사용하여 Dockerfile에서 이미지를 빌드하고 push합니다.
 
-- [kaniko manifest](https://github.com/choshsh/devops-study/blob/master/manifest/utils/kaniko.yaml) 필요
+- kaniko manifest 필요 [(링크)](https://github.com/choshsh/devops-study/blob/master/manifest/utils/kaniko.yaml)
 - Dockerfile 필요
-- [pod manifest를 배포할 kube-context](https://www.notion.so/Service-Account-170be563911d47ba8f37f5ad2debc4dd) 필요
-- [docker registry secret](https://www.notion.so/kaniko-8eb722871ad14abba6832974b0cb0118) 필요
+- pod manifest를 배포할 kube-context 필요 ([만들기](https://choshsh.notion.site/Service-Account-170be563911d47ba8f37f5ad2debc4dd#9bc8a75720ab490381652de3ab8161ca)
+- docker registry secret 필요 [(만들기)](https://choshsh.notion.site/kaniko-8eb722871ad14abba6832974b0cb0118#deed96aa53e24ade92914146b29fdaf7)
 
 ### [kubectl](https://github.com/choshsh/devops-study/blob/master/jenkins/kubectl)
 
-bash 스크립트로 작성된 [간단한 kubectl 명령어](https://github.com/choshsh/devops-study/blob/master/script/kubectl_func.sh)를 실행합니다.
+bash 스크립트로 작성된 간단한 kubectl 명령어를 실행합니다. [(링크)](https://github.com/choshsh/devops-study/blob/master/script/kubectl_func.sh)
 
 ## 기타
 
