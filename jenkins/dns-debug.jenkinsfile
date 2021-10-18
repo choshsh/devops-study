@@ -1,16 +1,21 @@
+@Library('choshsh') _
+
 pipeline {
   agent {
     kubernetes {
       yamlFile 'jenkins/pod_template/dnsutils.yaml'
     }
   }
+
   options {
     timeout(time: 5, unit: 'MINUTES')
   }
+
   parameters {
     string(name: 'SERVICE', defaultValue: '', description: 'Service to check (ex. sample.default.svc.cluster.local)')
     string(name: 'EXTERNAL_URL', defaultValue: 'google.com', description: 'External URL to check (ex. google.com)')
   }
+
   stages {
     stage('Debug CoreDNS') {
       parallel {
@@ -45,14 +50,10 @@ pipeline {
       }
     }
   }
+
   post{
     always {
-      slackSend(color: "${currentBuild.currentResult  == 'SUCCESS' ? 'good' : 'danger'}", message: """
-Job    : ${env.JOB_NAME} #${env.BUILD_NUMBER}
-Status : ${currentBuild.currentResult}
-URL    : ${env.BUILD_URL}
-Params : ${params} 
-      """)
+      slackSendCustom
     }
   }
 }
