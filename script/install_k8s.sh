@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# Kubernetes version
+KUBE_VERSION="1.22.2"
+
 # Install kubernetes on linux dist from Red Hat
 # Use containerd as CRI
 function pre_config(){
@@ -73,8 +76,12 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cl
 exclude=kube*
 EOF
 
-    sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes && \
-        sudo systemctl daemon-reload && \
+    sudo yum install -y --disableexcludes=kubernetes \
+        kubelet-$KUBE_VERSION \
+        kubeadm-$KUBE_VERSION \
+        kubectl-$KUBE_VERSION
+
+    sudo systemctl daemon-reload && \
 	    sudo systemctl enable --now kubelet
 }
 
