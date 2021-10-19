@@ -12,6 +12,7 @@ function pre_config(){
         sudo swapoff -a && \
             sudo echo 0 > /proc/sys/vm/swappines && \
             sudo sed -e '/swap/ s/^#*/#/' -i /etc/fstab;
+        sudo systemctl disable --now firewalld
     fi
 
     sudo setenforce 0 \

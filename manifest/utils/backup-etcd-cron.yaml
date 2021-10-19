@@ -17,12 +17,20 @@ kind: CronJob
 metadata:
   name: etcd-backup-cron
   namespace: kube-system
+  labels:
+    app: etcd-backup
 spec:
   schedule: "*/30 * * * *"
   concurrencyPolicy: Allow
   failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  suspend: false
   jobTemplate:
+    metadata:
+      labels:
+        app: etcd-backup
     spec:
+      ttlSecondsAfterFinished: 300
       template:
         spec:
           containers:
@@ -80,5 +88,3 @@ spec:
             - name: backup
               persistentVolumeClaim:
                 claimName: etcd-backup
-  successfulJobsHistoryLimit: 3
-  suspend: false

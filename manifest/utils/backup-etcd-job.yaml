@@ -17,7 +17,10 @@ kind: Job
 metadata:
   name: etcd-backup
   namespace: kube-system
+  labels:
+    app: etcd-backup
 spec:
+  ttlSecondsAfterFinished: 300
   template:
     spec:
       containers:
