@@ -22,12 +22,12 @@ for (project in projects) {
             extensions {}
           }
         }
-        scriptPath(scriptPath + '/' + project.scriptName)
+        scriptPath((scriptPath + '/' + project.scriptName).toString())
         lightweight()
       }
     }
     environmentVariables {
-      envs(POD_TEMPLATE: podTemplatePath + '/' + project.podTemplateName)
+      envs(POD_TEMPLATE: (podTemplatePath + '/' + project.podTemplateName).toString())
     }
   }
 }
