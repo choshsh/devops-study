@@ -1,6 +1,6 @@
 #!groovy
-pipelinePath = 'jenkins/pipelines'
-podTemplatePath = 'jenkins/podTemplates'
+def pipelinePath = 'jenkins/pipelines'
+def podTemplatePath = 'jenkins/podTemplates'
 def projects = [
         [
                 description    : '클러스터 내부 DNS 네트워크 검증',
