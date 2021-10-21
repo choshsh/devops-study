@@ -5,8 +5,14 @@ def projects = [
         [
                 description    : '클러스터 내부 DNS 네트워크 검증',
                 name           : 'CoreDNS-Debug',
-                pipelineName     : 'corednsDebug',
+                pipelineName   : 'corednsDebug',
                 podTemplateName: 'dnsutils.yaml'
+        ],
+        [
+                description    : 'bash 스크립트를 통한 kubectl',
+                name           : 'kubectl-script',
+                pipelineName   : 'kubectl',
+                podTemplateName: 'kubectl.yaml'
         ]
 ]
 

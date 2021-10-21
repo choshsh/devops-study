@@ -1,0 +1,53 @@
+#!groovy
+
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile POD_TEMPLATE
+    }
+  }
+
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
+
+  parameters {
+    string(name: 'FUNC', defaultValue: '', description: 'Bash script function name')
+    string(name: 'NAMESPACE', defaultValue: '', description: 'Namespace')
+    string(name: 'NAME', defaultValue: '-1', description: 'Name (-1 replaces null)')
+    string(name: 'REPLICAS', defaultValue: '-1', description: 'Number to scale deployment (-1 replaces null)')
+  }
+
+  stages {
+    stage('Kubectl') {
+      steps {
+        script {
+          container('kubectl') {
+            stage("Validate Parameter") {
+              if (!params.FUNC || !params.NAMESPACE) {
+                echo 'Parameter is invalid'
+                return
+              } else {
+                echo 'Parameter is valid'
+              }
+            }
+            stage("Exec kubectl") {
+              dir('script') {
+                echo "FUNC: ${params.FUNC}"
+                echo "NAMESPACE: ${params.NAMESPACE}"
+                if (params.NAME != "-1") {
+                  echo "NAME: ${params.NAME}"
+                }
+                if (params.REPLICAS != "-1") {
+                  echo "REPLICAS: ${params.REPLICAS}"
+                }
+                sh 'chmod +x kubectl_func.sh'
+                sh './kubectl_func.sh $FUNC'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
