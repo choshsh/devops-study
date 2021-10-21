@@ -1,0 +1,33 @@
+#!groovy
+def scriptPath = 'jenkins/pipelines'
+def podTemplatePath = 'jenkins/podTemplates'
+def projects = [
+        [
+                description    : '클러스터 내부 DNS 네트워크 검증',
+                name           : 'CoreDNS-Debug',
+                scriptName     : 'corednsDebug',
+                podTemplateName: 'dnsutils.yaml'
+        ]
+]
+
+for (project in projects) {
+  pipelineJob(project.name) {
+    description(project.description)
+    definition {
+      cpsScm {
+        scm {
+          git {
+            remote { url('https://github.com/choshsh/devops-study.git') }
+            branch('feature-jenkins-dsl')
+            extensions {}
+          }
+        }
+        scriptPath(scriptPath + '/' + project.scriptName)
+        lightweight()
+      }
+    }
+    environmentVariables {
+      envs(POD_TEMPLATE: podTemplatePath + '/' + project.podTemplateName)
+    }
+  }
+}
