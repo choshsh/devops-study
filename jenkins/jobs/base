@@ -1,11 +1,11 @@
 #!groovy
-def scriptPath = 'jenkins/pipelines'
-def podTemplatePath = 'jenkins/podTemplates'
+pipelinePath = 'jenkins/pipelines'
+podTemplatePath = 'jenkins/podTemplates'
 def projects = [
         [
                 description    : '클러스터 내부 DNS 네트워크 검증',
                 name           : 'CoreDNS-Debug',
-                scriptName     : 'corednsDebug',
+                pipelineName     : 'corednsDebug',
                 podTemplateName: 'dnsutils.yaml'
         ]
 ]
@@ -22,12 +22,12 @@ for (project in projects) {
             extensions {}
           }
         }
-        scriptPath((scriptPath + '/' + project.scriptName).toString())
+        scriptPath(pipelinePath + '/' + project.pipelineName)
         lightweight()
       }
     }
     environmentVariables {
-      envs(POD_TEMPLATE: (podTemplatePath + '/' + project.podTemplateName).toString())
+      envs(POD_TEMPLATE: podTemplatePath + '/' + project.podTemplateName)
     }
   }
 }
