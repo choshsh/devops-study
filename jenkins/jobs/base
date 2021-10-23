@@ -19,6 +19,12 @@ def projects = [
                 name           : 'image-build',
                 pipelineName   : 'imageBuild',
                 podTemplateName: 'imageBuild.yaml'
+        ],
+        [
+                description    : '부하 테스트',
+                name           : 'load-test',
+                pipelineName   : 'loadTest',
+                podTemplateName: 'loadTest.yaml'
         ]
 ]
 
