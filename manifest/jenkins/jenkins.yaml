@@ -87,6 +87,8 @@ spec:
           env:
             - name: CASC_JENKINS_CONFIG
               value: "/var/jenkins_home/casc_configs/jcasc.yaml"
+            - name: JAVA_OPTS
+              value: "-Djenkins.install.runSetupWizard=false"
             - name: TZ
               value: "Asia/Seoul"
           readinessProbe:
