@@ -78,7 +78,7 @@ prometheus:
           rules:
             # Deployment 다운
             - alert: Deployment Down
-              expr: kube_deployment_status_replicas_available < 1
+              expr: kube_deployment_status_replicas_available < 1 and time() - kube_deployment_created > 120
               for: 10s
               labels:
                 severity: Critical
