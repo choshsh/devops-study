@@ -1,0 +1,163 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              description: "choshsh-github-token"
+              id: "choshsh-github-token"
+              scope: GLOBAL
+              secret: ${choshsh-github-token}
+          - string:
+              description: "slack-token"
+              id: "slack-token"
+              scope: GLOBAL
+              secret: ${slack-token}
+jenkins:
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy: "loggedInUsersCanDoAnything"
+  clouds:
+    - kubernetes:
+        containerCap: 10
+        containerCapStr: "10"
+        jenkinsUrl: "http://jenkins.jenkins.svc.cluster.local:8080"
+        maxRequestsPerHost: 64
+        maxRequestsPerHostStr: "64"
+        name: "kubernetes"
+        namespace: "jenkins"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  disabledAdministrativeMonitors:
+    - "jenkins.diagnostics.ControllerExecutorsNoAgents"
+    - "jenkins.diagnostics.ControllerExecutorsAgents"
+  labelAtoms:
+    - name: "MASTER"
+    - name: "built-in"
+  labelString: "MASTER"
+  markupFormatter: "plainText"
+  mode: EXCLUSIVE
+  myViewsTabBar: "standard"
+  numExecutors: 1
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        - id: "choshsh"
+          name: "조상현"
+          properties:
+            - "apiToken"
+            - favoriting:
+                autofavoriteEnabled: true
+            - mailer:
+                emailAddress: "choshsh@test.com"
+            - "favorite"
+            - preferredProvider:
+                providerId: "default"
+            - "slack"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  envInject:
+    enableLoadingFromMaster: false
+    enablePermissions: false
+    hideInjectedVars: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: -1
+unclassified:
+  bitbucketEndpointConfiguration:
+    endpoints:
+      - bitbucketCloudEndpoint:
+          enableCache: false
+          manageHooks: false
+          repositoriesCacheDuration: 0
+          teamCacheDuration: 0
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    configs:
+      - credentialsId: "choshsh-github-token"
+        manageHooks: false
+        name: "CHOSHSH_GITHUB"
+    hookUrl: "http://jenkins.choshsh.com/github-webhook/"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  globalLibraries:
+    libraries:
+      - defaultVersion: "master"
+        name: "choshsh"
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                id: "0fba5479-8679-4bdf-874c-b1bcc7d1594b"
+                remote: "https://github.com/choshsh/jenkins-library.git"
+                traits:
+                  - "gitBranchDiscovery"
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://jenkins.choshsh.com/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+  slackNotifier:
+    botUser: false
+    room: "#devops"
+    sendAsText: false
+    teamDomain: "choshsh"
+    tokenCredentialId: "slack-token"
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"

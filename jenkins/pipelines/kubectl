@@ -3,7 +3,7 @@
 pipeline {
   agent {
     kubernetes {
-      yamlFile 'jenkins/pod_template/kubectl.yaml'
+      yamlFile POD_TEMPLATE
     }
   }
 
@@ -16,13 +16,6 @@ pipeline {
     string(name: 'NAMESPACE', defaultValue: '', description: 'Namespace')
     string(name: 'NAME', defaultValue: '-1', description: 'Name (-1 replaces null)')
     string(name: 'REPLICAS', defaultValue: '-1', description: 'Number to scale deployment (-1 replaces null)')
-  }
-
-  environment {
-    FUNC = "${params.FUNC}"
-    NAMESPACE = "${params.NAMESPACE}"
-    NAME = "${params.NAME}"
-    REPLICAS = "${params.REPLICAS}"
   }
 
   stages {
@@ -40,13 +33,13 @@ pipeline {
             }
             stage("Exec kubectl") {
               dir('script') {
-                echo "FUNC: $FUNC"
-                echo "NAMESPACE: $NAMESPACE"
-                if ("${NAME}" != "-1") {
-                  echo "NAME: $NAME"
+                echo "FUNC: ${params.FUNC}"
+                echo "NAMESPACE: ${params.NAMESPACE}"
+                if (params.NAME != "-1") {
+                  echo "NAME: ${params.NAME}"
                 }
-                if ("${REPLICAS}" != "-1") {
-                  echo "REPLICAS: $REPLICAS"
+                if (params.REPLICAS != "-1") {
+                  echo "REPLICAS: ${params.REPLICAS}"
                 }
                 sh 'chmod +x kubectl_func.sh'
                 sh './kubectl_func.sh $FUNC'

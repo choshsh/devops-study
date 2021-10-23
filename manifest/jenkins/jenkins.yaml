@@ -59,13 +59,10 @@ spec:
   type: ClusterIP
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: jenkins
-  labels:
-    app: jenkins
 spec:
-  serviceName: jenkins
   replicas: 1
   selector:
     matchLabels:
@@ -74,30 +71,22 @@ spec:
     metadata:
       labels:
         app: jenkins
-        version: v1
     spec:
       serviceAccountName: jenkins
-      # Private Image Repository dns 설정
-      hostAliases:
-        - ip: "192.168.220.130"
-          hostnames:
-            - "localrepo"
       containers:
         - name: jenkins
+          image: jenkins/jenkins:2.316-jdk11
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
-          image: jenkins/jenkins:2.316-jdk11
-          imagePullPolicy: IfNotPresent
-          resources:
-            limits:
-              memory: "4Gi"
           ports:
             - name: http-service
               containerPort: 8080 # 서비스
             - name: http-agent
               containerPort: 50000 # Master-Slave 노드 간 통신
           env:
+            - name: CASC_JENKINS_CONFIG
+              value: "/var/jenkins_home/casc_configs/jcasc.yaml"
             - name: TZ
               value: "Asia/Seoul"
           readinessProbe:
@@ -109,28 +98,42 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 5
           volumeMounts:
+            # jenkins 볼륨
             - name: jenkins-volume
               mountPath: /var/jenkins_home
-  volumeClaimTemplates:
-    - metadata:
-        name: jenkins-volume
-      spec:
-        storageClassName: nfs-client
-        accessModes: ["ReadWriteMany"]
-        resources:
-          requests:
-            storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: jenkins-workspace-pvc
-  labels:
-    app: jenkins-workspace
-spec:
-  storageClassName: nfs-client
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 5Gi
+            # github token 값
+            - name: jenkins-cred
+              mountPath: /run/secrets/choshsh-github-token
+              subPath: choshsh-github-token
+              readOnly: true
+            # slack token 값
+            - name: jenkins-cred
+              mountPath: /run/secrets/slack-token
+              subPath: slack-token
+              readOnly: true
+      # 플러그인 사전 설치, Config as Code(JCasC) 파일 다운로드
+      initContainers:
+        - name: init-jenkins
+          image: busybox
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          command:
+            - sh
+            - -c
+            - |
+              wget https://github.com/choshsh/jenkins-plugins/archive/refs/heads/master.zip -O /tmp/plugins.zip && \
+                unzip -qq /tmp/plugins.zip -d /tmp && \
+                mkdir -p /tmp/jenkins_home/plugins && \
+                mv /tmp/jenkins-plugins-master/*.hpi /tmp/jenkins_home/plugins/ && \
+                mkdir -p /tmp/jenkins_home/casc_configs && \
+                wget https://raw.githubusercontent.com/choshsh/devops-study/feature-jenkins-dsl/manifest/jenkins/jcasc.yaml -O /tmp/jenkins_home/casc_configs/jcasc.yaml
+          volumeMounts:
+            - name: jenkins-volume
+              mountPath: /tmp/jenkins_home
+      volumes:
+        - name: jenkins-volume
+          emptyDir: {}
+        - name: jenkins-cred
+          secret:
+            secretName: jenkins-cred

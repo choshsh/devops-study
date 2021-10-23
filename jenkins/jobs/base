@@ -1,0 +1,51 @@
+#!groovy
+def pipelinePath = 'jenkins/pipelines'
+def podTemplatePath = 'jenkins/podTemplates'
+def projects = [
+        [
+                description    : '클러스터 내부 DNS 네트워크 검증',
+                name           : 'CoreDNS-Debug',
+                pipelineName   : 'corednsDebug',
+                podTemplateName: 'dnsutils.yaml'
+        ],
+        [
+                description    : 'bash 스크립트를 통한 kubectl',
+                name           : 'kubectl',
+                pipelineName   : 'kubectl',
+                podTemplateName: 'kubectl.yaml'
+        ],
+        [
+                description    : 'dockerfile에서 이미지 빌드',
+                name           : 'image-build',
+                pipelineName   : 'imageBuild',
+                podTemplateName: 'imageBuild.yaml'
+        ],
+        [
+                description    : '부하 테스트',
+                name           : 'load-test',
+                pipelineName   : 'loadTest',
+                podTemplateName: 'loadTest.yaml'
+        ]
+]
+
+for (project in projects) {
+  pipelineJob(project.name) {
+    description(project.description)
+    definition {
+      cpsScm {
+        scm {
+          git {
+            remote { url('https://github.com/choshsh/devops-study.git') }
+            branch('dev')
+            extensions {}
+          }
+        }
+        scriptPath(pipelinePath + '/' + project.pipelineName)
+        lightweight()
+      }
+    }
+    environmentVariables {
+      envs(POD_TEMPLATE: podTemplatePath + '/' + project.podTemplateName)
+    }
+  }
+}

@@ -5,7 +5,7 @@
 pipeline {
   agent {
     kubernetes {
-      yamlFile 'jenkins/pod_template/dnsutils.yaml'
+      yamlFile POD_TEMPLATE
     }
   }
 
