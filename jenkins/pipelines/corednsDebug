@@ -1,4 +1,5 @@
 #!groovy
+
 @Library('choshsh') _
 
 pipeline {

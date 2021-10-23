@@ -10,9 +10,15 @@ def projects = [
         ],
         [
                 description    : 'bash 스크립트를 통한 kubectl',
-                name           : 'kubectl-script',
+                name           : 'kubectl',
                 pipelineName   : 'kubectl',
                 podTemplateName: 'kubectl.yaml'
+        ],
+        [
+                description    : 'dockerfile에서 이미지 빌드',
+                name           : 'image-build',
+                pipelineName   : 'imageBuild',
+                podTemplateName: 'imageBuild.yaml'
         ]
 ]
 

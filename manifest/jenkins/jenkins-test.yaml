@@ -43,6 +43,8 @@ spec:
             - name: http-agent
               containerPort: 50000 # Master-Slave 노드 간 통신
           env:
+            - name: CASC_JENKINS_CONFIG
+              value: "/var/jenkins_home/casc_configs/jcasc.yaml"
             - name: TZ
               value: "Asia/Seoul"
           readinessProbe:
@@ -56,6 +58,14 @@ spec:
           volumeMounts:
             - name: jenkins-volume
               mountPath: /var/jenkins_home
+            - name: jenkins-cred
+              mountPath: /run/secrets/choshsh-github-token
+              subPath: choshsh-github-token
+              readOnly: true
+            - name: jenkins-cred
+              mountPath: /run/secrets/slack-token
+              subPath: slack-token
+              readOnly: true
       initContainers:
         - name: init-plugins
           image: busybox
@@ -73,6 +83,23 @@ spec:
           volumeMounts:
             - name: jenkins-volume
               mountPath: /tmp/jenkins_home
+        - name: init-config
+          image: busybox
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /tmp/jenkins_home/casc_configs && \
+                wget https://raw.githubusercontent.com/choshsh/devops-study/feature-jenkins-dsl/manifest/jenkins/jcasc.yaml -O /tmp/jenkins_home/casc_configs/jcasc.yaml
+          volumeMounts:
+            - name: jenkins-volume
+              mountPath: /tmp/jenkins_home
       volumes:
         - name: jenkins-volume
           emptyDir: {}
+        - name: jenkins-cred
+          secret:
+            secretName: jenkins-cred
