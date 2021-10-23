@@ -15,7 +15,7 @@ pipeline {
 
   parameters {
     string(name: 'host', defaultValue: "https://www.naver.com", description: "Load-Test Target host (ex. https://www.naver.com)")
-    string(name: 'pyscript', defaultValue: 'script/loadtest/locust.py', description: 'Python script path')
+    string(name: 'pyscript', defaultValue: 'script/loadtest/simple-get.py', description: 'Python script path')
     string(name: 'duration', defaultValue: '1s', description: 'Time to test')
     string(name: 'max', defaultValue: '1', description: 'Maximum users to create')
     string(name: 'increase', defaultValue: '1', description: 'Number of users to start per second')
