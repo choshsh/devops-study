@@ -12,9 +12,9 @@ DevOps 공부 목적의 프로젝트입니다. [Kubernetes](https://kubernetes.
 
 ## 사전 준비
 
-- [Kubernetes 클러스터 구성](https://www.notion.so/Kubernetes-b8c85437bc4c4fb89c91137dd6d4ee7a)
-- [ArgoCD 설치](https://www.notion.so/4d7c138785834ed3a19521d16d26adc7)
-- [Istio 설치](https://www.notion.so/ab8442964e5944e3881486bc81b2958b)
+- [Kubernetes 클러스터 구성](https://choshsh.notion.site/3-b8c85437bc4c4fb89c91137dd6d4ee7a)
+- [ArgoCD 설치](https://choshsh.notion.site/3-Argo-CD-4d7c138785834ed3a19521d16d26adc7)
+- [Istio 설치](https://choshsh.notion.site/3-Istio-ab8442964e5944e3881486bc81b2958b)
 
 ## manifest 정보
 
