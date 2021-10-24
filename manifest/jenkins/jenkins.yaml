@@ -129,7 +129,7 @@ spec:
                 mkdir -p /tmp/jenkins_home/plugins && \
                 mv /tmp/jenkins-plugins-master/*.hpi /tmp/jenkins_home/plugins/ && \
                 mkdir -p /tmp/jenkins_home/casc_configs && \
-                wget https://raw.githubusercontent.com/choshsh/devops-study/feature-jenkins-dsl/manifest/jenkins/jcasc.yaml -O /tmp/jenkins_home/casc_configs/jcasc.yaml
+                wget https://raw.githubusercontent.com/choshsh/devops-study/dev/manifest/jenkins/jcasc.yaml -O /tmp/jenkins_home/casc_configs/jcasc.yaml
           volumeMounts:
             - name: jenkins-volume
               mountPath: /tmp/jenkins_home
