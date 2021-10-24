@@ -103,6 +103,9 @@ spec:
             # jenkins 볼륨
             - name: jenkins-volume
               mountPath: /var/jenkins_home
+            # jenkins seed job pre-install
+            - name: jenkins-seed-job
+              mountPath: /usr/share/jenkins/ref/jobs/seed
             # github token 값
             - name: jenkins-cred
               mountPath: /run/secrets/choshsh-github-token
@@ -113,7 +116,7 @@ spec:
               mountPath: /run/secrets/slack-token
               subPath: slack-token
               readOnly: true
-      # 플러그인 사전 설치, Config as Code(JCasC) 파일 다운로드
+      # 플러그인 사전 설치, Config as Code(JCasC) 파일 다운로드, seed job config.xml 다운로드
       initContainers:
         - name: init-jenkins
           image: busybox
@@ -129,12 +132,17 @@ spec:
                 mkdir -p /tmp/jenkins_home/plugins && \
                 mv /tmp/jenkins-plugins-master/*.hpi /tmp/jenkins_home/plugins/ && \
                 mkdir -p /tmp/jenkins_home/casc_configs && \
-                wget https://raw.githubusercontent.com/choshsh/devops-study/feature-jenkins-dsl/manifest/jenkins/jcasc.yaml -O /tmp/jenkins_home/casc_configs/jcasc.yaml
+                wget https://raw.githubusercontent.com/choshsh/devops-study/master/manifest/jenkins/jcasc.yaml -O /tmp/jenkins_home/casc_configs/jcasc.yaml && \
+                wget https://raw.githubusercontent.com/choshsh/devops-study/master/manifest/jenkins/config.xml -O /tmp/usr/share/jenkins/ref/jobs/seed/config.xml
           volumeMounts:
             - name: jenkins-volume
               mountPath: /tmp/jenkins_home
+            - name: jenkins-seed-job
+              mountPath: /tmp/usr/share/jenkins/ref/jobs/seed
       volumes:
         - name: jenkins-volume
+          emptyDir: {}
+        - name: jenkins-seed-job
           emptyDir: {}
         - name: jenkins-cred
           secret:
