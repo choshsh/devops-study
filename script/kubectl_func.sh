@@ -8,6 +8,7 @@
 function scale(){
   if [ "$NAME" == "-1" ] || [ "$REPLICAS" == "-1" ]; then
     echo "Parameter is invalid."
+    exit 1
   else
     kubectl -n $NAMESPACE get deployment $NAME
     kubectl -n $NAMESPACE scale deployment $NAME --replicas=$REPLICAS
@@ -36,6 +37,7 @@ function check_coredns(){
 
 if [ -z "$1" ]; then
   echo "Please input function name."
+  exit 1
 else
   $1
 fi

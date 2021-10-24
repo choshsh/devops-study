@@ -42,7 +42,7 @@ pipeline {
                   echo "REPLICAS: ${params.REPLICAS}"
                 }
                 sh 'chmod +x kubectl_func.sh'
-                sh './kubectl_func.sh $FUNC'
+                sh "./kubectl_func.sh ${params.FUNC}"
               }
             }
           }
