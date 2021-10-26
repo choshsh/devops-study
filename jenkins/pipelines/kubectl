@@ -1,5 +1,7 @@
 #!groovy
 
+@Library('choshsh') _
+
 pipeline {
   agent {
     kubernetes {
@@ -12,10 +14,10 @@ pipeline {
   }
 
   parameters {
-    string(name: 'FUNC', defaultValue: '', description: 'Bash script function name')
-    string(name: 'NAMESPACE', defaultValue: '', description: 'Namespace')
-    string(name: 'NAME', defaultValue: '-1', description: 'Name (-1 replaces null)')
-    string(name: 'REPLICAS', defaultValue: '-1', description: 'Number to scale deployment (-1 replaces null)')
+    string(name: 'FUNC', defaultValue: '', description: 'Bash script function name (Required)')
+    string(name: 'NAMESPACE', defaultValue: '', description: 'Namespace (Required)')
+    string(name: 'NAME', defaultValue: '', description: 'Object name')
+    string(name: 'REPLICAS', defaultValue: '', description: 'Number to scale deployment')
   }
 
   stages {
@@ -48,6 +50,11 @@ pipeline {
           }
         }
       }
+    }
+  }
+  post {
+    always {
+      slackSendCustom()
     }
   }
 }

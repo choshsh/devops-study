@@ -6,31 +6,28 @@
 # @param REPLICAS   scale replicas count
 
 function scale(){
-  if [ "$NAME" == "-1" ] || [ "$REPLICAS" == "-1" ]; then
+  if [ -z "$NAME" ] || [ -z "$REPLICAS" ]; then
     echo "Parameter is invalid."
     exit 1
   else
-    kubectl -n $NAMESPACE get deployment $NAME
     kubectl -n $NAMESPACE scale deployment $NAME --replicas=$REPLICAS
-    kubectl -n $NAMESPACE get deployment $NAME
   fi
 }
 
 function get_istio(){
-  if [ "$NAME" == "-1" ]; then
-    kubectl -n $NAMESPACE get vs,dr
-  else
-    kubectl -n $NAMESPACE get vs, dr $NAME
-  fi
+  kubectl -n $NAMESPACE get vs,dr $NAME
 }
 
 function check_coredns(){
   printf "\n### kube-dns service\n"
   kubectl -n kube-system describe svc kube-dns
+
   printf "\n### kube-dns endpoints\n"
   kubectl -n kube-system describe endpoints kube-dns
+  
   printf "\n### coredns deployment\n"
   kubectl -n kube-system get deploy coredns
+
   printf "\n### coredns pod\n"
   kubectl -n kube-system get po -l k8s-app=kube-dns -o wide
 }
@@ -40,6 +37,5 @@ if [ -z "$1" ]; then
   exit 1
 else
   $1
+  exit 0
 fi
-
-exit 0
