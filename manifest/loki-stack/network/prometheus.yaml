@@ -4,7 +4,7 @@ metadata:
   name: loki-prometheus-server
 spec:
   hosts:
-    - "loki-prometheus-server.choshsh.com"
+    - "prometheus.choshsh.com"
   gateways:
     - default/choshsh-gateway
   http:
@@ -42,7 +42,7 @@ metadata:
   name: loki-prometheus-alertmanager
 spec:
   hosts:
-    - "loki-prometheus-alertmanager.choshsh.com"
+    - "alertmanager.choshsh.com"
   gateways:
     - default/choshsh-gateway
   http:

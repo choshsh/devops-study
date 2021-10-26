@@ -1,11 +1,11 @@
 FROM busybox:latest as builder
-RUN export KUBECTL_VER=v1.21.1 && \
-    wget "https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VER/bin/linux/amd64/kubectl" -O /tmp/kubectl && \
+ENV KUBECTL_VERSION=v1.22.2
+RUN wget "https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" -O /tmp/kubectl && \
     chmod +x /tmp/kubectl
 
 FROM alpine:latest
 RUN apk update --no-cache && \
     apk add --no-cache \
     bash
-COPY --from=builder --chown=root /tmp/kubectl /usr/local/bin/kubectl
+COPY --from=builder /tmp/kubectl /usr/local/bin/kubectl
 CMD ["/bin/sh"]

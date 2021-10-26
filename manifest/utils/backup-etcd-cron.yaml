@@ -72,11 +72,9 @@ spec:
           nodeSelector:
             node-role.kubernetes.io/master: ""
           restartPolicy: OnFailure
-          schedulerName: default-scheduler
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-          terminationGracePeriodSeconds: 30
           tolerations:
             - effect: NoSchedule
               operator: Exists
