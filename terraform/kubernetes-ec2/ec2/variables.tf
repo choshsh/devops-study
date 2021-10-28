@@ -2,10 +2,6 @@ variable "global_name" {
   description = "Global name"
   type        = string
 }
-variable "workspace" {
-  description = "Terraform workspace"
-  type        = string
-}
 variable "linux_sg_id" {
   description = "Defualt Custom Security Group ID"
   type        = string
