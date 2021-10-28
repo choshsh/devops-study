@@ -5,15 +5,15 @@ output "vpc_id" {
 
 output "eks_endpoint" {
   description = "EKS Cluster Endpoint"
-  value       = var.eks_enable > 0 ? module.eks[0].endpoint : null
+  value       = module.eks.endpoint
 }
 
 output "eks_name" {
   description = "EKS Cluster Name"
-  value       = var.eks_enable > 0 ? module.eks[0].eks_cluster_name : null
+  value       = module.eks.eks_cluster_name
 }
 
-# output "bestion_endpoint" {
-#   description = "Bestion Endpoint"
-#   value       = var.eks_enable < 1 ? module.ec2-k8s[0].bestion_endpoint : null
-# }
+output "how_to_use" {
+  description = "How to use EKS cluster. Run command."
+  value       = "aws eks update-kubeconfig --name ${module.eks.eks_cluster_name}"
+}

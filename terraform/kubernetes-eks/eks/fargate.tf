@@ -1,12 +1,5 @@
 locals {
   profiles = var.fargate_profiles
-  # profiles = concat([{
-  #   name      = "kube-dns",
-  #   namespace = "kube-system",
-  #   labels = {
-  #     k8s-app = "kube-dns"
-  #   }
-  # }], var.fargate_profiles)
 }
 
 // Fargate를 사용하기 위한 profile 

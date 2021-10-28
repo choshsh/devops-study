@@ -23,7 +23,6 @@ module "ec2" {
   linux_sg_id               = module.network.linux_sg_id
   allow_tls_sg_id           = module.network.allow_tls_sg_id
   global_name               = var.global_name
-  workspace                 = local.workspace
 
   depends_on = [module.network]
 }
