@@ -1,9 +1,50 @@
+grafana.enabled: false
+promtail.enabled: true
+
 loki:
   image:
     tag: 2.3.0
-
-grafana.enabled: false
-promtail.enabled: true
+  # Loki log 알림 규칙
+  config:
+    ruler:
+      storage:
+        type: local
+        local:
+          directory: /rules
+      rule_path: /tmp/scratch
+      alertmanager_url: http://loki-prometheus-alertmanager:80
+      ring:
+        kvstore:
+          store: inmemory
+      enable_api: true
+  alerting_groups:
+    - name: Control-Plane
+      rules:
+        - alert: Control-Plane component
+          expr: |
+            sum by (component) (
+              rate({tier="control-plane"}[1m] != "error")
+            ) > 0
+          for: 1m
+          labels:
+            severity: Critical
+            summary: "Control-Plane error"
+            description: "컨트롤 플레인 컴포넌트에서 error 로그 발생"
+          annotations:
+            componet: "{{ $labels.component }}"
+            dashboard: "http://grafana.choshsh.com/d/JqglEFN7z/kube-control-plane-log?var-searchable_pattern=error&from=now-5m&to=now"
+    - name: CoreDNS
+      rules:
+        - alert: coredns
+          expr: rate({k8s_app="kube-dns"}[1m] != "error") > 0
+          for: 1m
+          labels:
+            severity: Critical
+            summary: "CoreDNS error"
+            description: "CoreDNS error 로그 발생"
+          annotations:
+            container: "{{ $labels.container }}"
+            dashboard: "http://grafana.choshsh.com/d/JqglEFN7z/kube-control-plane-log?var-searchable_pattern=error&from=now-5m&to=now"
 
 prometheus:
   enabled: true
@@ -45,7 +86,7 @@ prometheus:
           target_label: __metrics_path__
           replacement: /api/v1/nodes/$1/proxy/metrics/probes
 
-  # Prometheus 알람 규칙
+  # Prometheus Metric 알림 규칙
   serverFiles:
     alerting_rules.yml:
       groups:
@@ -54,22 +95,27 @@ prometheus:
             # Node 다운
             - alert: Node Down
               expr: up{job="kubernetes-nodes"} < 1
-              for: 10s
+              for: 1m
               labels:
                 severity: Critical
                 summary: "Node Down"
-                description: "{{ $labels.deployment }} 10초 동안 {{ $labels.kubernetes_io_hostname }} 노드 Down 상태"
+                description: "1분 동안 노드 Down 상태"
               annotations:
                 hostname: "{{ $labels.kubernetes_io_hostname }}"
                 dashboard: "http://grafana.choshsh.com/d/4b545447f/kubernetes-all-in-one-cluster-monitoring-kr?orgId=1&var-node={{ $labels.kubernetes_io_hostname }}"
             # Node CPU 높음
             - alert: Node high CPU load
-              expr: (1 - avg by (instance,kubernetes_node) (irate(node_cpu_seconds_total{mode="idle"}[10m]))) * 100 > 80
+              expr: |
+                (
+                  1 - avg by (instance,kubernetes_node) (
+                    irate(node_cpu_seconds_total{mode="idle"}[5m])
+                  )
+                ) * 100 > 80
               for: 5m
               labels:
                 severity: Warning
                 summary: "Node CPU high"
-                description: "{{ $labels.deployment }} 5분 동안 {{ $labels.kubernetes_node }} 노드 CPU 사용량 80% 초과"
+                description: "5분 동안 노드 CPU 사용량 80% 초과"
               annotations:
                 hostname: "{{ $labels.kubernetes_node }}"
                 instance: "{{ $labels.instance }}"
@@ -78,12 +124,15 @@ prometheus:
           rules:
             # Deployment 다운
             - alert: Deployment Down
-              expr: kube_deployment_status_replicas_available < 1 and time() - kube_deployment_created > 120
-              for: 10s
+              expr: |
+                kube_deployment_status_replicas_available < 1 
+                and
+                time() - kube_deployment_created > 120
+              for: 1m
               labels:
                 severity: Critical
                 summary: "Deployment Down"
-                description: "10초 동안 available pod {{ $value }}개"
+                description: "1분 동안 available pod 0개"
               annotations:
                 namespace: "{{ $labels.namespace }}"
                 deployment: "{{ $labels.deployment }}"
@@ -91,11 +140,11 @@ prometheus:
             # Statefulset 다운
             - alert: Statefulset Down
               expr: kube_statefulset_status_replicas_current < 1
-              for: 10s
+              for: 1m
               labels:
                 severity: Critical
                 summary: "Statefulset Down"
-                description: "10초 동안 available pod {{ $value }}개"
+                description: "1분 동안 available pod 0개"
               annotations:
                 namespace: "{{ $labels.namespace }}"
                 statefulset: "{{ $labels.statefulset }}"
@@ -104,7 +153,14 @@ prometheus:
           rules:
             # JVM HEAP 메모리 높음
             - alert: Heap memory high
-              expr: sum by (kubernetes_name) (jvm_memory_used_bytes{area="heap"}) / sum by (kubernetes_name) (jvm_memory_max_bytes{area="heap"}) * 100 > 80
+              expr: |
+                sum by (kubernetes_name) (
+                  jvm_memory_used_bytes{area="heap"}
+                )
+                /
+                sum by (kubernetes_name) (
+                  jvm_memory_max_bytes{area="heap"}
+                ) * 100 > 80
               for: 1m
               labels:
                 severity: Warning
@@ -114,7 +170,7 @@ prometheus:
                 service: "{{ $labels.kubernetes_name }}"
                 dashboard: "http://grafana.choshsh.com/d/ku9BHmOnz/jvm-micrometer?orgId=1&var-application={{ $labels.kubernetes_name }}"
 
-  # Alertmanager 알람 설정
+  # Alertmanager 알림 설정
   alertmanagerFiles:
     alertmanager.yml:
       global: {}
@@ -143,6 +199,6 @@ prometheus:
       route:
         receiver: slack-default
         group_by: [alertname]
-        group_wait: 10s
-        group_interval: 10s
-        repeat_interval: 3h
+        group_wait: 0s # 처음 알림을 보내기 전 대기시간
+        group_interval: 1m # 해당 그룹에 이미 알림이 있을 때 대기시간
+        repeat_interval: 3h # 성공한 알림 다시 보냄
