@@ -1,5 +1,6 @@
 image:
   name: "choshsh-ui"
+  pullPolicy: "Always"
 
 nameOverride: "choshsh-ui"
 fullnameOverride: "choshsh-ui"
