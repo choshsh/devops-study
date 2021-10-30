@@ -23,9 +23,12 @@ loki:
         - alert: Control-Plane component
           expr: |
             sum by (component) (
-              rate({tier="control-plane"}[1s] != "error")
+              rate({tier="control-plane"}[30s]
+                |= "error"
+                != "[watcher.go:229] watch chan error"
+            )
             ) > 0
-          for: 1s
+          for: 0s
           labels:
             severity: Critical
             summary: "Control-Plane error"
@@ -36,8 +39,8 @@ loki:
     - name: CoreDNS
       rules:
         - alert: coredns
-          expr: rate({k8s_app="kube-dns"}[1s] != "error") > 0
-          for: 1s
+          expr: rate({k8s_app="kube-dns"}[30s] |= "error") > 0
+          for: 0s
           labels:
             severity: Critical
             summary: "CoreDNS error"
