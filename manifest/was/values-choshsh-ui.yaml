@@ -5,14 +5,27 @@ nameOverride: "choshsh-ui"
 fullnameOverride: "choshsh-ui"
 
 deploy:
-  args:
-    - --spring.profiles.active=dev
-  probe:
-    path: /manage/health
+  env:
+    - name: "TZ"
+      value: "Asia/Seoul"
+  envFromConfigMap:
+    name: "mysql"
+    items:
+      - envName: MYSQL_URL
+        key: "url"
+      - envName: MYSQL_DB
+        key: "choshsh-ui"
+      - envName: MYSQL_USER
+        key: "user"
+      - envName: MYSQL_PARAM
+        key: "jdbc-param"
+  envFromSecret:
+    envName: MYSQL_PASSWORD
+    name: "mysql-password"
+    key: "password"
 
 podAnnotations:
   sidecar.istio.io/inject: "true"
 
 prometheus:
   enabled: true
-  path: "/manage/prometheus"

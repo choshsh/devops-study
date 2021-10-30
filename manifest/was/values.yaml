@@ -16,9 +16,16 @@ deploy:
     version: "v2"
   args:
     - --spring.profiles.active=prod
-  # readnissProbe 설정 (path: httpGet 경로)
-  probe:
-    path: ""
+  env: {}
+  envFromConfigMap:
+    name: ""
+    items: []
+    # - envName: MYSQL_URL
+    #   key: "url"
+  envFromSecret:
+    {}
+    # name: ""
+    # key: ""
   resources:
     {}
     # limits:
@@ -37,10 +44,12 @@ service:
   externalIPs: []
   annotations: {}
 
+actuator:
+  path: "/actuator"
+
 # prometheus JVM 모니터링 설정
 prometheus:
   enabled: false
-  path: ""
 
 autoscaling:
   enabled: false
