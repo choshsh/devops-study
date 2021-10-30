@@ -23,9 +23,9 @@ loki:
         - alert: Control-Plane component
           expr: |
             sum by (component) (
-              rate({tier="control-plane"}[1m] != "error")
+              rate({tier="control-plane"}[1s] != "error")
             ) > 0
-          for: 1m
+          for: 1s
           labels:
             severity: Critical
             summary: "Control-Plane error"
@@ -36,8 +36,8 @@ loki:
     - name: CoreDNS
       rules:
         - alert: coredns
-          expr: rate({k8s_app="kube-dns"}[1m] != "error") > 0
-          for: 1m
+          expr: rate({k8s_app="kube-dns"}[1s] != "error") > 0
+          for: 1s
           labels:
             severity: Critical
             summary: "CoreDNS error"
