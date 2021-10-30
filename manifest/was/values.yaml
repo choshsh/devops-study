@@ -18,14 +18,16 @@ deploy:
     - --spring.profiles.active=prod
   env: {}
   envFromConfigMap:
-    name: ""
-    items: []
+    {}
+    # configmapName: ""
+    # items: []
     # - envName: MYSQL_URL
     #   key: "url"
   envFromSecret:
-    {}
-    # name: ""
-    # key: ""
+    []
+    # - secretName: ""
+    #   envName: ""
+    #   key: ""
   resources:
     {}
     # limits:

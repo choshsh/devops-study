@@ -1,21 +1,23 @@
 image:
-  name: "choshsh-ui"
+  name: "jenkins-api-springboot"
   pullPolicy: "Always"
 
-nameOverride: "choshsh-ui"
-fullnameOverride: "choshsh-ui"
+nameOverride: "jenkins-rest"
+fullnameOverride: "jenkins-rest"
 
 deploy:
   env:
-    - name: "TZ"
+    - name: TZ
       value: "Asia/Seoul"
+    - name: JENKINS_REST_ENDPOINT
+      value: "choshsh:11e033b730141c4070d165a39c6a4c1b50"
   envFromConfigMap:
     configmapName: "mysql"
     items:
       - envName: MYSQL_URL
         key: "url"
       - envName: MYSQL_DB
-        key: "choshsh-ui"
+        key: "jenkins"
       - envName: MYSQL_USER
         key: "user"
       - envName: MYSQL_PARAM
@@ -24,6 +26,9 @@ deploy:
     - secretName: "mysql-password"
       envName: MYSQL_PASSWORD
       key: "password"
+    - secretName: "jenkins-cred"
+      envName: JENKINS_REST_CREDENTIALS
+      key: "cred"
 
 podAnnotations:
   sidecar.istio.io/inject: "true"
