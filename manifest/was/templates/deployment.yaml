@@ -88,9 +88,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        - name: tz-config
-          hostPath:
-            path: /usr/share/zoneinfo/Asia/Seoul
-            type: File
 
