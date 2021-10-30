@@ -10,14 +10,14 @@ deploy:
     - name: TZ
       value: "Asia/Seoul"
     - name: JENKINS_REST_ENDPOINT
-      value: "choshsh:11e033b730141c4070d165a39c6a4c1b50"
+      value: "http://jenkins.jenkins.svc.cluster.local:8080"
   envFromConfigMap:
     configmapName: "mysql"
     items:
       - envName: MYSQL_URL
         key: "url"
       - envName: MYSQL_DB
-        key: "jenkins"
+        key: "jenkins-rest"
       - envName: MYSQL_USER
         key: "user"
       - envName: MYSQL_PARAM
