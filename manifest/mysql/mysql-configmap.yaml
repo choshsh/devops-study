@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+data:
+  url: "mysql:3306"
+  user: "root"
+  jdbc-param: "serverTimezone=UTC&characterEncoding=UTF-8"
+  choshsh-ui: "choshsh-ui"
+  jenkins-rest: "jenkins"

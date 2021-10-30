@@ -12,6 +12,9 @@ resource "aws_eks_cluster" "my-eks-cluster" {
   name     = "${var.workspace}-eks-clustertest-${random_uuid.eks.result}"
   role_arn = aws_iam_role.cluster-service-role.arn
   version  = var.eks_cluster_version
+  enabled_cluster_log_types = [
+    "api", "audit", "authenticator", "controllerManager", "scheduler"
+  ]
 
   vpc_config {
     subnet_ids              = var.private_subnet_ids

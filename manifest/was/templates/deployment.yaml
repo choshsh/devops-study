@@ -40,15 +40,33 @@ spec:
               containerPort: {{ .Values.deploy.containerPort }}
               protocol: TCP
           env:
-            - name: "TZ"
-              value: "Asia/Seoul"
+            - name: ACTUATOR_PATH
+              value: {{ .Values.actuator.path }}
+            {{- with .Values.deploy.env }}
+              {{- toYaml . | nindent 12 }}
+            {{- end}}
+            {{- $configmapName := .Values.deploy.envFromConfigMap.configmapName}}
+            {{- range .Values.deploy.envFromConfigMap.items }}
+            - name: {{ .envName }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $configmapName }}
+                  key: {{ .key }}
+            {{- end }}
+            {{- range .Values.deploy.envFromSecret }}
+            - name: {{ .envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: {{ .key }}
+            {{- end}}
           {{- with .Values.deploy.args }}
           args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.deploy.probe.path }}
+              path: "{{ .Values.actuator.path }}/health"
               port: http
             initialDelaySeconds: 30
             failureThreshold: 5
@@ -58,10 +76,6 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end}}
-          volumeMounts:
-            - name: tz-config
-              mountPath: /etc/localtime
-              readOnly: true
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -74,9 +88,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        - name: tz-config
-          hostPath:
-            path: /usr/share/zoneinfo/Asia/Seoul
-            type: File
 

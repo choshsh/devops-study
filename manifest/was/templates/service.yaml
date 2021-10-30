@@ -6,7 +6,7 @@ metadata:
     {{- include "was.labels" . | nindent 4 }}
   annotations:
   {{- if .Values.prometheus.enabled }}
-    prometheus.io/path: {{ .Values.prometheus.path | quote }}
+    prometheus.io/path: "{{ .Values.actuator.path }}/prometheus"
     prometheus.io/port: {{ .Values.deploy.containerPort | quote }}
     prometheus.io/schema: "http"
     prometheus.io/scrape: "true"
