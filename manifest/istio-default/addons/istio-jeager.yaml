@@ -1,38 +1,38 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: istio-grafana
+  name: jaeger
   namespace: istio-system
 spec:
   hosts:
-    - "istio-grafana.choshsh.com"
+    - "jaeger.choshsh.com"
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "grafana-http"
+    - name: "jaeger-http"
       match:
         - port: 80
       route:
         - destination:
-            host: grafana
-            subset: grafana-subset
+            host: tracing
+            subset: jaeger-subset
             port:
-              number: 3000
+              number: 80
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: istio-grafana
+  name: jaeger
   namespace: istio-system
 spec:
-  host: grafana
+  host: tracing
   trafficPolicy:
     loadBalancer:
       simple: LEAST_CONN
   subsets:
-    - name: grafana-subset
+    - name: jaeger-subset
       labels:
-        app: grafana
+        app: jaeger
       trafficPolicy:
         loadBalancer:
           simple: ROUND_ROBIN
