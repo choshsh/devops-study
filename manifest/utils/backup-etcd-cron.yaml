@@ -21,10 +21,6 @@ metadata:
     app: etcd-backup
 spec:
   schedule: "*/30 * * * *"
-  concurrencyPolicy: Allow
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 3
-  suspend: false
   jobTemplate:
     metadata:
       labels:
@@ -67,7 +63,6 @@ spec:
               volumeMounts:
                 - mountPath: /backup
                   name: backup
-          dnsPolicy: ClusterFirst
           hostNetwork: true
           nodeSelector:
             node-role.kubernetes.io/master: ""
