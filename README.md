@@ -18,7 +18,19 @@ DevOps 공부 목적의 프로젝트입니다. [Kubernetes](https://kubernetes.
 
 ## manifest 정보
 
-### Jenkins
+### choshsh-ui, jenkins-rest, mysql
+
+spring boot 애플리케이션과 mysql로 구성했습니다. DB 패스워드는 secret으로 관리합니다.
+
+- mysql secret 생성
+    
+    ```bash
+    echo -n '<비밀번호>' >./password
+    kubectl create secret generic mysql-password --from-file password
+    ```
+    
+
+### jenkins
 
 stateless하게 구성하여 jenkins를 쉽게 관리하는 것이 목적입니다. 
 
@@ -52,16 +64,25 @@ Init Container를 사용하여 jenkins 설정과 플러그인 설치가 완료�
 **사용법**
 
 1. secret 생성
-    
-    ```bash
-    echo -n '1234' >./slack-token
-    echo -n '1234' >./choshsh-github-token
-    
-    kubectl create -n jenkins secret generic jenkins-cred \
-      --from-file choshsh-github-token \
-      --from-file slack-token
-    ```
-    
+    - token
+        
+        ```bash
+        echo -n '1234' >./slack-token
+        echo -n '1234' >./choshsh-github-token
+        
+        kubectl create -n jenkins secret generic jenkins-cred \
+          --from-file choshsh-github-token \
+          --from-file slack-token
+        ```
+        
+    - kubeconfig
+        
+        ```bash
+        kubectl create secret generic -n jenkins kubeconfig \
+          --type=string \
+          --from-file ~/.kube/config
+        ```
+        
 2. Pod 구동 및 Web 접속
 3. 최초 사용자 생성 (사용자 데이터까지 설정할 수 있는 방법 찾는 중)
 4. 생성되어 있는 seed job을 빌드하여 DSL 스크립트 실행

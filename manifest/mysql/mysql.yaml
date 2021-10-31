@@ -40,7 +40,10 @@ spec:
             - name: MYSQL_INITDB_SKIP_TZINFO
               value: "1"
             - name: MYSQL_ROOT_PASSWORD
-              value: "P@ssw0rd!@#"
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-password
+                  key: password
             - name: MYSQL_DATABASE
               value: "choshsh"
           args:
