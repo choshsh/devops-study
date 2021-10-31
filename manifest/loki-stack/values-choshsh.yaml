@@ -25,7 +25,7 @@ loki:
             sum by (component) (
               rate({tier="control-plane"}[30s]
                 |= "error"
-                != "[watcher.go:229] watch chan error"
+                != "watcher.go:229"
             )
             ) > 0
           for: 0s
