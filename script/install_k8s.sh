@@ -10,8 +10,8 @@ function pre_config(){
 
     if [ $(grep '^NAME' /etc/os-release | grep -i centos | wc -l) -gt 0 ]; then
         sudo swapoff -a && \
-            sudo echo 0 > /proc/sys/vm/swappines && \
-            sudo sed -e '/swap/ s/^#*/#/' -i /etc/fstab;
+            sudo echo 0 > /proc/sys/vm/swappines
+        sudo sed -e '/swap/ s/^#*/#/' -i /etc/fstab;
         sudo systemctl disable --now firewalld
     fi
 

@@ -2,8 +2,7 @@ import time
 from locust import HttpUser, task, between
 
 
-class ComplexItsmUser(HttpUser):
-
+class ComplexChoshshuiUser(HttpUser):
     # 모든 작업 사이에 1초에서 3초의 대기
     wait_time = between(1, 2)
 
