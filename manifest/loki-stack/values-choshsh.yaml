@@ -168,10 +168,33 @@ prometheus:
               labels:
                 severity: Warning
                 summary: "Heap memory high"
-                description: "1분 동안 heap 메모리 사용률 80% 초과 "
+                description: "1분 동안 heap 메모리 사용률 80% 초과"
               annotations:
                 service: "{{ $labels.kubernetes_name }}"
                 dashboard: "http://grafana.choshsh.com/d/ku9BHmOnz/jvm-micrometer?orgId=1&var-application={{ $labels.kubernetes_name }}"
+        - name: Istio
+          rules:
+            # http response 알림
+            - alert: http response code - 5xx
+              expr: rate(istio_requests_total{response_code=~"5.+"}[1m]) > 0
+              for: 1m
+              labels:
+                severity: Critical
+                summary: "http - server error"
+                description: "http 서버 오류"
+              annotations:
+                app: "{{ $labels.app }}"
+                response_code: "{{ $labels.response_code }}"
+            - alert: http response code - 401, 403
+              expr: rate(istio_requests_total{response_code=~"401|403"}[1m]) > 0
+              for: 1m
+              labels:
+                severity: Warning
+                summary: "http - unauthorized"
+                description: "http 인증 오류"
+              annotations:
+                app: "{{ $labels.app }}"
+                response_code: "{{ $labels.response_code }}"
 
   # Alertmanager 알림 설정
   alertmanagerFiles:
