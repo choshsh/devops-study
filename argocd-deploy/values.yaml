@@ -55,6 +55,16 @@ argocd:
       automated:
         prune: true
         selfHeal: true
+  # choshsh-ui-network
+  - name: choshsh-ui-vs
+    namespace: default
+    source:
+      path: manifest/was/network
+      type: dir
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
   # choshsh-ui
   - name: choshsh-ui
     namespace: default
