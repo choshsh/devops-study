@@ -1,6 +1,6 @@
 cidr_block   = "192.168.0.0/16"
 domain       = "choshsh.com"
-domain_alias = ["www", "argocd", "grafana", "jenkins", "jeager"]
+domain_alias = ["www", "argocd", "grafana", "jenkins", "jaeger"]
 
 # EC2 config
 master_node_count         = 1
