@@ -78,6 +78,19 @@ argocd:
       automated:
         prune: true
         selfHeal: true
+  # jenkins-rest
+  - name: jenkins-rest
+    namespace: default
+    source:
+      path: manifest/was
+      type: helm
+      helm:
+        valueFiles:
+          - values-jenkins-rest.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
   # loki-network
   - name: loki-network
     namespace: monitoring

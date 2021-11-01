@@ -10,7 +10,6 @@ spec:
   http:
     - name: "jenkins-rest"
       match:
-        - port: 80
         - uri:
             prefix: "/jenkins"
       route:
@@ -20,8 +19,7 @@ spec:
             port:
               number: 8080
     - name: "choshsh-ui"
-      match:
-        - port: 80
+      timeout: 5s
       route:
         - destination:
             host: choshsh-ui
