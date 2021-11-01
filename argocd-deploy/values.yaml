@@ -55,6 +55,16 @@ argocd:
       automated:
         prune: true
         selfHeal: true
+  # choshsh-ui-network
+  - name: choshsh-ui-vs
+    namespace: default
+    source:
+      path: manifest/was/network
+      type: dir
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
   # choshsh-ui
   - name: choshsh-ui
     namespace: default
@@ -64,6 +74,19 @@ argocd:
       helm:
         valueFiles:
           - values-choshsh-ui.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # jenkins-rest
+  - name: jenkins-rest
+    namespace: default
+    source:
+      path: manifest/was
+      type: helm
+      helm:
+        valueFiles:
+          - values-jenkins-rest.yaml
     syncPolicy:
       automated:
         prune: true

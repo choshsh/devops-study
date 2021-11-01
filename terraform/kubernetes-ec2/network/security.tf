@@ -78,7 +78,7 @@ resource "aws_security_group" "allow_tls" {
       from_port        = 30000
       to_port          = 32767
       protocol         = "tcp"
-      cidr_blocks      = [aws_vpc.my-vpc.cidr_block]
+      cidr_blocks      = ["0.0.0.0/0"]
       self             = false
       security_groups  = null
       ipv6_cidr_blocks = null
