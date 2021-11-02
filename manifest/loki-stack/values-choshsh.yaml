@@ -1,5 +1,14 @@
 grafana.enabled: false
-promtail.enabled: true
+
+promtail:
+  enabled: true
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      operator: Exists
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/jenkins
+      effect: NoSchedule
+      operator: Exists
 
 loki:
   image:
