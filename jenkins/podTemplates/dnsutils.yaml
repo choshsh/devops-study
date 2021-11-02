@@ -1,4 +1,15 @@
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/jenkins
+                operator: Exists
+  tolerations:
+    - key: "node-role.kubernetes.io/jenkins"
+      operator: "Exists"
+      effect: "NoSchedule"
   containers:
     - name: dnsutils
       image: gcr.io/kubernetes-e2e-test-images/dnsutils:1.3

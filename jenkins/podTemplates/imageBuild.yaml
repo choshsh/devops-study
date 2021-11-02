@@ -1,4 +1,15 @@
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/jenkins
+                operator: Exists
+  tolerations:
+    - key: "node-role.kubernetes.io/jenkins"
+      operator: "Exists"
+      effect: "NoSchedule"
   containers:
     - name: python
       image: choshsh/python:3.9.7-alpine3.14
