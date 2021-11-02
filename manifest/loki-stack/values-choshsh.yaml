@@ -237,3 +237,9 @@ prometheus:
         group_wait: 0s # 처음 알림을 보내기 전 대기시간
         group_interval: 1m # 해당 그룹에 이미 알림이 있을 때 대기시간
         repeat_interval: 3h # 성공한 알림 다시 보냄
+
+  nodeExporter:
+    tolerations:
+      - key: node-role.kubernetes.io/jenkins
+        effect: NoSchedule
+        operator: Exists
