@@ -122,12 +122,45 @@ prometheus:
                   1 - avg by (instance,kubernetes_node) (
                     irate(node_cpu_seconds_total{mode="idle"}[5m])
                   )
-                ) * 100 > 80
+                ) > 0.8
               for: 5m
               labels:
                 severity: Warning
                 summary: "Node CPU high"
                 description: "5분 동안 노드 CPU 사용량 80% 초과"
+              annotations:
+                hostname: "{{ $labels.kubernetes_node }}"
+                instance: "{{ $labels.instance }}"
+                dashboard: "http://grafana.choshsh.com/d/4b545447f/kubernetes-all-in-one-cluster-monitoring-kr?orgId=1&var-node={{ $labels.kubernetes_node }}"
+            # Node Memory 높음
+            - alert: Node high Memory usage
+              expr: |
+                (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes)
+                  / node_memory_MemTotal_bytes > 0.9
+              for: 5m
+              labels:
+                severity: Warning
+                summary: "Node Memory high"
+                description: "5분 동안 노드 Memory 사용량 90% 초과"
+              annotations:
+                hostname: "{{ $labels.kubernetes_node }}"
+                instance: "{{ $labels.instance }}"
+                dashboard: "http://grafana.choshsh.com/d/4b545447f/kubernetes-all-in-one-cluster-monitoring-kr?orgId=1&var-node={{ $labels.kubernetes_node }}"
+            # Node Disk  높음
+            - alert: Node high Disk usage
+              expr: |
+                sum by (kubernetes_node) (
+                  node_filesystem_size_bytes - node_filesystem_avail_bytes
+                )
+                /
+                sum by (kubernetes_node) (
+                  node_filesystem_size_bytes
+                ) > 0.8
+              for: 5m
+              labels:
+                severity: Warning
+                summary: "Node Disk high"
+                description: "5분 동안 노드 Disk 사용량 80% 초과"
               annotations:
                 hostname: "{{ $labels.kubernetes_node }}"
                 instance: "{{ $labels.instance }}"
@@ -138,8 +171,7 @@ prometheus:
             - alert: Deployment Down
               expr: |
                 kube_deployment_status_replicas_available < 1 
-                and
-                time() - kube_deployment_created > 120
+                  and time() - kube_deployment_created > 120
               for: 1m
               labels:
                 severity: Critical
@@ -172,7 +204,7 @@ prometheus:
                 /
                 sum by (kubernetes_name) (
                   jvm_memory_max_bytes{area="heap"}
-                ) * 100 > 80
+                ) > 0.8
               for: 1m
               labels:
                 severity: Warning
