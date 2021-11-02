@@ -6,4 +6,4 @@ domain_alias = ["www", "argocd", "grafana", "jenkins", "jaeger"]
 master_node_count         = 1
 master_node_instance_type = "t3a.medium"
 worker_node_count         = 2
-worker_node_instance_type = "t3a.medium"
+worker_node_instance_type = "t3a.large"

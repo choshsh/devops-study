@@ -1,4 +1,15 @@
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/jenkins
+                operator: Exists
+  tolerations:
+    - key: "node-role.kubernetes.io/jenkins"
+      operator: "Exists"
+      effect: "NoSchedule"
   containers:
     - name: master
       image: locustio/locust:latest
