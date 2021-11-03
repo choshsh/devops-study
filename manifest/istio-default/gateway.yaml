@@ -13,8 +13,8 @@ spec:
         protocol: HTTP
       hosts:
         - "*"
-      # tls:
-      #   httpsRedirect: true
+      tls:
+        httpsRedirect: true
     - port:
         name: https-443
         number: 443
