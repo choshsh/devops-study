@@ -9,9 +9,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "jaeger-http"
-      match:
-        - port: 80
+    - name: "jaeger"
       route:
         - destination:
             host: tracing
@@ -28,11 +26,8 @@ spec:
   host: tracing
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: jaeger-subset
       labels:
         app: jaeger
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN

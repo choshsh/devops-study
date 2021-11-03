@@ -4,3 +4,6 @@ nfs:
 
 podAnnotations:
   sidecar.istio.io/inject: "false"
+
+storageClass:
+  name: dynamic

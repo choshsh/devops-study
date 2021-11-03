@@ -9,9 +9,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "argocd-http"
-      match:
-        - port: 80
+    - name: "argocd"
       route:
         - destination:
             host: argocd-server
@@ -28,11 +26,8 @@ spec:
   host: argocd-server
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: argocd-subset
       labels:
         app.kubernetes.io/name: argocd-server
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN

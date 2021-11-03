@@ -8,9 +8,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "grafana-http"
-      match:
-        - port: 80
+    - name: "grafana"
       route:
         - destination:
             host: grafana
@@ -26,11 +24,8 @@ spec:
   host: grafana
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: grafana-subset
       labels:
         app.kubernetes.io/name: grafana
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN

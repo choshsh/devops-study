@@ -2,6 +2,9 @@ cidr_block   = "192.168.0.0/16"
 domain       = "choshsh.com"
 domain_alias = ["www", "argocd", "grafana", "jenkins", "jaeger"]
 
+# Kubernetes
+cluster_name = "kubernetes"
+
 # EC2 config
 master_node_count         = 1
 master_node_instance_type = "t3a.medium"

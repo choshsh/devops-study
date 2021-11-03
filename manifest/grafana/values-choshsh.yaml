@@ -1,13 +1,11 @@
+image:
+  tag: 8.2.3
+
 grafana.ini:
   auth.anonymous:
     enabled: true
   security:
     allow_embedding: true
-
-persistence:
-  enabled: true
-  accessModes: ["ReadWriteMany"]
-  storageClassName: nfs-client
 
 adminPassword: choshsh
 
@@ -24,3 +22,45 @@ datasources:
         type: loki
         url: http://loki:3100
         access: proxy
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: "default"
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  default:
+    pod:
+      url: https://gist.githubusercontent.com/choshsh/24ec6576a18558249275e5c4c61268d4/raw/ce6f4f5924e4c6dc8819e8fede2f94bb58e0c4eb/grafana-k8s-pod.json
+    jvm:
+      url: https://gist.githubusercontent.com/choshsh/c54c4663ade3fe14e0dbb584c4418385/raw/013d8b276abccaf2633d6238130846eda10f3660/grafana-jvm.json
+    k8s-metric:
+      url: https://gist.githubusercontent.com/choshsh/efaaf127ee24eb55e9c325ad8fcfcb08/raw/d32102a0e8e2d92f39ca92203d95ae50515b0789/grafana-k8s-metric.json
+    k8s-loki-control-plane:
+      url: https://gist.githubusercontent.com/choshsh/35e57dbba18f1aa94b4124d98065cea3/raw/7cddbf1f47c8a417c409f73cf02d346d1bb4a92e/loki-k8s-control-dash.json
+    k8s-loki-all:
+      url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/ffba6038ac2400efc8a57508579777b5e62f0558/loki-k8s-all-dash.json
+    Istio-Control-Plane:
+      gnetId: 7645
+      revision: 94
+      datasource: Prometheus
+    Istio-Workload:
+      gnetId: 7630
+      revision: 94
+      datasource: Prometheus
+    Istio-Service:
+      gnetId: 7636
+      revision: 94
+      datasource: Prometheus
+    Istio-Mesh:
+      gnetId: 7639
+      revision: 94
+      datasource: Prometheus

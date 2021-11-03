@@ -61,8 +61,8 @@ spec:
     - metadata:
         name: mysql-volume
       spec:
-        storageClassName: nfs-client
-        accessModes: ["ReadWriteMany"]
+        storageClassName: dynamic
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi

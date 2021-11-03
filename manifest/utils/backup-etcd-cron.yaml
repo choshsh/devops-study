@@ -5,9 +5,9 @@ metadata:
   namespace: kube-system
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   volumeMode: Filesystem
-  storageClassName: nfs-client
+  storageClassName: dynamic
   resources:
     requests:
       storage: 5Gi
