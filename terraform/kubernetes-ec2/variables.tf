@@ -3,6 +3,11 @@ variable "global_name" {
   type        = string
   default     = "choshsh"
 }
+variable "cluster_name" {
+  description = "Kubernetes cluster name"
+  type        = string
+  default     = "kubernetes"
+}
 
 variable "cidr_block" {
   description = "Input VPC CIDR block like 192.168.0.0/16.\n\n\tSubnets will created like below.\n\t- Public Subnets : [192.168.0.0/27, 192.168.1.0/27]\n\t- Private Subnets : [192.168.2.0/27, 192.168.3.0/27]\n\n\t1 Public subnet and 1 private subnet will be placed in same availability zone.\n\t- Availability Zones #1 : [192.168.0.0/27, 192.168.2.0/27]\n\t- Availability Zones #2 : [192.168.1.0/27, 192.168.3.0/27]"
