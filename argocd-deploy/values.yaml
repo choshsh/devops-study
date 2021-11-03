@@ -32,19 +32,19 @@ argocd:
       automated:
         prune: true
         selfHeal: true
-  # nfs-subdir-external-provisioner
-  - name: nfs-subdir-external-provisioner
-    namespace: default
-    source:
-      path: manifest/nfs-subdir-external-provisioner
-      type: helm
-      helm:
-        valueFiles:
-          - values-choshsh.yaml
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
+  # # nfs-subdir-external-provisioner
+  # - name: nfs-subdir-external-provisioner
+  #   namespace: default
+  #   source:
+  #     path: manifest/nfs-subdir-external-provisioner
+  #     type: helm
+  #     helm:
+  #       valueFiles:
+  #         - values-choshsh.yaml
+  #   syncPolicy:
+  #     automated:
+  #       prune: true
+  #       selfHeal: true
   # itsm-db
   - name: choshsh-db
     namespace: default
