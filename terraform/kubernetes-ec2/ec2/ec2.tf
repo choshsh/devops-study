@@ -33,7 +33,7 @@ resource "aws_instance" "master" {
   iam_instance_profile        = aws_iam_instance_profile.k8s-control-plane.name
   root_block_device {
     volume_type           = "gp3"
-    volume_size           = 20
+    volume_size           = 30
     delete_on_termination = true
     tags = {
       EC2 = "${var.global_name}-master-${count.index}"
@@ -60,7 +60,7 @@ resource "aws_instance" "worker" {
   iam_instance_profile        = aws_iam_instance_profile.k8s-node.name
   root_block_device {
     volume_type           = "gp3"
-    volume_size           = 20
+    volume_size           = 30
     delete_on_termination = true
     tags = {
       EC2 = "${var.global_name}-worker-${count.index}"
