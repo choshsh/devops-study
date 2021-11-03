@@ -19,7 +19,6 @@ spec:
             port:
               number: 8080
     - name: "choshsh-ui"
-      timeout: 5s
       route:
         - destination:
             host: choshsh-ui

@@ -8,9 +8,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "loki-prometheus-server-http"
-      match:
-        - port: 80
+    - name: "loki-prometheus-server"
       route:
         - destination:
             host: loki-prometheus-server
@@ -26,15 +24,12 @@ spec:
   host: loki-prometheus-server
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: loki-prometheus-server-subset
       labels:
         app: prometheus
         component: server
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -46,9 +41,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "loki-prometheus-alertmanager-http"
-      match:
-        - port: 80
+    - name: "loki-prometheus-alertmanager"
       route:
         - destination:
             host: loki-prometheus-alertmanager
@@ -64,12 +57,9 @@ spec:
   host: loki-prometheus-alertmanager
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: loki-prometheus-alertmanager-subset
       labels:
         app: prometheus
         component: alertmanager
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN

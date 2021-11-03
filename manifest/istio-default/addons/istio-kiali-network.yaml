@@ -9,9 +9,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "kiali-http"
-      match:
-        - port: 80
+    - name: "kiali"
       route:
         - destination:
             host: kiali
@@ -33,6 +31,3 @@ spec:
     - name: kiali-subset
       labels:
         app: kiali
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN

@@ -9,7 +9,15 @@ spec:
   servers:
     - port:
         number: 80
-        name: http
+        name: http-80
+        protocol: HTTP
+      hosts:
+        - "*"
+      # tls:
+      #   httpsRedirect: true
+    - port:
+        name: https-443
+        number: 443
         protocol: HTTP
       hosts:
         - "*"

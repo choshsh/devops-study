@@ -6,12 +6,8 @@ spec:
   host: {{ include "was.fullname" . }}
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: "{{ include "was.fullname" . }}-subset"
       labels:
-        app: {{ include "was.fullname" . }}
         version: {{ .Values.deploy.labels.version }}
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN

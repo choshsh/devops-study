@@ -8,9 +8,7 @@ spec:
   gateways:
     - default/choshsh-gateway
   http:
-    - name: "jenkins-http"
-      match:
-        - port: 80
+    - name: "jenkins"
       route:
         - destination:
             host: jenkins
@@ -26,11 +24,8 @@ spec:
   host: jenkins
   trafficPolicy:
     loadBalancer:
-      simple: LEAST_CONN
+      simple: ROUND_ROBIN
   subsets:
     - name: jenkins-subset
       labels:
         app: jenkins
-      trafficPolicy:
-        loadBalancer:
-          simple: ROUND_ROBIN
