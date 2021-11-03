@@ -63,14 +63,12 @@ prometheus:
   alertmanager:
     persistentVolume:
       enabled: true
-      storageClass: nfs-client
-      accessModes: ["ReadWriteMany"]
+      storageClass: dynamic
 
   server:
     persistentVolume:
       enabled: true
-      storageClass: nfs-client
-      accessModes: ["ReadWriteMany"]
+      storageClass: dynamic
     global:
       scrape_interval: 15s
       scrape_timeout: 10s

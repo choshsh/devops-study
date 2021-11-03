@@ -6,8 +6,7 @@ grafana.ini:
 
 persistence:
   enabled: true
-  accessModes: ["ReadWriteMany"]
-  storageClassName: nfs-client
+  storageClassName: dynamic
 
 adminPassword: choshsh
 
