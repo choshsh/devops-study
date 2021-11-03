@@ -18,16 +18,6 @@ variable "cidr_block" {
   }
 }
 
-variable "domain" {
-  description = "Domain name. Ex) choshsh.com"
-  type        = string
-}
-
-variable "domain_alias" {
-  description = "Domain name. Ex) www"
-  type        = list(string)
-}
-
 # EC2
 variable "master_node_count" {
   description = "How many master nodes"

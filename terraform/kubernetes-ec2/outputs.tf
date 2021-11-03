@@ -1,6 +1,6 @@
-output "vpc_id" {
-  description = "VPC ID"
-  value       = module.network.vpc_id
+output "k8s_cluster_name" {
+  description = "Kubernetes cluster name"
+  value       = var.cluster_name
 }
 
 output "master_public_dns" {
