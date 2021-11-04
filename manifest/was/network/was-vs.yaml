@@ -5,6 +5,7 @@ metadata:
 spec:
   hosts:
     - "www.choshsh.com"
+    - "choshsh.com"
   gateways:
     - default/choshsh-gateway
   http:

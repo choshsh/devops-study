@@ -54,3 +54,5 @@ dashboards:
       url: https://gist.githubusercontent.com/choshsh/35e57dbba18f1aa94b4124d98065cea3/raw/loki-k8s-control-dash.json
     k8s-loki-all:
       url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/loki-k8s-all-dash.json
+    k8s-pv:
+      url: https://gist.githubusercontent.com/choshsh/c1bad37748a922fe31ffbd60c0ef2933/raw/grafana-pv.json

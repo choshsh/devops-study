@@ -18,7 +18,7 @@ pipeline {
     string(name: 'branch', defaultValue: 'dev', description: 'Git branch (ex. master, dev)')
     string(name: 'dockerfile', defaultValue: 'dockerfiles/kubectl', description: 'dockerfile path in Git repository')
     string(name: 'image', defaultValue: 'choshsh/kubectl', description: 'ImageRepository/imageName')
-    string(name: 'tag', defaultValue: 'v1.21.1-alpine', description: 'Image Tag')
+    string(name: 'tag', defaultValue: 'test', description: 'Image Tag')
   }
 
   environment {
