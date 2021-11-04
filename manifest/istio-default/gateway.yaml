@@ -12,7 +12,11 @@ spec:
         name: http-80
         protocol: HTTP
       hosts:
-        - "*"
+        - "www.choshsh.com"
+        - "argocd.choshsh.com"
+        - "grafana.choshsh.com"
+        - "jenkins.choshsh.com"
+        - "jaeger.choshsh.com"
       tls:
         httpsRedirect: true
     - port:
@@ -20,4 +24,8 @@ spec:
         number: 443
         protocol: HTTP
       hosts:
-        - "*"
+        - "www.choshsh.com"
+        - "argocd.choshsh.com"
+        - "grafana.choshsh.com"
+        - "jenkins.choshsh.com"
+        - "jaeger.choshsh.com"
