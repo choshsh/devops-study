@@ -78,6 +78,19 @@ argocd:
       automated:
         prune: true
         selfHeal: true
+  # choshsh-ui-loadtest
+  - name: choshsh-ui-loadtest
+    namespace: default
+    source:
+      path: manifest/was
+      type: helm
+      helm:
+        valueFiles:
+          - choshsh-ui-loadtest.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
   # jenkins-rest
   - name: jenkins-rest
     namespace: default
