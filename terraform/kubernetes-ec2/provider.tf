@@ -17,11 +17,11 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = "ap-northeast-2"
+  region  = terraform.workspace == "test" ? "ap-northeast-1" : "ap-northeast-2"
 
   default_tags {
     tags = {
-      Workspace                                   = "${local.workspace}"
+      Workspace                                   = terraform.workspace
       Owner                                       = "choshsh"
       "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     }

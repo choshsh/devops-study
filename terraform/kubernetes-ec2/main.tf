@@ -1,13 +1,15 @@
 locals {
-  workspace = terraform.workspace == "default" ? "dev" : "prod"
+  workspace = terraform.workspace
 }
 
 module "network" {
   source = "./network"
 
-  workspace   = local.workspace
-  cidr_block  = var.cidr_block
-  global_name = var.global_name
+  workspace    = local.workspace
+  cidr_block   = var.cidr_block
+  domain       = var.domain
+  domain_alias = var.domain_alias
+  global_name  = var.global_name
 }
 
 module "ec2" {

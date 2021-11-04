@@ -28,7 +28,7 @@ jenkins:
         namespace: "jenkins"
   crumbIssuer:
     standard:
-      excludeClientIPFromCrumb: false
+      excludeClientIPFromCrumb: true
   disableRememberMe: false
   disabledAdministrativeMonitors:
     - "jenkins.diagnostics.ControllerExecutorsNoAgents"

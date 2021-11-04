@@ -45,12 +45,14 @@ dashboardProviders:
 dashboards:
   default:
     pod:
-      url: https://gist.githubusercontent.com/choshsh/24ec6576a18558249275e5c4c61268d4/raw/ce6f4f5924e4c6dc8819e8fede2f94bb58e0c4eb/grafana-k8s-pod.json
+      url: https://gist.githubusercontent.com/choshsh/24ec6576a18558249275e5c4c61268d4/raw/grafana-k8s-pod.json
     jvm:
-      url: https://gist.githubusercontent.com/choshsh/c54c4663ade3fe14e0dbb584c4418385/raw/013d8b276abccaf2633d6238130846eda10f3660/grafana-jvm.json
+      url: https://gist.githubusercontent.com/choshsh/c54c4663ade3fe14e0dbb584c4418385/raw/grafana-jvm.json
     k8s-metric:
-      url: https://gist.githubusercontent.com/choshsh/efaaf127ee24eb55e9c325ad8fcfcb08/raw/d32102a0e8e2d92f39ca92203d95ae50515b0789/grafana-k8s-metric.json
+      url: https://gist.githubusercontent.com/choshsh/efaaf127ee24eb55e9c325ad8fcfcb08/raw/grafana-k8s-metric.json
     k8s-loki-control-plane:
-      url: https://gist.githubusercontent.com/choshsh/35e57dbba18f1aa94b4124d98065cea3/raw/7cddbf1f47c8a417c409f73cf02d346d1bb4a92e/loki-k8s-control-dash.json
+      url: https://gist.githubusercontent.com/choshsh/35e57dbba18f1aa94b4124d98065cea3/raw/loki-k8s-control-dash.json
     k8s-loki-all:
-      url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/ffba6038ac2400efc8a57508579777b5e62f0558/loki-k8s-all-dash.json
+      url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/loki-k8s-all-dash.json
+    k8s-pv:
+      url: https://gist.githubusercontent.com/choshsh/c1bad37748a922fe31ffbd60c0ef2933/raw/grafana-pv.json
