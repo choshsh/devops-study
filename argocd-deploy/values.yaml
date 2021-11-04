@@ -86,7 +86,7 @@ argocd:
       type: helm
       helm:
         valueFiles:
-          - choshsh-ui-loadtest.yaml
+          - values-choshsh-ui-loadtest.yaml
     syncPolicy:
       automated:
         prune: true
