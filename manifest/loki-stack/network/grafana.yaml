@@ -15,7 +15,6 @@ spec:
             subset: grafana-subset
             port:
               number: 80
-      websocketUpgrade: true
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
