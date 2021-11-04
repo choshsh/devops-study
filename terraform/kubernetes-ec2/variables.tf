@@ -3,6 +3,7 @@ variable "global_name" {
   type        = string
   default     = "choshsh"
 }
+
 variable "cluster_name" {
   description = "Kubernetes cluster name"
   type        = string
@@ -16,6 +17,16 @@ variable "cidr_block" {
     condition     = length(split(".", var.cidr_block)) == 4 && tonumber(split(".", var.cidr_block)[0]) <= 255 && tonumber(split(".", var.cidr_block)[1]) <= 255
     error_message = "Sample: 192.168.0.0/16."
   }
+}
+
+variable "domain" {
+  description = "Domain name. Ex) choshsh.com"
+  type        = string
+}
+
+variable "domain_alias" {
+  description = "Domain name. Ex) www"
+  type        = list(string)
 }
 
 # EC2

@@ -10,7 +10,6 @@ data "aws_lb" "nlb" {
   tags = {
     "kubernetes.io/service-name" = "istio-system/istio-ingressgateway"
   }
-
 }
 
 resource "aws_route53_record" "alias" {

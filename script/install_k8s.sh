@@ -7,6 +7,7 @@ KUBE_VERSION="1.22.2"
 # Use containerd as CRI
 function pre_config(){
     sudo sed -i "s/127.0.0.1/127.0.0.1 $HOSTNAME/" /etc/hosts
+    sudo yum install -y iproute-tc
 
     if [ $(grep '^NAME' /etc/os-release | grep -i centos | wc -l) -gt 0 ]; then
         sudo swapoff -a && \
