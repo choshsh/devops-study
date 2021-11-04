@@ -18,6 +18,7 @@ spec:
             subset: jenkins-rest-subset
             port:
               number: 8080
+      websocketUpgrade: true
     - name: "choshsh-ui"
       route:
         - destination:
@@ -25,3 +26,4 @@ spec:
             subset: choshsh-ui-subset
             port:
               number: 8080
+      websocketUpgrade: true
