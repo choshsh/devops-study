@@ -4,6 +4,9 @@ image:
 extraLabels:
   app: "grafana"
 
+podLabels:
+  app: "grafana"
+
 grafana.ini:
   auth.anonymous:
     enabled: true
