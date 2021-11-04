@@ -9,14 +9,14 @@ spec:
   servers:
     - port:
         number: 80
-        name: http-80
+        name: http
         protocol: HTTP
       hosts:
         - "*.choshsh.com"
       tls:
         httpsRedirect: true
     - port:
-        name: https-443
+        name: https
         number: 443
         protocol: HTTP
       hosts:

@@ -51,6 +51,6 @@ dashboards:
     k8s-metric:
       url: https://gist.githubusercontent.com/choshsh/efaaf127ee24eb55e9c325ad8fcfcb08/raw/d32102a0e8e2d92f39ca92203d95ae50515b0789/grafana-k8s-metric.json
     k8s-loki-control-plane:
-      url: https://gist.githubusercontent.com/choshsh/35e57dbba18f1aa94b4124d98065cea3/raw/7cddbf1f47c8a417c409f73cf02d346d1bb4a92e/loki-k8s-control-dash.json
+      url: https://gist.githubusercontent.com/choshsh/35e57dbba18f1aa94b4124d98065cea3/raw/7aa649e7f1daee0446db3393d1f66cba3c97a7da/loki-k8s-control-dash.json
     k8s-loki-all:
-      url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/ffba6038ac2400efc8a57508579777b5e62f0558/loki-k8s-all-dash.json
+      url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/4ff54a9c36e1a45aa5d316b5761d93d6d08ae7c1/loki-k8s-all-dash.json
