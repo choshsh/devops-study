@@ -1,6 +1,9 @@
 image:
   tag: 8.2.3
 
+extraLabels:
+  app: "grafana"
+
 grafana.ini:
   auth.anonymous:
     enabled: true

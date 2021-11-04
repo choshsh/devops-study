@@ -15,6 +15,7 @@ spec:
             subset: grafana-subset
             port:
               number: 80
+      websocketUpgrade: true
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -28,4 +29,4 @@ spec:
   subsets:
     - name: grafana-subset
       labels:
-        app.kubernetes.io/name: grafana
+        app: grafana
