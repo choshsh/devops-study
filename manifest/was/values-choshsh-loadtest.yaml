@@ -1,0 +1,21 @@
+image:
+  name: "choshsh-ui"
+  pullPolicy: "Always"
+
+nameOverride: "choshsh-ui-loadtest"
+fullnameOverride: "choshsh-ui-loadtest"
+
+replicaCount: 2
+
+deploy:
+  env:
+    - name: "TZ"
+      value: "Asia/Seoul"
+  args:
+    - --spring.profiles.active=dev
+
+podAnnotations:
+  sidecar.istio.io/inject: "true"
+
+prometheus:
+  enabled: true
