@@ -28,7 +28,7 @@ deploy:
       key: "password"
     - secretName: "jenkins-cred"
       envName: JENKINS_REST_CREDENTIALS
-      key: "cred"
+      key: "jenkins-cred"
 
 podAnnotations:
   sidecar.istio.io/inject: "true"
