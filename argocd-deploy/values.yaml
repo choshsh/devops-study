@@ -127,3 +127,16 @@ argocd:
       automated:
         prune: true
         selfHeal: true
+  # Grafana
+  - name: node-exporter
+    namespace: monitoring
+    source:
+      path: manifest/prometheus-node-exporter
+      type: helm
+      helm:
+        valueFiles:
+          - values.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true

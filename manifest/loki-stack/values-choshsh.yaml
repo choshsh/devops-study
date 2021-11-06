@@ -3,11 +3,7 @@ grafana.enabled: false
 promtail:
   enabled: true
   tolerations:
-    - key: node-role.kubernetes.io/master
-      operator: Exists
-      effect: NoSchedule
-    - key: node-role.kubernetes.io/jenkins
-      effect: NoSchedule
+    - effect: NoSchedule
       operator: Exists
 
 loki:
@@ -269,7 +265,4 @@ prometheus:
         repeat_interval: 3h # 성공한 알림 다시 보냄
 
   nodeExporter:
-    tolerations:
-      - key: node-role.kubernetes.io/jenkins
-        effect: NoSchedule
-        operator: Exists
+    enabled: false
