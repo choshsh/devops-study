@@ -56,3 +56,13 @@ dashboards:
       url: https://gist.githubusercontent.com/choshsh/fd13d3971151e198e64983ae9b7b9ea3/raw/loki-k8s-all-dash.json
     k8s-pv:
       url: https://gist.githubusercontent.com/choshsh/c1bad37748a922fe31ffbd60c0ef2933/raw/grafana-pv.json
+    istio-mesh:
+      url: https://gist.githubusercontent.com/choshsh/8eba6a558e11a87613a2a3014662a770/raw/istio-mesh.json
+    istio-workload:
+      url: https://gist.githubusercontent.com/choshsh/4bca064d87016863f2201a84d29c89e6/raw/istio-workload.json
+    istio-service:
+      url: https://gist.githubusercontent.com/choshsh/f30ccc698807008569e63574995d4775/raw/istio-service.json
+    istio-controlplane:
+      gnetId: 7645
+      revision: 95
+      datasource: Prometheus
