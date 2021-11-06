@@ -1,4 +1,4 @@
-cidr_block   = "192.168.0.0/16"
+cidr_block   = "10.0.0.0/16"
 domain       = "choshsh.com"
 domain_alias = ["www", "argocd", "grafana", "jenkins", "jaeger"]
 
