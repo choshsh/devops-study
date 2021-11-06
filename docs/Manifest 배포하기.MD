@@ -4,7 +4,7 @@ ArgoCD를 사용하여 GitOps 패턴으로 manifest들을 배포합니다.
 
 - [EC2로 클러스터 구축](https://github.com/choshsh/devops-study/blob/master/docs/Terraform%20-%20EC2%EB%A1%9C%20%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%20%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0.MD) or EKS로 클러스터 구축
 - ArgoCD 설치
-- 스토리지클래스 (Default 이름: dynamic)
+- `dynamic` 이름의 스토리지클래스
 
 ## 시작하기
 
