@@ -56,8 +56,6 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
     curl https://gist.githubusercontent.com/choshsh/de1e2e7c8376ca43bee25fec033bac4d/raw/kubeadm.yaml >kubeadm.yaml
     ```
     
-    [https://gist.github.com/choshsh/de1e2e7c8376ca43bee25fec033bac4d#file-kubeadm-yaml](https://gist.github.com/choshsh/de1e2e7c8376ca43bee25fec033bac4d#file-kubeadm-yaml)
-    
 2. 사전 검증
     
     ```bash
@@ -109,22 +107,6 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
         helm install istio-ingress manifests/charts/gateways/istio-ingress -f override.yaml -n istio-system
         ```
         
-    - 확인
-        
-        ```bash
-        $ kubectl describe svc -n istio-system istio-ingressgateway
-        ...
-        Events:
-          Type    Reason                Age   From                Message
-          ----    ------                ----  ----                -------
-          Normal  EnsuringLoadBalancer  20s   service-controller  Ensuring load balancer
-          Normal  EnsuredLoadBalancer   16s   service-controller  Ensured load balancer
-        
-        $ kubectl get svc -n istio-system istio-ingressgateway
-        NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                                                                          PORT(S)                                      AGE
-        istio-ingressgateway   LoadBalancer   10.97.145.74   a5e546ad78d62418399254d6486c37b0-17e32feb74ff9e63.elb.ap-northeast-2.amazonaws.com   15021:32220/TCP,80:30950/TCP,443:31078/TCP   55s
-        ```
-        
 
 ### 4. Amazon EBS CSI 드라이버
 
@@ -152,5 +134,3 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
     ```bash
     kubectl apply -f https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7/raw/050eeb128038ca382d2760288a324de3bb3a71ce/csi-driver-sc.yaml
     ```
-    
-    [https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7#file-csi-driver-sc-yaml](https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7#file-csi-driver-sc-yaml)
