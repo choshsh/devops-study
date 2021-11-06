@@ -41,7 +41,7 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
     
 5. 확인
     
-    ec2가 생성될 때  `ec2/install_k8s.sh` 스크립트가  실행되면서  kubeadm, kubelet, kubectl, containerd 등을 자동으로 설치하고 설정합니다.
+    ec2가 생성될 때  [`ec2/install_k8s.sh`](https://github.com/choshsh/devops-study/blob/master/terraform/kubernetes-ec2/ec2/install_k8s.sh) 스크립트가  실행되면서  kubeadm, kubelet, kubectl, containerd 등을 자동으로 설치하고 설정합니다.
     
     - 출력된 EC2 public dns 주소로 ssh secret 키를 사용하여 22번 포트로 ssh 접속
     - kubernetes 관련 패키지, containerd 상태 확인
