@@ -1,8 +1,6 @@
-AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
+Amazon Elastic Kubernetes Service(***EKS***)로 Kubernetes 클러스터를 구축합니다.
 
 - AWS IaC 도구 : terraform
-- 클러스터 생성 도구 : kubeadm
-- 컨테이너 런타임 : containerd
 - 퍼시스턴트 볼륨 드라이버 : Amazon EBS CSI
 
 ## 사전 준비
@@ -22,53 +20,52 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
     </aside>
     
     ```bash
-    cd terraform/kubernetes-ec2
+    cd terraform/kubernetes-eks
     terraform init
-    ```
-    
-2. [ssh 키페어 생성](https://www.ssh.com/academy/ssh/keygen) - public key를 ec2 디렉토리 안에 `aws-key.pub` 파일명으로 위치
-3. 사전 검증
-    
-    ```bash
-    terraform plan --var-file choshsh.tfvars
-    ```
-    
-4. 배포
-    
-    ```bash
-    terraform apply --var-file choshsh.tfvars
-    ```
-    
-5. 확인
-    
-    ec2가 생성될 때  [`ec2/install_k8s.sh`](https://github.com/choshsh/devops-study/blob/master/terraform/kubernetes-ec2/ec2/install_k8s.sh) 스크립트가  실행되면서  kubeadm, kubelet, kubectl, containerd 등을 자동으로 설치하고 설정합니다.
-    
-    - 출력된 EC2 public dns 주소로 ssh secret 키를 사용하여 22번 포트로 ssh 접속
-    - kubernetes 관련 패키지, containerd 상태 확인
-
-### 2. kubernetes 클러스터
-
-1. 마스터 노드에서 kubeadm 설정파일 생성
-    - cloud-provider와 cluster-cidr을 설정
-    - kube-proxy `ipvs` 모드를 사용
-    
-    ```bash
-    curl https://gist.githubusercontent.com/choshsh/de1e2e7c8376ca43bee25fec033bac4d/raw/kubeadm.yaml >kubeadm.yaml
     ```
     
 2. 사전 검증
     
     ```bash
-    sudo kubeadm init --config kubeadm.yaml --dry-run
+    terraform plan --var-file choshsh.tfvars
     ```
     
-3. kubeadm init 및 join
+3. 배포
     
     ```bash
-    sudo kubeadm init --config kubeadm.yaml
+    terraform apply --var-file choshsh.tfvars
     ```
     
-4. 네트워크 플러그인 설치 (CIDR `10.244.0.0/16`)
+4. output 확인
+    
+    ```bash
+    eks_endpoint = "<퍼블릭 DNS>"
+    eks_name = "<클러스터 이름>"
+    how_to_use = "aws eks update-kubeconfig --name <클러스터 이름>"
+    vpc_id = "<vpc 아이디>"
+    ```
+    
+
+### 2. kubernetes 클러스터
+
+1. kube-context 설정
+    
+    ```bash
+    # 바로 전 단계의 how_to_use 출력 실행
+    $ aws eks update-kubeconfig --name <클러스터 이름>
+    
+    Added new context arn:<arn 이름> to /home/cho/.kube/config
+    ```
+    
+2. 확인
+    
+    ```bash
+    $ kubectl cluster-info
+    
+    Kubernetes control plane is running at https://<URL>
+    CoreDNS is running at <URL>/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+    ```
+    
 
 ### 3. istio (with helm)
 
@@ -82,29 +79,35 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
         # override.yaml
         gateways:
           istio-ingressgateway:
-            type: "NodePort"
-            ports:
-            - port: 15021
-              targetPort: 15021
-              name: status-port
-              nodePort: 30021
-              protocol: TCP
-            - port: 80
-              targetPort: 8080
-              name: http2
-              protocol: TCP
-              nodePort: 30080
-            - port: 443
-              targetPort: 8443
-              name: https
-              protocol: TCP
-              nodePort: 30443
+            serviceAnnotations:
+              service.beta.kubernetes.io/aws-load-balancer-ssl-cert: <arn>
+              service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+              service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
         ```
         
     - 배포
         
         ```bash
         helm install istio-ingress manifests/charts/gateways/istio-ingress -f override.yaml -n istio-system
+        ```
+        
+    - 확인
+        
+        ```bash
+        $ kubectl get svc -n istio-system istio-ingressgateway
+        
+        NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP                                                                   PORT(S)                                      AGE
+        istio-ingressgateway   LoadBalancer   10.100.57.13   ab986fdd6efdf40cf86d2cb16a5bbe72-696013522.ap-northeast-2.elb.amazonaws.com   15021:32049/TCP,80:30330/TCP,443:32381/TCP   36s
+        ```
+        
+        ```bash
+        $ kubectl describe svc -n istio-system istio-ingressgateway
+        
+        Events:
+          Type    Reason                Age   From                Message
+          ----    ------                ----  ----                -------
+          Normal  EnsuringLoadBalancer  9s    service-controller  Ensuring load balancer
+          Normal  EnsuredLoadBalancer   7s    service-controller  Ensured load balancer
         ```
         
 
@@ -134,3 +137,5 @@ AWS 환경에 EC2로 매뉴얼하게 Kubernetes 클러스터를 구축합니다.
     ```bash
     kubectl apply -f https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7/raw/050eeb128038ca382d2760288a324de3bb3a71ce/csi-driver-sc.yaml
     ```
+    
+    [https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7#file-csi-driver-sc-yaml](https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7#file-csi-driver-sc-yaml)
