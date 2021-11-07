@@ -1,5 +1,5 @@
 locals {
-  Workspace = terraform.workspace
+  workspace = terraform.workspace
 }
 
 module "vpc" {
