@@ -7,7 +7,7 @@ DevOps 공부 목적의 프로젝트입니다. [Kubernetes](https://kubernetes.
 - `argocd-deploy` : Kubernetes manifest 배포를 위한 [ArgoCD](https://argoproj.github.io/argo-cd/) helm chart
 - `dockerfiles` : 이미지 빌드를 위한 dockerfile
 - `jenkins` : jenkins pipeline 스크립트
-- `script` : bash, python 스크립트
+- `script` : 자동화를 위한 bash, python 스크립트
 - `terraform` : AWS에 Kubernetes 클러스터를 구축하기 위한 IaC 코드
 
 ## 사용법
