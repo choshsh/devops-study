@@ -1,5 +1,5 @@
 locals {
-  workspace = terraform.workspace == "default" ? "dev" : "prod"
+  Workspace = terraform.workspace
 }
 
 module "vpc" {

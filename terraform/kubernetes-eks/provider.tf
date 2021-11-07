@@ -21,8 +21,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Env   = "${local.workspace}"
-      Owner = "choshsh"
+      Workspace = terraform.workspace
+      Owner     = "choshsh"
     }
   }
 }

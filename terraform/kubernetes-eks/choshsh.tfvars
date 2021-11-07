@@ -33,5 +33,11 @@ fargate_profiles = [
     labels = {
       k8s-app = "kube-dns"
     }
+  },
+  {
+    name      = "argocd",
+    namespace = "argocd",
+    // all
+    labels = {}
   }
 ]
