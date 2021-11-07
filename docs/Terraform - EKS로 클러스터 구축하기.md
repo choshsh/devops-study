@@ -138,4 +138,14 @@ Amazon Elastic Kubernetes Service(***EKS***)로 Kubernetes 클러스터를 구�
     kubectl apply -f https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7/raw/050eeb128038ca382d2760288a324de3bb3a71ce/csi-driver-sc.yaml
     ```
     
-    [https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7#file-csi-driver-sc-yaml](https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7#file-csi-driver-sc-yaml)
+    ```yaml
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: dynamic
+    provisioner: ebs.csi.aws.com
+    volumeBindingMode: WaitForFirstConsumer
+    parameters:
+      type: gp3
+      fsType: ext4
+    ```
