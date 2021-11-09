@@ -61,7 +61,7 @@ pipeline {
         }
       }
     }
-    // GitOps 패턴의 ArgoCD를 사용하여 배포하기 때문에 ArgoCD가 바라보는 git 레포지토리에 commit 합니다.
+    //  GitOps 패턴의 ArgoCD를 사용하여 배포하기 때문에 ArgoCD가 바라보는 git 레포지토리에 commit 합니다.
 //    stage('Commit to deploy by ArgoCD') {
 //      environment {
 //        GITHUB_PASSWORD = credentials("${env.GITHUB_CRED_ID}")
