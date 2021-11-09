@@ -1,6 +1,7 @@
 image:
   name: "choshsh-ui"
   pullPolicy: "Always"
+  tag: "latest"
 
 nameOverride: "choshsh-ui-loadtest"
 fullnameOverride: "choshsh-ui-loadtest"

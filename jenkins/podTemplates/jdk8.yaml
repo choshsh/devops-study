@@ -1,0 +1,23 @@
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/jenkins
+                operator: Exists
+  containers:
+    - name: amazoncorretto-8
+      image: amazoncorretto:8
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d
+    - name: git
+      image: alpine/git:latest
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d

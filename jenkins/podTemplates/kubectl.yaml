@@ -12,7 +12,7 @@ spec:
       effect: "NoSchedule"
   containers:
     - name: kubectl
-      image: choshsh/kubectl:v1.22.2-alpine
+      image: choshsh/kubectl:v1.22.3-alpine
       imagePullPolicy: IfNotPresent
       command:
         - sleep

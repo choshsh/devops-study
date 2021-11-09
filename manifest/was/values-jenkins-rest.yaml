@@ -1,6 +1,7 @@
 image:
   name: "jenkins-api-springboot"
   pullPolicy: "Always"
+  tag: "latest"
 
 nameOverride: "jenkins-rest"
 fullnameOverride: "jenkins-rest"
