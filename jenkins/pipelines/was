@@ -29,6 +29,9 @@ pipeline {
       }
     }
     stage('Test') {
+      when {
+        environment name: 'TEST_ENABLE', value: true
+      }
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {

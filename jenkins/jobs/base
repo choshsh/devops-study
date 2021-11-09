@@ -22,7 +22,8 @@ def projects = [
                 envs           : [
                         PROJECT_NAME   : 'choshsh-ui',
                         GIT            : 'https://github.com/choshsh/choshsh-ui.git',
-                        HELM_VALUE_PATH: 'manifest/was'
+                        HELM_VALUE_PATH: 'manifest/was',
+                        TEST_ENABLE    : true
                 ]
         ],
         [
@@ -33,7 +34,8 @@ def projects = [
                 envs           : [
                         PROJECT_NAME   : 'jenkins-api-springboot',
                         GIT            : 'https://github.com/choshsh/jenkins-api-springboot.git',
-                        HELM_VALUE_PATH: 'manifest/was'
+                        HELM_VALUE_PATH: 'manifest/was',
+                        TEST_ENABLE    : false
                 ]
         ],
         [
