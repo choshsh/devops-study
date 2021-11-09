@@ -2,13 +2,15 @@ deploy:
   env:
   - name: TZ
     value: Asia/Seoul
+  - name: JENKINS_REST_ENDPOINT
+    value: http://jenkins.jenkins.svc.cluster.local:8080
   envFromConfigMap:
     configmapName: mysql
     items:
     - envName: MYSQL_URL
       key: url
     - envName: MYSQL_DB
-      key: choshsh-ui
+      key: jenkins-rest
     - envName: MYSQL_USER
       key: user
     - envName: MYSQL_PARAM
@@ -17,12 +19,15 @@ deploy:
   - envName: MYSQL_PASSWORD
     key: password
     secretName: mysql-password
-fullnameOverride: choshsh-ui
+  - envName: JENKINS_REST_CREDENTIALS
+    key: jenkins-cred
+    secretName: jenkins-cred
+fullnameOverride: jenkins-rest
 image:
-  name: choshsh-ui
+  name: jenkins-api-springboot
   pullPolicy: Always
-  tag: '1636486215025'
-nameOverride: choshsh-ui
+  tag: '1636486254929'
+nameOverride: jenkins-rest
 podAnnotations:
   sidecar.istio.io/inject: 'true'
 prometheus:

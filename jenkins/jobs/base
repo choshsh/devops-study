@@ -1,7 +1,46 @@
 #!groovy
+
 def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
+def seedJobGit = 'https://github.com/choshsh/devops-study.git'
+def seedJobBranch = 'Feature-jenkins'
+def defaultEnvs = [
+        ARGOCD_GIT       : 'https://github.com/choshsh/devops-study.git',
+        DOCKERHUB_USER   : 'choshsh',
+        DOCKERHUB_CRED_ID: 'dockerhub-token',
+        GITHUB_CRED_ID   : 'github-token',
+        GITHUB_USERNAME  : '조상현',
+        GITHUB_EMAIL     : 'cho911115@gmail.com',
+        YAML_EDITOR      : 'script/yaml_editor.py',
+        GRADLE_WORK_DIR  : '.gradle-build' // neet to add .gitignore
+]
 def projects = [
+        [
+                description    : 'choshsh-ui',
+                name           : 'choshsh-ui',
+                pipelineName   : 'was',
+                podTemplateName: 'jdk-17.yaml',
+                envs           : [
+                        PROJECT_NAME   : 'choshsh-ui',
+                        GIT            : 'https://github.com/choshsh/choshsh-ui.git',
+                        BRANCH         : 'test',
+                        HELM_VALUE_PATH: 'manifest/was',
+                        TEST_ENABLE    : true
+                ]
+        ],
+        [
+                description    : 'jenkins-rest',
+                name           : 'jenkins-rest',
+                pipelineName   : 'was',
+                podTemplateName: 'jdk-8.yaml',
+                envs           : [
+                        PROJECT_NAME   : 'jenkins-api-springboot',
+                        GIT            : 'https://github.com/choshsh/jenkins-api-springboot.git',
+                        BRANCH         : 'dev',
+                        HELM_VALUE_PATH: 'manifest/was',
+                        TEST_ENABLE    : false
+                ]
+        ],
         [
                 description    : '클러스터 내부 DNS 네트워크 검증',
                 name           : 'CoreDNS-Debug',
@@ -35,8 +74,8 @@ for (project in projects) {
       cpsScm {
         scm {
           git {
-            remote { url('https://github.com/choshsh/devops-study.git') }
-            branch('dev')
+            remote { url(seedJobGit) }
+            branch(seedJobBranch)
             extensions {}
           }
         }
@@ -45,7 +84,11 @@ for (project in projects) {
       }
     }
     environmentVariables {
-      envs(POD_TEMPLATE: podTemplatePath + '/' + project.podTemplateName)
+      env('POD_TEMPLATE', podTemplatePath + '/' + project.podTemplateName)
+      envs(defaultEnvs)
+      if (project.envs) {
+        envs(project.envs)
+      }
     }
   }
 }
