@@ -73,11 +73,12 @@ pipeline {
       }
       steps {
         container('git') {
+          sh "git checkout Feature-jenkins"
           sh "git config user.email ${env.GITHUB_EMAIL}"
           sh "git config user.name ${env.GITHUB_USERNAME}"
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
           sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-          sh 'git push https://$GITHUB_USER:$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
+          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
         }
       }
     }
