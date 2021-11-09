@@ -13,7 +13,8 @@ credentials:
               scope: GLOBAL
               secret: ${slack-token}
           - string:
-              id: "dockerhub"
+              description: "dockerhub-token"
+              id: "dockerhub-token"
               scope: GLOBAL
               secret: "${dockerhub-token}"
 jenkins:

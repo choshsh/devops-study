@@ -2,7 +2,7 @@
 def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
 def dockerhubUser = 'choshsh'
-def dockerhubCredId = 'dockerhub'
+def dockerhubCredId = 'dockerhub-token'
 def projects = [
         [
                 description    : 'choshsh-ui',
