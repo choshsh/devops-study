@@ -8,8 +8,8 @@ def defaultEnvs = [
         DOCKERHUB_USER   : 'choshsh',
         DOCKERHUB_CRED_ID: 'dockerhub-token',
         GITHUB_USER      : 'choshsh',
-        GITHUB_CRED_ID   : 'github-token'
-
+        GITHUB_CRED_ID   : 'github-token',
+        yamlEditor       : "script/yaml_editor.py"
 ]
 def projects = [
         [

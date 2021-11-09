@@ -25,3 +25,10 @@ spec:
         - sleep
       args:
         - 99d
+    - name: python
+      image: choshsh/python:3.9.7-alpine3.14
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d

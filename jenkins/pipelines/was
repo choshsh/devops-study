@@ -24,43 +24,61 @@ pipeline {
         }
       }
     }
-    stage('Test') {
+//    stage('Test') {
+//      steps {
+//        container('jdk') {
+//          dir(env.PROJECT_NAME) {
+//            sh "chmod +x gradlew"
+//            sh './gradlew clean test -g .gradle'
+//            junit "build/test-results/**/*.xml"
+//          }
+//        }
+//      }
+//    }
+//    stage('Build & Push') {
+//      environment {
+//        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+//      }
+//      steps {
+//        container('jdk') {
+//          dir(env.PROJECT_NAME) {
+//            sh './gradlew jib -Ptag=test -Djib.to.auth.username=$DOCKERHUB_USER -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g .gradle'
+//          }
+//        }
+//      }
+//    }
+    // GitOps 패턴의 ArgoCD를 사용하여 배포하기 때문에 ArgoCD가 바라보는 git 레포지토리에 commit 합니다.
+    stage('Edit helm value file') {
       steps {
-        container('jdk') {
-          dir(env.PROJECT_NAME) {
-            sh "chmod +x gradlew"
-            sh './gradlew clean test -g .gradle'
-            junit "build/test-results/**/*.xml"
-          }
+        container('python') {
+          sh "python ${env.yamlEditor} \
+                ${env.PROJECT_NAME}/jenkins.yaml \
+                ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
+                /image/tag \
+                123"
+          sh "ls -al ${env.HELM_VALUE_PATH}"
+          sh "cat ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
         }
       }
     }
-    stage('Build & Push') {
-      environment {
-        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
-      }
-      steps {
-        container('jdk') {
-          dir(env.PROJECT_NAME) {
-            sh './gradlew jib -Ptag=test -Djib.to.auth.username=$DOCKERHUB_USER -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g .gradle'
-          }
-        }
-      }
-    }
-    stage('Commit to deploy by ArgoCD') {
-      environment {
-        GITHUB_PASSWORD = credentials("${env.GITHUB_CRED_ID}")
-      }
-      steps {
-        container('git') {
-          sh '''
-              git add "\$dirName/\$fileName"
-              git commit --allow-empty -m "Push to master by jenkins pipeline"
-              git push "https://$GITHUB_USER:$GITHUB_PASSWORD@51.2.30.83:8929/choshsh/kubernetes.git"
-          '''
-        }
-      }
-    }
+    // GitOps 패턴의 ArgoCD를 사용하여 배포하기 때문에 ArgoCD가 바라보는 git 레포지토리에 commit 합니다.
+//    stage('Commit to deploy by ArgoCD') {
+//      environment {
+//        GITHUB_PASSWORD = credentials("${env.GITHUB_CRED_ID}")
+//      }
+//      steps {
+//        container('git') {
+//          sh "cp -f ${env.PROJECT_NAME}/jenkins.yaml ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+//          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+//
+//          sh '''
+//              git add "$env.PROJECT_NAME/\$fileName"
+//              git commit --allow-empty -m "Pushed by jenkins pipeline"
+//              git push "https://$GITHUB_USER:$GITHUB_PASSWORD@51.2.30.83:8929/choshsh/kubernetes.git"
+//          '''
+//        }
+//      }
+//    }
   }
   post {
     always {
