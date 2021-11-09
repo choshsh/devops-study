@@ -158,15 +158,3 @@ spec:
         - name: jenkins-cred
           secret:
             secretName: jenkins-cred
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gradle-caches
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: dynamic
-  resources:
-    requests:
-      storage: 5Gi
