@@ -11,7 +11,7 @@ pipeline {
   }
 
   environment {
-    IMAGE_TAG = "${env.BRANCH}" === 'master' ? "${currentBuild.startTimeInMillis}" : 'staging'
+    IMAGE_TAG = "${env.BRANCH}" == "master" ? "${currentBuild.startTimeInMillis}" : "staging"
   }
 
   options {
@@ -30,7 +30,7 @@ pipeline {
     }
     stage('Test') {
       when {
-        environment name: 'TEST_ENABLE', value: true
+        environment name: 'TEST_ENABLE', value: "true"
       }
       steps {
         container('jdk') {
