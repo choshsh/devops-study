@@ -17,16 +17,14 @@ pipeline {
     stage('Setup Repo') {
       steps {
         container('jdk') {
-          dir('/tmp') {
-            git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
-          }
+          git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
         }
       }
     }
     stage('Test') {
       steps {
         container('jdk') {
-          dir('/tmp/' + "${env.PROJECT_NAME}") {
+          dir(env.PROJECT_NAME) {
             sh "chmod +x gradlew"
             sh "./gradlew clean test"
             junit "build/test-results/**/*.xml"
@@ -40,7 +38,7 @@ pipeline {
       }
       steps {
         container('jdk') {
-          dir('/tmp/' + "${env.PROJECT_NAME}") {
+          dir("${env.PROJECT_NAME}") {
             sh "./gradlew jib -Djib.to.auth.password=${env.DOCKERHUB_PASSWORD} -Ptag=test"
           }
         }
