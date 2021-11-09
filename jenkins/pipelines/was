@@ -6,6 +6,8 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
+      //workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'jenkins-workspace', readOnly: false)
+      workspaceVolume hostPathWorkspaceVolume(hostPath: '/data')
     }
   }
 

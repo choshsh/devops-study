@@ -18,9 +18,6 @@ spec:
         - sleep
       args:
         - 99d
-      volumeMounts:
-        - name: gradle-caches
-          mountPath: /mnt/.gradle-caches
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
@@ -28,7 +25,3 @@ spec:
         - sleep
       args:
         - 99d
-  volumes:
-    - name: gradle-caches
-      persistentVolumeClaim:
-        claimName: gradle-caches
