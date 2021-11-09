@@ -1,4 +1,5 @@
 #!groovy
+
 def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
 def seedJobGit = 'https://github.com/choshsh/devops-study.git'
@@ -9,7 +10,7 @@ def defaultEnvs = [
         DOCKERHUB_CRED_ID: 'dockerhub-token',
         GITHUB_USER      : 'choshsh',
         GITHUB_CRED_ID   : 'github-token',
-        YAML_EDITOR       : "script/yaml_editor.py"
+        YAML_EDITOR      : 'script/yaml_editor.py'
 ]
 def projects = [
         [
