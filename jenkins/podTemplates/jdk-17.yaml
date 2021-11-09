@@ -14,6 +14,9 @@ spec:
     - name: jdk
       image: amazoncorretto:17
       imagePullPolicy: IfNotPresent
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       command:
         - sleep
       args:
@@ -21,6 +24,9 @@ spec:
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       command:
         - sleep
       args:
@@ -28,6 +34,9 @@ spec:
     - name: python
       image: choshsh/python:3.9.7-alpine3.14
       imagePullPolicy: IfNotPresent
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       command:
         - sleep
       args:
