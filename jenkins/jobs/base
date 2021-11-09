@@ -2,6 +2,7 @@
 def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
 def seedJobGit = 'https://github.com/choshsh/devops-study.git'
+def seedJobBranch = 'Feature-jenkins'
 def defaultEnvs = [
         ARGOCD_GIT       : 'https://github.com/choshsh/devops-study.git',
         DOCKERHUB_USER   : 'choshsh',
@@ -56,7 +57,7 @@ for (project in projects) {
         scm {
           git {
             remote { url(seedJobGit) }
-            branch('Feature-jenkins')
+            branch(seedJobBranch)
             extensions {}
           }
         }
