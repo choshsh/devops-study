@@ -69,7 +69,7 @@ pipeline {
     stage('Checkout') {
       steps {
         container('git') {
-          sh "git checkout -f Feature-jenkins"
+          sh "git clone ${env.ARGOCD_GIT} Feature-jenkins"
         }
       }
     }
