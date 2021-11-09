@@ -28,6 +28,15 @@ pipeline {
         }
       }
     }
+    stage('Grant execute permission for gradlew') {
+      steps {
+        container('jdk') {
+          dir(env.PROJECT_NAME) {
+            sh "chmod +x gradlew"
+          }
+        }
+      }
+    }
     stage('Test') {
       when {
         environment name: 'TEST_ENABLE', value: "true"
@@ -35,7 +44,6 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
-            sh "chmod +x gradlew"
             sh './gradlew clean test -g .gradle'
             junit "build/test-results/**/*.xml"
           }
