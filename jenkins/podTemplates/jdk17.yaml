@@ -20,7 +20,7 @@ spec:
         - 99d
       volumeMounts:
         - name: gradle-caches
-          mountPath: /home/jenkins/agent/workspace/.gradle-caches
+          mountPath: /mnt/.gradle-caches
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
