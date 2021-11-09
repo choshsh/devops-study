@@ -23,7 +23,7 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
-            git credentialsId: env.GITHUB_CRED_ID, url: env.GIT, branch: 'test'
+            git branch: 'test', credentialsId: env.GITHUB_CRED_ID, url: env.GIT
           }
         }
       }
@@ -77,8 +77,7 @@ pipeline {
           sh "git config user.name ${env.GITHUB_USERNAME}"
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
           sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-          sh 'git push -u origin Feature-jenkins \
-                "https://$GITHUB_USER:$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED"'
+          sh 'git https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
         }
       }
     }
