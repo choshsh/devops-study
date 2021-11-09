@@ -14,9 +14,6 @@ spec:
     - name: jdk
       image: amazoncorretto:17
       imagePullPolicy: IfNotPresent
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       command:
         - sleep
       args:
