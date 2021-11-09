@@ -1,4 +1,5 @@
 values-choshsh-secret.yaml
 .idea
+.gradle-build
 jenkins/lib
 manifest/jenkins/cred

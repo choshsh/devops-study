@@ -15,7 +15,7 @@ pipeline {
 
   parameters {
     string(name: 'git', defaultValue: 'github.com/choshsh/devops-study.git', description: 'Git repository URL (ex. github.com/choshsh/devops-study.git)')
-    string(name: 'branch', defaultValue: 'dev', description: 'Git branch (ex. master, dev)')
+    string(name: 'branch', defaultValue: 'master', description: 'Git branch (ex. master, dev)')
     string(name: 'dockerfile', defaultValue: 'dockerfiles/kubectl', description: 'dockerfile path in Git repository')
     string(name: 'image', defaultValue: 'choshsh/kubectl', description: 'ImageRepository/imageName')
     string(name: 'tag', defaultValue: 'test', description: 'Image Tag')
@@ -29,22 +29,21 @@ pipeline {
   stages {
     stage('Setup yamlFile') {
       environment {
-        pyScript = "script/yaml_editor.py"
         pyInput = "manifest/utils/kaniko.yaml"
       }
       steps {
         container('python') {
           // 최초 실행 시 pyInput 파일을 읽고 pyOutput 파일을 생성하고, 이후에는 pyOutput 파일을 읽고 수정함
           // set args - git repository
-          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyInput} /spec/template/spec/containers/0/args/0 --context=git://${params.git}#refs/heads/${params.branch}"
+          sh "python ${env.YAML_EDITOR} ${env.pyOutput} ${env.pyInput} /spec/template/spec/containers/0/args/0 --context=git://${params.git}#refs/heads/${params.branch}"
           // Set args - dockerfile path of git repository
-          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/1 --dockerfile=${params.dockerfile}"
+          sh "python ${env.YAML_EDITOR} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/1 --dockerfile=${params.dockerfile}"
           // Set args - image repository 
-          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/2 --destination=${params.image}:${params.tag}"
+          sh "python ${env.YAML_EDITOR} ${env.pyOutput} ${env.pyOutput} /spec/template/spec/containers/0/args/2 --destination=${params.image}:${params.tag}"
           // edit name
-          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /metadata/name kaniko-${env.BUILD_NUMBER}"
+          sh "python ${env.YAML_EDITOR} ${env.pyOutput} ${env.pyOutput} /metadata/name kaniko-${env.BUILD_NUMBER}"
           // edit label
-          sh "python ${env.pyScript} ${env.pyOutput} ${env.pyOutput} /spec/template/metadata/labels/app kaniko-${env.BUILD_NUMBER}"
+          sh "python ${env.YAML_EDITOR} ${env.pyOutput} ${env.pyOutput} /spec/template/metadata/labels/app kaniko-${env.BUILD_NUMBER}"
 
           sh "cat ${env.pyOutput}"
         }

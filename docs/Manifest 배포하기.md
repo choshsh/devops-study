@@ -61,11 +61,13 @@ ArgoCD를 사용하여 GitOps 패턴으로 manifest들을 배포합니다.
         
         ```bash
         echo -n <Slack 토큰> >slack-token
-        echo -n <GitHub 토큰> >choshsh-github-token
+        echo -n <GitHub 토큰> >github-token
+        echo -n <DockerHub 토큰> >dockerhub-token
         
         kubectl create -n jenkins secret generic jenkins-cred \
-          --from-file choshsh-github-token \
-          --from-file slack-token
+          --from-file slack-token \
+          --from-file github-token \
+          --from-file dockerhub-token
         ```
         
 

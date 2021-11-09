@@ -11,18 +11,24 @@ spec:
       operator: "Exists"
       effect: "NoSchedule"
   containers:
-    - name: kubectl
-      image: choshsh/kubectl:v1.22.3-alpine
+    - name: jdk
+      image: amazoncorretto:17
       imagePullPolicy: IfNotPresent
       command:
         - sleep
       args:
         - 99d
-      volumeMounts:
-        - name: kubeconfig
-          mountPath: /root/.kube
-          readOnly: true
-  volumes:
-    - name: kubeconfig
-      secret:
-        secretName: kubeconfig
+    - name: git
+      image: alpine/git:latest
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d
+    - name: python
+      image: choshsh/python:3.9.7-alpine3.14
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d

@@ -10,6 +10,18 @@ spec:
       labels:
         app: kaniko
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/jenkins
+                    operator: Exists
+      tolerations:
+        - key: "node-role.kubernetes.io/jenkins"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:latest
