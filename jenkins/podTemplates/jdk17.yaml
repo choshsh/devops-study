@@ -14,10 +14,6 @@ spec:
     - name: jdk
       image: amazoncorretto:17
       imagePullPolicy: IfNotPresent
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsUser: 1000
       command:
         - sleep
       args:
@@ -25,18 +21,10 @@ spec:
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsUser: 1000
       command:
         - sleep
       args:
         - 99d
     - name: jnlp
       image: jenkins/inbound-agent:4.3-4-jdk11
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsUser: 1000
 
