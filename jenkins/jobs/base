@@ -5,6 +5,17 @@ def dockerhubUser = 'choshsh'
 def dockerhubCredId = 'dockerhub'
 def projects = [
         [
+                description    : 'choshsh-ui',
+                name           : 'choshsh-ui',
+                pipelineName   : 'was',
+                podTemplateName: 'jdk17.yaml',
+                envs           : [
+                        GIT            : 'https://github.com/choshsh/choshsh-ui.git',
+                        GIT_CRED       : 'choshsh-github-token',
+                        HELM_VALUE_PATH: 'manifest/was'
+                ]
+        ],
+        [
                 description    : '클러스터 내부 DNS 네트워크 검증',
                 name           : 'CoreDNS-Debug',
                 pipelineName   : 'corednsDebug',
@@ -27,17 +38,6 @@ def projects = [
                 name           : 'load-test',
                 pipelineName   : 'loadTest',
                 podTemplateName: 'loadTest.yaml'
-        ],
-        [
-                description    : 'choshsh-ui',
-                name           : 'choshsh-ui',
-                pipelineName   : 'was',
-                podTemplateName: 'jdk17.yaml',
-                envs           : [
-                        GIT          : 'https://github.com/choshsh/choshsh-ui.git',
-                        GIT_CRED      : 'choshsh-github-token',
-                        HELM_VALUE_PATH: 'manifest/was'
-                ]
         ]
 ]
 
