@@ -6,6 +6,10 @@ spec:
           - matchExpressions:
               - key: node-role.kubernetes.io/jenkins
                 operator: Exists
+  tolerations:
+    - key: "node-role.kubernetes.io/jenkins"
+      operator: "Exists"
+      effect: "NoSchedule"
   containers:
     - name: jdk
       image: amazoncorretto:17
