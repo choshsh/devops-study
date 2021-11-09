@@ -35,18 +35,18 @@ pipeline {
         }
       }
     }
-//    stage('Build & Push') {
-//      environment {
-//        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
-//      }
-//      steps {
-//        container('jdk') {
-//          dir(env.PROJECT_NAME) {
-//            sh "./gradlew jib -Djib.to.auth.password=${env.DOCKERHUB_PASSWORD} -Ptag=test"
-//          }
-//        }
-//      }
-//    }
+    stage('Build & Push') {
+      environment {
+        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+      }
+      steps {
+        container('jdk') {
+          dir(env.PROJECT_NAME) {
+            sh "./gradlew jib -Djib.to.auth.password=${env.DOCKERHUB_PASSWORD} -Ptag=test  -g .gradle"
+          }
+        }
+      }
+    }
   }
   post {
     always {
