@@ -25,6 +25,8 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
+            sh "pwd"
+            sh "ls -al"
             sh "chmod +x gradlew"
             sh "./gradlew clean test"
             junit "build/test-results/**/*.xml"
