@@ -1,3 +1,55 @@
 #!groovy
 
 @Library('choshsh') _
+
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile POD_TEMPLATE
+    }
+  }
+
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
+
+  stages {
+    stage('Setup Repo') {
+      steps {
+        container('jdk') {
+          dir('/tmp') {
+            git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
+          }
+        }
+      }
+    }
+    stage('Test') {
+      steps {
+        container('jdk') {
+          dir('/tmp/' + "${env.PROJECT_NAME}") {
+            sh "chmod +x gradlew"
+            sh "./gradlew clean test"
+            junit "build/test-results/**/*.xml"
+          }
+        }
+      }
+    }
+    stage('Build & Push') {
+      enviroment {
+        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+      }
+      steps {
+        container('jdk') {
+          dir('/tmp/' + "${env.PROJECT_NAME}") {
+            sh "./gradlew jib -Djib.to.auth.password=${env.DOCKERHUB_PASSWORD}"
+          }
+        }
+      }
+    }
+  }
+  post {
+    always {
+      slackSendCustom()
+    }
+  }
+}

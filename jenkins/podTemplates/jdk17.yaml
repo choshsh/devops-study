@@ -7,7 +7,7 @@ spec:
               - key: node-role.kubernetes.io/jenkins
                 operator: Exists
   containers:
-    - name: amazoncorretto-17
+    - name: jdk
       image: amazoncorretto:17
       imagePullPolicy: IfNotPresent
       command:
