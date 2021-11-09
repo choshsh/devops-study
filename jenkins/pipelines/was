@@ -49,13 +49,15 @@ pipeline {
     }
     stage('Commit to deploy by ArgoCD') {
       environment {
-        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+        GITHUB_PASSWORD = credentials("${env.GITHUB_CRED_ID}")
       }
       steps {
-        container('jdk') {
-          dir(env.PROJECT_NAME) {
-            sh './gradlew jib -Ptag=test -Djib.to.auth.username=$DOCKERHUB_USER -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g .gradle'
-          }
+        container('git') {
+          sh '''
+              git add "\$dirName/\$fileName"
+              git commit --allow-empty -m "Push to master by jenkins pipeline"
+              git push "https://$GITHUB_USER:$GITHUB_PASSWORD@51.2.30.83:8929/choshsh/kubernetes.git"
+          '''
         }
       }
     }

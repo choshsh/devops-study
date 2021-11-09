@@ -1,10 +1,14 @@
 #!groovy
-def pipelinePath = 'jenkins/pipelines'
-def podTemplatePath = 'jenkins/podTemplates'
-def dockerhubUser = 'choshsh'
-def dockerhubCredId = 'dockerhub-token'
-def githubCredId = 'github-token'
+def defaultEnvs = [
+        pipelinePath   : 'jenkins/pipelines',
+        podTemplatePath: 'jenkins/podTemplates',
+        dockerhubUser  : 'choshsh',
+        dockerhubCredId: 'dockerhub-token',
+        githubUser     : 'choshsh',
+        githubCredId   : 'github-token',
+        argocdGit      : 'https://github.com/choshsh/devops-study.git'
 
+]
 def projects = [
         [
                 description    : 'choshsh-ui',
@@ -60,11 +64,7 @@ for (project in projects) {
       }
     }
     environmentVariables {
-      env('POD_TEMPLATE', podTemplatePath + '/' + project.podTemplateName)
-      env('DOCKERHUB_USER', dockerhubUser)
-      env('DOCKERHUB_CRED_ID', dockerhubCredId)
-      env('GITHUB_CRED_ID', githubCredId)
-      env('PROJECT_NAME', project.name)
+      envs(defaultEnvs)
       if (project.envs) {
         envs(project.envs)
       }
