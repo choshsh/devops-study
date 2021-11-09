@@ -55,7 +55,7 @@ pipeline {
                 ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
                 ${env.PROJECT_NAME}/jenkins.yaml \
                 /image/tag \
-                123"
+                abc"
           sh "ls -al ${env.HELM_VALUE_PATH}"
           sh "cat ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
         }
