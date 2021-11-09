@@ -6,8 +6,6 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
-      runAsUser 1000
-      runAsGroup 1000
       workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'jenkins-workspace', readOnly: false)
     }
   }
