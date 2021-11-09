@@ -59,7 +59,7 @@ pipeline {
         container('jdk') {
           dir(env.WORKDIR) {
             sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
-                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g $HOME/.gradle-caches'
+                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g .gradle'
           }
         }
       }
@@ -85,7 +85,7 @@ pipeline {
       }
       steps {
         container('git') {
-          sh "git checkout -f Feature-jenkins"
+          // sh "git checkout -f Feature-jenkins"
           sh "git config user.email ${env.GITHUB_EMAIL}"
           sh "git config user.name ${env.GITHUB_USERNAME}"
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
