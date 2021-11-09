@@ -40,32 +40,32 @@ pipeline {
         }
       }
     }
-//    stage('Test') {
-//      when {
-//        environment name: 'TEST_ENABLE', value: "true"
-//      }
-//      steps {
-//        container('jdk') {
-//          dir(env.WORKDIR) {
-//            sh './gradlew clean test'
-//            junit "build/test-results/**/*.xml"
-//          }
-//        }
-//      }
-//    }
-//    stage('Build & Push') {
-//      environment {
-//        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
-//      }
-//      steps {
-//        container('jdk') {
-//          dir(env.WORKDIR) {
-//            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
-//                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
-//          }
-//        }
-//      }
-//    }
+    stage('Test') {
+      when {
+        environment name: 'TEST_ENABLE', value: "true"
+      }
+      steps {
+        container('jdk') {
+          dir(env.WORKDIR) {
+            sh './gradlew clean test'
+            junit "build/test-results/**/*.xml"
+          }
+        }
+      }
+    }
+    stage('Build & Push') {
+      environment {
+        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+      }
+      steps {
+        container('jdk') {
+          dir(env.WORKDIR) {
+            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
+                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
+          }
+        }
+      }
+    }
     // Helm 차트의 이미지 태그 값을 수정합니다.
     stage('Edit helm value file') {
       steps {
