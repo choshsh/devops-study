@@ -15,7 +15,7 @@ pipeline {
   }
 
   options {
-    timeout(time: 10, unit: 'MINUTES')
+    timeout(time: 15, unit: 'MINUTES')
     skipDefaultCheckout(true)
   }
 
@@ -27,6 +27,19 @@ pipeline {
         container('jdk') {
           dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+          }
+        }
+      }
+    }
+    stage('Build Front-end') {
+      when {
+        environment name: 'NPM_ENABLE', value: "true"
+      }
+      steps {
+        container('node') {
+          dir(env.WORKDIR + '/' + env.NPM_DIR) {
+            sh 'npm install'
+            sh 'npm run build'
           }
         }
       }

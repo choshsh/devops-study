@@ -21,6 +21,8 @@ def projects = [
                 pipelineName   : 'was',
                 podTemplateName: 'jdk-17.yaml',
                 envs           : [
+                        NPM_ENABLE     : true,
+                        NPM_DIR        : 'front-end',
                         PROJECT_NAME   : 'choshsh-ui',
                         GIT            : 'https://github.com/choshsh/choshsh-ui.git',
                         BRANCH         : 'master',

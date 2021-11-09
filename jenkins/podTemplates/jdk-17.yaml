@@ -32,3 +32,10 @@ spec:
         - sleep
       args:
         - 99d
+    - name: node
+      image: node
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+      args:
+        - 99d
