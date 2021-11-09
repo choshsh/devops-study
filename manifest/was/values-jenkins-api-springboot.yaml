@@ -26,7 +26,7 @@ fullnameOverride: jenkins-rest
 image:
   name: jenkins-api-springboot
   pullPolicy: Always
-  tag: staging
+  tag: '1636484600560'
 nameOverride: jenkins-rest
 podAnnotations:
   sidecar.istio.io/inject: 'true'
