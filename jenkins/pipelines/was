@@ -6,7 +6,7 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
-      //workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'jenkins-workspace', readOnly: false)
+      workspaceVolume hostPathWorkspaceVolume(hostPath: '/tmp')
     }
   }
 
@@ -19,7 +19,6 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
-            sh 'whoami'
             git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
           }
         }
@@ -30,7 +29,6 @@ pipeline {
         container('jdk') {
           dir(env.PROJECT_NAME) {
             sh "chmod +x gradlew"
-            sh "touch /opt/gradle-caches/123"
             sh "./gradlew clean test"
             junit "build/test-results/**/*.xml"
           }
