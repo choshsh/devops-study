@@ -23,7 +23,7 @@ pipeline {
     stage('Setup Repo') {
       steps {
         cleanWs()
-        git branch: 'Feature-jenkins', credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
+        git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
         container('jdk') {
           dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
