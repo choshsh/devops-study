@@ -6,6 +6,7 @@ def seedJobGit = 'https://github.com/choshsh/devops-study.git'
 def seedJobBranch = 'Feature-jenkins'
 def defaultEnvs = [
         ARGOCD_GIT       : 'https://github.com/choshsh/devops-study.git',
+        ARGOCD_NAME      : 'devops-study',
         DOCKERHUB_USER   : 'choshsh',
         DOCKERHUB_CRED_ID: 'dockerhub-token',
         GITHUB_CRED_ID   : 'github-token',

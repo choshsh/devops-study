@@ -77,11 +77,11 @@ pipeline {
       steps {
         container('python') {
           sh "python ${env.YAML_EDITOR} \
-                ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
+                ${env.ARGOCD_NAME}${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
                 ${env.WORKDIR}/jenkins.yaml \
                 /image/tag \
                 ${env.IMAGE_TAG}"
-          sh "cat ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+          sh "cat ${env.ARGOCD_NAME}${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
         }
       }
     }
@@ -93,11 +93,13 @@ pipeline {
       }
       steps {
         container('git') {
-          sh "git config user.email ${env.GITHUB_EMAIL}"
-          sh "git config user.name ${env.GITHUB_USERNAME}"
-          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
-          sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
+          dir(env.ARGOCD_NAME) {
+            sh "git config user.email ${env.GITHUB_EMAIL}"
+            sh "git config user.name ${env.GITHUB_USERNAME}"
+            sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+            sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
+            sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
+          }
         }
       }
     }
