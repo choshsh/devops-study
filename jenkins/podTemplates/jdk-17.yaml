@@ -18,6 +18,9 @@ spec:
         - sleep
       args:
         - 99d
+      volumeMounts:
+        - name: gradle-home
+          mountPath: /opt/gradle-home
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
@@ -32,3 +35,7 @@ spec:
         - sleep
       args:
         - 99d
+  volumes:
+    - name: gradle-home
+      persistentVolumeClaim:
+        claimName: gradle-home
