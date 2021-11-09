@@ -99,7 +99,7 @@ argocd:
       type: helm
       helm:
         valueFiles:
-          - values-jenkins-rest.yaml
+          - values-jenkins-api-springboot.yaml
     syncPolicy:
       automated:
         prune: true
