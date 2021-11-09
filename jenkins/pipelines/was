@@ -17,7 +17,11 @@ pipeline {
     stage('Setup Repo') {
       steps {
         container('jdk') {
+          sh 'pwd'
+          sh 'ls -al'
           git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
+          sh 'pwd'
+          sh 'ls -al'
         }
       }
     }
