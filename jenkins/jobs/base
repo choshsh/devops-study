@@ -18,10 +18,21 @@ def projects = [
                 description    : 'choshsh-ui',
                 name           : 'choshsh-ui',
                 pipelineName   : 'was',
-                podTemplateName: 'jdk17.yaml',
+                podTemplateName: 'jdk-17.yaml',
                 envs           : [
                         PROJECT_NAME   : 'choshsh-ui',
                         GIT            : 'https://github.com/choshsh/choshsh-ui.git',
+                        HELM_VALUE_PATH: 'manifest/was'
+                ]
+        ],
+        [
+                description    : 'jenkins-rest',
+                name           : 'jenkins-rest',
+                pipelineName   : 'was',
+                podTemplateName: 'jdk-8.yaml',
+                envs           : [
+                        PROJECT_NAME   : 'jenkins-api-springboot',
+                        GIT            : 'https://github.com/choshsh/jenkins-api-springboot.git',
                         HELM_VALUE_PATH: 'manifest/was'
                 ]
         ],
