@@ -64,6 +64,13 @@ pipeline {
 //        }
 //      }
 //    }
+    stage('Checkout') {
+      steps {
+        container('git') {
+          sh "git checkout -f Feature-jenkins"
+        }
+      }
+    }
     // Helm 차트의 이미지 태그 값을 수정합니다.
     stage('Edit helm value file') {
       steps {
@@ -85,7 +92,6 @@ pipeline {
       }
       steps {
         container('git') {
-          sh "git checkout -f Feature-jenkins"
           sh "git config user.email ${env.GITHUB_EMAIL}"
           sh "git config user.name ${env.GITHUB_USERNAME}"
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
