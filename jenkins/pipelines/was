@@ -85,7 +85,7 @@ pipeline {
       }
       steps {
         container('git') {
-          // sh "git checkout -f Feature-jenkins"
+          sh "git checkout -f"
           sh "git config user.email ${env.GITHUB_EMAIL}"
           sh "git config user.name ${env.GITHUB_USERNAME}"
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
