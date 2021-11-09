@@ -3,6 +3,8 @@ def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
 def dockerhubUser = 'choshsh'
 def dockerhubCredId = 'dockerhub-token'
+def githubCredId = 'github-token'
+
 def projects = [
         [
                 description    : 'choshsh-ui',
@@ -61,6 +63,7 @@ for (project in projects) {
       env('POD_TEMPLATE', podTemplatePath + '/' + project.podTemplateName)
       env('DOCKERHUB_USER', dockerhubUser)
       env('DOCKERHUB_CRED_ID', dockerhubCredId)
+      env('GITHUB_CRED_ID', githubCredId)
       env('PROJECT_NAME', project.name)
       if (project.envs) {
         envs(project.envs)
