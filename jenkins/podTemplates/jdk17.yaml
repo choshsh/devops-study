@@ -18,6 +18,10 @@ spec:
         - sleep
       args:
         - 99d
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsUser: 1000
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
