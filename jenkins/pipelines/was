@@ -37,36 +37,36 @@ pipeline {
         }
       }
     }
-    stage('Test') {
-      when {
-        environment name: 'TEST_ENABLE', value: "true"
-      }
-      steps {
-        container('jdk') {
-          dir(env.WORKDIR) {
-            sh './gradlew clean test'
-            junit "build/test-results/**/*.xml"
-          }
-        }
-      }
-    }
-    stage('Build & Push') {
-      environment {
-        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
-      }
-      steps {
-        container('jdk') {
-          dir(env.WORKDIR) {
-            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
-                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
-          }
-        }
-      }
-    }
+//    stage('Test') {
+//      when {
+//        environment name: 'TEST_ENABLE', value: "true"
+//      }
+//      steps {
+//        container('jdk') {
+//          dir(env.WORKDIR) {
+//            sh './gradlew clean test'
+//            junit "build/test-results/**/*.xml"
+//          }
+//        }
+//      }
+//    }
+//    stage('Build & Push') {
+//      environment {
+//        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+//      }
+//      steps {
+//        container('jdk') {
+//          dir(env.WORKDIR) {
+//            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
+//                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
+//          }
+//        }
+//      }
+//    }
     stage('Checkout') {
       steps {
         container('git') {
-          sh "git checkout -f Feature-jenkins"
+          sh "git pull --rebase"
         }
       }
     }
@@ -96,7 +96,6 @@ pipeline {
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
           sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
           sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
-          sh 'rm -rf .git'
         }
       }
     }
