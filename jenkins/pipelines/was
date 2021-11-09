@@ -47,6 +47,18 @@ pipeline {
         }
       }
     }
+    stage('Commit to deploy by ArgoCD') {
+      environment {
+        DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
+      }
+      steps {
+        container('jdk') {
+          dir(env.PROJECT_NAME) {
+            sh './gradlew jib -Ptag=test -Djib.to.auth.username=$DOCKERHUB_USER -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g .gradle'
+          }
+        }
+      }
+    }
   }
   post {
     always {

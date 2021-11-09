@@ -119,8 +119,8 @@ spec:
               mountPath: /usr/share/jenkins/ref/jobs/seed
             # github token 값
             - name: jenkins-cred
-              mountPath: /run/secrets/choshsh-github-token
-              subPath: choshsh-github-token
+              mountPath: /run/secrets/github-token
+              subPath: github-token
               readOnly: true
             # slack token 값
             - name: jenkins-cred
