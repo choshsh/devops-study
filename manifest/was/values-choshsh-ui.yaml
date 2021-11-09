@@ -21,7 +21,7 @@ fullnameOverride: choshsh-ui
 image:
   name: choshsh-ui
   pullPolicy: Always
-  tag: staging
+  tag: '1636482208174'
 nameOverride: choshsh-ui
 podAnnotations:
   sidecar.istio.io/inject: 'true'
