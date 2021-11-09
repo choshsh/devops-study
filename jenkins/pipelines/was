@@ -18,6 +18,7 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
+            sh 'whoami'
             git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
           }
         }
