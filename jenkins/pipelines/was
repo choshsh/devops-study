@@ -42,7 +42,7 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
-            sh "./gradlew jib -Djib.to.auth.password=${env.DOCKERHUB_PASSWORD} -Ptag=test  -g .gradle"
+            sh './gradlew jib -Djib.to.auth.password=${env.DOCKERHUB_PASSWORD} -Ptag=test -g .gradle'
           }
         }
       }
