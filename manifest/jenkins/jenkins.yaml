@@ -127,6 +127,11 @@ spec:
               mountPath: /run/secrets/slack-token
               subPath: slack-token
               readOnly: true
+            # dockerhub 토큰
+            - name: jenkins-cred
+              mountPath: /run/secrets/dockerhub-token
+              subPath: dockerhub-token
+              readOnly: true
       # 플러그인 사전 설치, Config as Code(JCasC) 파일 다운로드, seed job config.xml 다운로드
       initContainers:
         - name: init-jenkins
