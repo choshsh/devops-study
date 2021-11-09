@@ -77,11 +77,11 @@ pipeline {
       steps {
         container('python') {
           sh "python ${env.YAML_EDITOR} \
-                ${env.ARGOCD_NAME}${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
+                ${env.ARGOCD_NAME}/${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
                 ${env.WORKDIR}/jenkins.yaml \
                 /image/tag \
                 ${env.IMAGE_TAG}"
-          sh "cat ${env.ARGOCD_NAME}${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+          sh "cat ${env.ARGOCD_NAME}/${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
         }
       }
     }
