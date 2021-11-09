@@ -6,7 +6,6 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
-      workspaceVolume hostPathWorkspaceVolume(hostPath: '/data')
     }
   }
 
