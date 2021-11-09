@@ -23,7 +23,7 @@ pipeline {
     stage('Setup Repo') {
       steps {
         cleanWs()
-        sh "git clone ${env.ARGOCD_GIT} -b Feature-jenkins"
+        git branch: 'Feature-jenkins', credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
         container('jdk') {
           dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
@@ -71,11 +71,11 @@ pipeline {
       steps {
         container('python') {
           sh "python ${env.YAML_EDITOR} \
-                ${env.ARGOCD_NAME}/${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
+                ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
                 ${env.WORKDIR}/jenkins.yaml \
                 /image/tag \
                 ${env.IMAGE_TAG}"
-          sh "cat ${env.ARGOCD_NAME}/${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+          sh "cat ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
         }
       }
     }
