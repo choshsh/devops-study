@@ -19,8 +19,8 @@ def projects = [
                 pipelineName   : 'was',
                 podTemplateName: 'jdk17.yaml',
                 envs           : [
+                        PROJECT_NAME   : 'choshsh-ui',
                         GIT            : 'https://github.com/choshsh/choshsh-ui.git',
-                        GIT_CRED       : 'choshsh-github-token',
                         HELM_VALUE_PATH: 'manifest/was'
                 ]
         ],
