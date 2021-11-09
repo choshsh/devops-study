@@ -19,7 +19,7 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.PROJECT_NAME) {
-            git credentialsId: env.CRED_ID, url: env.GIT, branch: 'test'
+            git credentialsId: env.GITHUB_CRED_ID, url: env.GIT, branch: 'test'
           }
         }
       }
