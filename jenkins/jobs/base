@@ -1,6 +1,7 @@
 #!groovy
 def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
+def dockerhubUser = 'choshsh'
 def dockerhubCredId = 'dockerhub'
 def projects = [
         [
@@ -58,6 +59,7 @@ for (project in projects) {
     }
     environmentVariables {
       env('POD_TEMPLATE', podTemplatePath + '/' + project.podTemplateName)
+      env('DOCKERHUB_USER', dockerhubUser)
       env('DOCKERHUB_CRED_ID', dockerhubCredId)
       env('PROJECT_NAME', project.name)
       if (project.envs) {
