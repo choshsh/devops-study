@@ -1,8 +1,8 @@
 #!groovy
+def pipelinePath = 'jenkins/pipelines'
+def podTemplatePath = 'jenkins/podTemplates'
+def seedJobGit = 'https://github.com/choshsh/devops-study.git'
 def defaultEnvs = [
-        pipelinePath   : 'jenkins/pipelines',
-        podTemplatePath: 'jenkins/podTemplates',
-        seedJobGit     : 'https://github.com/choshsh/devops-study.git',
         argocdGit      : 'https://github.com/choshsh/devops-study.git',
         dockerhubUser  : 'choshsh',
         dockerhubCredId: 'dockerhub-token',
@@ -55,16 +55,17 @@ for (project in projects) {
       cpsScm {
         scm {
           git {
-            remote { url(defaultEnvs.seedJobGit) }
+            remote { url(seedJobGit) }
             branch('Feature-jenkins')
             extensions {}
           }
         }
-        scriptPath(defaultEnvs.pipelinePath + '/' + project.pipelineName)
+        scriptPath(pipelinePath + '/' + project.pipelineName)
         lightweight()
       }
     }
     environmentVariables {
+      env('POD_TEMPLATE', podTemplatePath + '/' + project.podTemplateName)
       envs(defaultEnvs)
       if (project.envs) {
         envs(project.envs)
