@@ -12,6 +12,7 @@ pipeline {
 
   environment {
     IMAGE_TAG = "${currentBuild.startTimeInMillis}"
+    WORKDIR = "${env.GRADLE_WORK_DIR + "/" + env.PROJECT_NAME}"
   }
 
   options {
@@ -22,7 +23,7 @@ pipeline {
     stage('Setup Repo') {
       steps {
         container('jdk') {
-          dir(env.PROJECT_NAME) {
+          dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
           }
         }
@@ -31,7 +32,7 @@ pipeline {
     stage('Grant execute permission for gradlew') {
       steps {
         container('jdk') {
-          dir(env.PROJECT_NAME) {
+          dir(env.WORKDIR) {
             sh "chmod +x gradlew"
           }
         }
@@ -43,7 +44,7 @@ pipeline {
       }
       steps {
         container('jdk') {
-          dir(env.PROJECT_NAME) {
+          dir(env.WORKDIR) {
             sh './gradlew clean test -g .gradle'
             junit "build/test-results/**/*.xml"
           }
@@ -56,7 +57,7 @@ pipeline {
       }
       steps {
         container('jdk') {
-          dir(env.PROJECT_NAME) {
+          dir(env.WORKDIR) {
             sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
                   -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g $HOME/.gradle-caches'
           }
@@ -69,7 +70,7 @@ pipeline {
         container('python') {
           sh "python ${env.YAML_EDITOR} \
                 ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
-                ${env.PROJECT_NAME}/jenkins.yaml \
+                ${env.WORKDIR}/jenkins.yaml \
                 /image/tag \
                 ${env.IMAGE_TAG}"
           sh "cat ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"

@@ -11,7 +11,8 @@ def defaultEnvs = [
         GITHUB_CRED_ID   : 'github-token',
         GITHUB_USERNAME  : '조상현',
         GITHUB_EMAIL     : 'cho911115@gmail.com',
-        YAML_EDITOR      : 'script/yaml_editor.py'
+        YAML_EDITOR      : 'script/yaml_editor.py',
+        GRADLE_WORK_DIR  : 'gradle-build'
 ]
 def projects = [
         [
