@@ -62,23 +62,25 @@ pipeline {
       }
     }
     //  GitOps 패턴의 ArgoCD를 사용하여 배포하기 때문에 ArgoCD가 바라보는 git 레포지토리에 commit 합니다.
-//    stage('Commit to deploy by ArgoCD') {
-//      environment {
-//        GITHUB_PASSWORD = credentials("${env.GITHUB_CRED_ID}")
-//      }
-//      steps {
-//        container('git') {
+    stage('Commit to deploy by ArgoCD') {
+      environment {
+        GITHUB_PASSWORD = credentials("${env.GITHUB_CRED_ID}")
+        ARGOCD_GIT_FORMATTED = env.ARGOCD_GIT.replace("https://", "")
+      }
+      steps {
+        container('git') {
+          echo env.ARGOCD_GIT_FORMATTED
 //          sh "cp -f ${env.PROJECT_NAME}/jenkins.yaml ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
 //          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
 //
 //          sh '''
 //              git add "$env.PROJECT_NAME/\$fileName"
 //              git commit --allow-empty -m "Pushed by jenkins pipeline"
-//              git push "https://$GITHUB_USER:$GITHUB_PASSWORD@51.2.30.83:8929/choshsh/kubernetes.git"
+//              git push -u origin Feature-jenkins "https://$GITHUB_USER:$GITHUB_PASSWORD@51.2.30.83:8929/choshsh/kubernetes.git"
 //          '''
-//        }
-//      }
-//    }
+        }
+      }
+    }
   }
   post {
     always {
