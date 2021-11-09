@@ -20,9 +20,9 @@ pipeline {
   }
 
   stages {
-    cleanWs()
     stage('Setup Repo') {
       steps {
+        cleanWs()
         container('jdk') {
           dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
