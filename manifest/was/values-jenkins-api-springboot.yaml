@@ -1,0 +1,34 @@
+deploy:
+  env:
+  - name: TZ
+    value: Asia/Seoul
+  - name: JENKINS_REST_ENDPOINT
+    value: http://jenkins.jenkins.svc.cluster.local:8080
+  envFromConfigMap:
+    configmapName: mysql
+    items:
+    - envName: MYSQL_URL
+      key: url
+    - envName: MYSQL_DB
+      key: jenkins-rest
+    - envName: MYSQL_USER
+      key: user
+    - envName: MYSQL_PARAM
+      key: jdbc-param
+  envFromSecret:
+  - envName: MYSQL_PASSWORD
+    key: password
+    secretName: mysql-password
+  - envName: JENKINS_REST_CREDENTIALS
+    key: jenkins-cred
+    secretName: jenkins-cred
+fullnameOverride: jenkins-rest
+image:
+  name: jenkins-api-springboot
+  pullPolicy: Always
+  tag: staging
+nameOverride: jenkins-rest
+podAnnotations:
+  sidecar.istio.io/inject: 'true'
+prometheus:
+  enabled: true
