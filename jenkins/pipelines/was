@@ -44,7 +44,7 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.WORKDIR) {
-            sh './gradlew clean test -g /opt/gradle-home'
+            sh './gradlew clean test'
             junit "build/test-results/**/*.xml"
           }
         }
@@ -58,7 +58,7 @@ pipeline {
         container('jdk') {
           dir(env.WORKDIR) {
             sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
-                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -g /opt/gradle-home'
+                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
           }
         }
       }
