@@ -77,7 +77,7 @@ pipeline {
           sh "git config user.name ${env.GITHUB_USERNAME}"
           sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
           sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-          sh 'git https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
+          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
         }
       }
     }
