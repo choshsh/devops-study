@@ -12,7 +12,7 @@ def defaultEnvs = [
         GITHUB_USERNAME  : '조상현',
         GITHUB_EMAIL     : 'cho911115@gmail.com',
         YAML_EDITOR      : 'script/yaml_editor.py',
-        GRADLE_WORK_DIR  : '.gradle-build' // neet to add .gitignore
+        GRADLE_WORK_DIR  : '/opt/gradle-build' // neet to add .gitignore
 ]
 def projects = [
         [
