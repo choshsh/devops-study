@@ -6,6 +6,8 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
+      runAsUser 1000
+      runAsGroup 1000
       workspaceVolume persistentVolumeClaimWorkspaceVolume(claimName: 'jenkins-workspace', readOnly: false)
     }
   }
@@ -31,7 +33,7 @@ pipeline {
           dir(env.PROJECT_NAME) {
             sh "chmod +x gradlew"
             sh "echo test >/mnt/.gradle-caches/123"
-            sh "./gradlew clean test -g /mnt/.gradle-caches"
+            sh "./gradlew clean test"
             junit "build/test-results/**/*.xml"
           }
         }
