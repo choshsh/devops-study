@@ -23,7 +23,6 @@ pipeline {
     stage('Setup Repo') {
       steps {
         cleanWs()
-        git branch: 'Feature-jenkins', credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
         container('jdk') {
           dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
@@ -69,6 +68,7 @@ pipeline {
     // Helm 차트의 이미지 태그 값을 수정합니다.
     stage('Edit helm value file') {
       steps {
+        git branch: 'Feature-jenkins', credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
         container('python') {
           sh "python ${env.YAML_EDITOR} \
                 ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml \
@@ -87,13 +87,11 @@ pipeline {
       }
       steps {
         container('git') {
-          dir(env.ARGOCD_NAME) {
-            sh "git config user.email ${env.GITHUB_EMAIL}"
-            sh "git config user.name ${env.GITHUB_USERNAME}"
-            sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
-            sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-            sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
-          }
+          sh "git config user.email ${env.GITHUB_EMAIL}"
+          sh "git config user.name ${env.GITHUB_USERNAME}"
+          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+          sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
+          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
         }
       }
     }
