@@ -30,5 +30,5 @@ spec:
         - 99d
   volumes:
     - name: gradle-caches
-      secret:
-        secretName: gradle-caches
+      persistentVolumeClaim:
+        claimName: gradle-caches
