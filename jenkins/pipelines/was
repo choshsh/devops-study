@@ -11,7 +11,7 @@ pipeline {
   }
 
   environment {
-    IMAGE_TAG = "${env.BRANCH}" == "master" ? "${currentBuild.startTimeInMillis}" : "staging"
+    IMAGE_TAG = "${env.BRANCH == "master" ? "prod" + "-" + currentBuild.startTimeInMillis : "staging"}"
   }
 
   options {
