@@ -30,7 +30,7 @@ pipeline {
           dir(env.PROJECT_NAME) {
             sh "chmod +x gradlew"
             sh "echo test >/mnt/.gradle-caches"
-            sh "./gradlew clean test -g /mnt/.gradle-caches"
+            sh "./gradlew clean test -g /mnt/.gradle-caches/123"
             junit "build/test-results/**/*.xml"
           }
         }
