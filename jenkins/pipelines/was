@@ -64,7 +64,9 @@ pipeline {
       }
       post {
         success {
-          sh "rsync -au node_modules /opt/jenkins-caches/${env.PROJECT_NAME}/node_modules/"
+          container('node') {
+            sh "rsync -au node_modules /opt/jenkins-caches/${env.PROJECT_NAME}/node_modules/"
+          }
         }
       }
     }
@@ -91,7 +93,9 @@ pipeline {
       }
       post {
         success {
-          sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper /opt/jenkins-caches/${env.PROJECT_NAME}/gradle/"
+          container('jdk') {
+            sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper /opt/jenkins-caches/${env.PROJECT_NAME}/gradle/"
+          }
         }
       }
     }
