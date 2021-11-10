@@ -6,7 +6,7 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
-      volumes hostPathVolume(hostPath: "/data", mountPath: "/opt/jenkins-caches")
+      workspaceVolume hostPathWorkspaceVolume(hostPath: "/data")
     }
   }
 
@@ -37,7 +37,6 @@ pipeline {
         container('jdk') {
           sh "yum install rsync -y"
           // 패키지 의존성 복사
-          sh "touch /opt/jenkins-caches/123.txt"
           sh "mkdir -p ${env.GRADLE_CACHES_PATH}"
           sh "rsync -a --include /caches --include /wrapper --exclude '/*' \
                 ${env.GRADLE_CACHES_PATH} ~/.gradle"
