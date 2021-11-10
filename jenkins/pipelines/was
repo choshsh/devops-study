@@ -38,7 +38,6 @@ pipeline {
         }
         container('node') {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
-            sh "ls -al"
             sh "apk add --no-cache rsync"
             // 패키지 의존성 복사
             sh "rsync -a /opt/jenkins-caches/${env.PROJECT_NAME}/node_modules/ node_modules || true"
@@ -53,6 +52,8 @@ pipeline {
       steps {
         container('node') {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
+            sh "pwd"
+            sh "ls -al"
             sh 'npm ci'
             sh 'npm run build'
           }
