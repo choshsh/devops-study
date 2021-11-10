@@ -106,6 +106,8 @@ pipeline {
         }
       }
     }
+    // jib 플러그인을 사용하여 이미지를 빌드하고 푸쉬합니다.
+    // https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
     stage('Build & Push') {
       environment {
         DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
