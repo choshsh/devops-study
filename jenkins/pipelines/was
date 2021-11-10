@@ -6,6 +6,7 @@ pipeline {
   agent {
     kubernetes {
       yamlFile POD_TEMPLATE
+      volumes hostPathVolume(hostPath: "/data", mountPath: "/opt/jenkins-caches")
     }
   }
 
