@@ -22,9 +22,9 @@ pipeline {
   }
 
   stages {
-    stage {
+    stage('Setup') {
       parallel {
-        stage('Setup Code') {
+        stage('SCode') {
           steps {
             cleanWs()
             git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
@@ -33,7 +33,7 @@ pipeline {
             }
           }
         }
-        stage("Install rsynv") {
+        stage("Install rsync") {
           steps {
             container('jdk') {
               sh "yum install rsync -y"
