@@ -3,7 +3,7 @@
 def pipelinePath = 'jenkins/pipelines'
 def podTemplatePath = 'jenkins/podTemplates'
 def seedJobGit = 'https://github.com/choshsh/devops-study.git'
-def seedJobBranch = 'master'
+def seedJobBranch = 'Feature-jenkins'
 def defaultEnvs = [
         ARGOCD_GIT       : 'https://github.com/choshsh/devops-study.git',
         DOCKERHUB_USER   : 'choshsh',
