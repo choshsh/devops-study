@@ -55,8 +55,6 @@ pipeline {
       steps {
         container('node') {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
-            sh "pwd"
-            sh "ls -al"
             sh 'npm ci'
             sh 'npm run build'
           }
