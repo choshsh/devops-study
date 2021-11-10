@@ -24,6 +24,9 @@ pipeline {
       steps {
         cleanWs()
         git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
+        dir(env.WORKDIR) {
+          git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+        }
       }
     }
     stage('Setup Caches') {
