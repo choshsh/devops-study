@@ -45,7 +45,7 @@ pipeline {
             sh "apk add --no-cache rsync"
             // 패키지 의존성 복사
             sh "mkdir -p ${env.NPM_CACHES_PATH}"
-            sh "rsync -a ${env.NPM_CACHES_PATH} node_modules"
+            sh "rsync -a ${env.NPM_CACHES_PATH}/ node_modules"
           }
         }
       }
@@ -59,7 +59,7 @@ pipeline {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
             sh 'npm ci'
             sh 'npm run build'
-            sh "rsync -au node_modules ${env.NPM_CACHES_PATH}"
+            sh "rsync -au node_modules/ ${env.NPM_CACHES_PATH}"
           }
         }
       }
