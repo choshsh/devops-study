@@ -24,13 +24,23 @@ pipeline {
       steps {
         cleanWs()
         git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
+      }
+    }
+    stage('Setup Caches') {
+      steps {
         container('jdk') {
           dir(env.WORKDIR) {
-            git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
-            sh 'yum install rsync -y'
+            sh "yum install rsync -y"
             // 패키지 의존성 복사
             sh "rsync -a --include /caches --include /wrapper --exclude '/*' \
-                  /opt/gradle-caches/${env.PROJECT_NAME}/ ~/.gradle || true"
+                  /opt/jenkins-caches/${env.PROJECT_NAME}/gradle/ ~/.gradle || true"
+          }
+        }
+        container('node') {
+          dir(env.WORKDIR + '/' + env.NPM_DIR) {
+            sh "apk add --no-cache rsync"
+            // 패키지 의존성 복사
+            sh "rsync -a /opt/jenkins-caches/${env.PROJECT_NAME}/node_modules/ node_modules || true"
           }
         }
       }
@@ -42,9 +52,14 @@ pipeline {
       steps {
         container('node') {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
-            sh 'npm install'
+            sh 'npm ci'
             sh 'npm run build'
           }
+        }
+      }
+      post {
+        success {
+          sh "rsync -au node_modules /opt/jenkins-caches/${env.PROJECT_NAME}/node_modules/ || true"
         }
       }
     }
@@ -71,7 +86,7 @@ pipeline {
       }
       post {
         success {
-          sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper /opt/gradle-caches/${env.PROJECT_NAME}/ || true"
+          sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper /opt/jenkins-caches/${env.PROJECT_NAME}/gradle/ || true"
         }
       }
     }

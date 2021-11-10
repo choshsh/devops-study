@@ -19,8 +19,8 @@ spec:
       args:
         - 99d
       volumeMounts:
-        - mountPath: "/opt/gradle-caches"
-          name: gradle-caches
+        - mountPath: "/opt/jenkins-caches"
+          name: jenkins-caches
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
@@ -36,6 +36,6 @@ spec:
       args:
         - 99d
   volumes:
-    - name: gradle-caches
+    - name: jenkins-caches
       persistentVolumeClaim:
-        claimName: gradle-caches
+        claimName: jenkins-caches

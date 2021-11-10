@@ -18,6 +18,9 @@ spec:
         - sleep
       args:
         - 99d
+      volumeMounts:
+        - mountPath: "/opt/jenkins-caches"
+          name: jenkins-caches
     - name: git
       image: alpine/git:latest
       imagePullPolicy: IfNotPresent
@@ -39,3 +42,10 @@ spec:
         - sleep
       args:
         - 99d
+      volumeMounts:
+        - mountPath: "/opt/jenkins-caches"
+          name: jenkins-caches
+  volumes:
+    - name: jenkins-caches
+      persistentVolumeClaim:
+        claimName: jenkins-caches
