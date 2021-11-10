@@ -57,7 +57,7 @@ pipeline {
       steps {
         container('node') {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
-            sh 'npm ci'
+            sh 'npm install'
             sh 'npm run build'
             sh "rsync -au node_modules/ ${env.NPM_CACHES_PATH}"
           }
