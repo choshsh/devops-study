@@ -27,6 +27,10 @@ pipeline {
         container('jdk') {
           dir(env.WORKDIR) {
             git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+            sh 'yum install rsync -y'
+            // 패키지 의존성 복사
+            sh "rsync -a --include /caches --include /wrapper --exclude '/*' \
+                  /opt/gradle-caches/${env.PROJECT_NAME}/ ~/.gradle || true"
           }
         }
       }
@@ -65,6 +69,11 @@ pipeline {
           }
         }
       }
+      post {
+        success {
+          sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper /opt/gradle-caches/${env.PROJECT_NAME}/ || true"
+        }
+      }
     }
     stage('Build & Push') {
       environment {
@@ -76,6 +85,11 @@ pipeline {
             sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
                   -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
           }
+        }
+      }
+      post {
+        always {
+          sh "rm -rf ~/.gradle || true"
         }
       }
     }
