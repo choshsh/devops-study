@@ -12,6 +12,8 @@ pipeline {
   environment {
     IMAGE_TAG = "${currentBuild.startTimeInMillis}"
     WORKDIR = "${env.GRADLE_WORK_DIR + "/" + env.PROJECT_NAME}"
+    GRADLE_CACHES_PATH = "/opt/jenkins-caches/${env.PROJECT_NAME}/gradle"
+    NPM_CACHES_PATH = "/opt/jenkins-caches/${env.PROJECT_NAME}/node_modules"
   }
 
   options {
@@ -20,13 +22,50 @@ pipeline {
   }
 
   stages {
-    stage('Setup Repo') {
-      steps {
-        cleanWs()
-        git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
-        container('jdk') {
-          dir(env.WORKDIR) {
-            git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+    stage('Setup') {
+      parallel {
+        stage('Code') {
+          steps {
+            cleanWs()
+            git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
+            dir(env.WORKDIR) {
+              git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+            }
+          }
+        }
+        stage("Install rsync") {
+          steps {
+            container('jdk') {
+              sh "yum install rsync -y"
+            }
+          }
+        }
+      }
+    }
+    stage('Setup Caches') {
+      parallel {
+        stage('gradle') {
+          steps {
+            container('jdk') {
+              // Gradle 패키지 의존성 복사
+              sh "mkdir -p ${env.GRADLE_CACHES_PATH}"
+              sh "rsync -a --include /caches --include /wrapper --exclude '/*' \
+                ${env.GRADLE_CACHES_PATH}/ ~/.gradle"
+            }
+          }
+        }
+        stage('npm') {
+          when {
+            environment name: 'NPM_ENABLE', value: "true"
+          }
+          steps {
+            container('jdk') {
+              // NPM 패키지 의존성 복사
+              dir(env.WORKDIR + '/' + env.NPM_DIR) {
+                sh "mkdir -p ${env.NPM_CACHES_PATH}"
+                sh "rsync -a ${env.NPM_CACHES_PATH}/ node_modules"
+              }
+            }
           }
         }
       }
@@ -39,6 +78,7 @@ pipeline {
         container('node') {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
             sh 'npm install'
+            sh 'npm audit fix'
             sh 'npm run build'
           }
         }
@@ -66,6 +106,8 @@ pipeline {
         }
       }
     }
+    // jib 플러그인을 사용하여 이미지를 빌드하고 푸쉬합니다.
+    // https://github.com/GoogleContainerTools/jib/tree/master/jib-gradle-plugin
     stage('Build & Push') {
       environment {
         DOCKERHUB_PASSWORD = credentials("${env.DOCKERHUB_CRED_ID}")
@@ -73,8 +115,9 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.WORKDIR) {
-            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
-                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
+            echo "123"
+//            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
+//                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
           }
         }
       }
@@ -100,11 +143,11 @@ pipeline {
       }
       steps {
         container('git') {
-          sh "git config user.email ${env.GITHUB_EMAIL}"
-          sh "git config user.name ${env.GITHUB_USERNAME}"
-          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
-          sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
+//          sh "git config user.email ${env.GITHUB_EMAIL}"
+//          sh "git config user.name ${env.GITHUB_USERNAME}"
+//          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+//          sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
+//          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
         }
       }
     }
@@ -112,6 +155,18 @@ pipeline {
   post {
     always {
       slackSendCustom()
+    }
+    success {
+      container('jdk') {
+        script {
+          sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ${env.GRADLE_CACHES_PATH}/"
+          if (env.NPM_ENABLE) {
+            dir(env.WORKDIR + '/' + env.NPM_DIR) {
+              sh "rsync -au node_modules/ ${env.NPM_CACHES_PATH}"
+            }
+          }
+        }
+      }
     }
   }
 }
