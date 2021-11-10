@@ -54,17 +54,15 @@ pipeline {
       when {
         environment name: 'NPM_ENABLE', value: "true"
       }
-      steps {
-        container('node') {
+      container('node') {
+        steps {
           dir(env.WORKDIR + '/' + env.NPM_DIR) {
             sh 'npm ci'
             sh 'npm run build'
           }
         }
-      }
-      post {
-        success {
-          container('node') {
+        post {
+          success {
             sh "rsync -au node_modules ${env.NPM_CACHES_PATH}"
           }
         }
