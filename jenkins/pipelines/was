@@ -82,8 +82,9 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.WORKDIR) {
-            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
-                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
+            echo "123"
+//            sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
+//                  -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
           }
         }
       }
@@ -114,11 +115,11 @@ pipeline {
       }
       steps {
         container('git') {
-          sh "git config user.email ${env.GITHUB_EMAIL}"
-          sh "git config user.name ${env.GITHUB_USERNAME}"
-          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
-          sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
-          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
+//          sh "git config user.email ${env.GITHUB_EMAIL}"
+//          sh "git config user.name ${env.GITHUB_USERNAME}"
+//          sh "git add ${env.HELM_VALUE_PATH}/values-${env.PROJECT_NAME}.yaml"
+//          sh 'git commit --allow-empty -m "Pushed by jenkins pipeline"'
+//          sh 'git push https://$GITHUB_PASSWORD@$ARGOCD_GIT_FORMATTED'
         }
       }
     }
