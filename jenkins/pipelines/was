@@ -24,7 +24,7 @@ pipeline {
   stages {
     stage('Setup') {
       parallel {
-        stage('SCode') {
+        stage('Code') {
           steps {
             cleanWs()
             git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
@@ -155,10 +155,14 @@ pipeline {
       slackSendCustom()
     }
     success {
-      container('jnlp') {
-        sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ${env.GRADLE_CACHES_PATH}/"
-        dir(env.WORKDIR + '/' + env.NPM_DIR) {
-          sh "rsync -au node_modules/ ${env.NPM_CACHES_PATH}"
+      container('jdk') {
+        script {
+          sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ${env.GRADLE_CACHES_PATH}/"
+          if (env.NPM_ENABLE) {
+            dir(env.WORKDIR + '/' + env.NPM_DIR) {
+              sh "rsync -au node_modules/ ${env.NPM_CACHES_PATH}"
+            }
+          }
         }
       }
     }
