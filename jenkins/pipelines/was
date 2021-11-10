@@ -34,7 +34,7 @@ pipeline {
     stage('Setup Caches') {
       steps {
         container('jnlp') {
-          sh "apt isntall rsync -y"
+          sh "yum isntall rsync -y"
 
           // Gradle 패키지 의존성 복사
           sh "mkdir -p ${env.GRADLE_CACHES_PATH}"
