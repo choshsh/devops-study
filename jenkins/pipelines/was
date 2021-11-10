@@ -36,6 +36,7 @@ pipeline {
         container('jdk') {
           sh "yum install rsync -y"
           // 패키지 의존성 복사
+          sh "touch /opt/jenkins-caches/123.txt"
           sh "mkdir -p ${env.GRADLE_CACHES_PATH}"
           sh "rsync -a --include /caches --include /wrapper --exclude '/*' \
                 ${env.GRADLE_CACHES_PATH} ~/.gradle"
@@ -65,7 +66,7 @@ pipeline {
       post {
         success {
           container('node') {
-            sh "rsync -au node_modules /opt/jenkins-caches/${env.PROJECT_NAME}/node_modules/"
+            sh "rsync -au node_modules ${env.NPM_CACHES_PATH}"
           }
         }
       }
@@ -94,7 +95,7 @@ pipeline {
       post {
         success {
           container('jdk') {
-            sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper /opt/jenkins-caches/${env.PROJECT_NAME}/gradle/"
+            sh "rsync -au ~/.gradle/caches ~/.gradle/wrapper ${env.GRADLE_CACHES_PATH}"
           }
         }
       }
