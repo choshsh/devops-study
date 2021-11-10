@@ -43,7 +43,6 @@ spec:
     - name: jnlp
       image: jenkins/inbound-agent:4.3-4-jdk11
       imagePullPolicy: IfNotPresent
-      args: [ '\$(JENKINS_SECRET)', '\$(JENKINS_NAME)' ]
       volumeMounts:
         - mountPath: "/opt/jenkins-caches"
           name: jenkins-caches
