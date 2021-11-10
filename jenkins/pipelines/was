@@ -22,20 +22,22 @@ pipeline {
   }
 
   stages {
-    parallel {
-      stage('Setup Code') {
-        steps {
-          cleanWs()
-          git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
-          dir(env.WORKDIR) {
-            git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+    stage {
+      parallel {
+        stage('Setup Code') {
+          steps {
+            cleanWs()
+            git credentialsId: env.GITHUB_CRED_ID, url: ARGOCD_GIT
+            dir(env.WORKDIR) {
+              git branch: env.BRANCH, credentialsId: env.GITHUB_CRED_ID, url: env.GIT
+            }
           }
         }
-      }
-      stage("Install rsynv") {
-        steps {
-          container('jdk') {
-            sh "yum install rsync -y"
+        stage("Install rsynv") {
+          steps {
+            container('jdk') {
+              sh "yum install rsync -y"
+            }
           }
         }
       }
