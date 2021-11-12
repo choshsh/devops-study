@@ -22,4 +22,4 @@ DevOps 공부 목적의 프로젝트입니다. [Kubernetes](https://kubernetes.
 
 ## CI/CD 구성도
 
-![https://user-images.githubusercontent.com/40452325/141419699-555d28a6-cc87-44dd-9c16-5953a7ccd90a.png](https://user-images.githubusercontent.com/40452325/141419699-555d28a6-cc87-44dd-9c16-5953a7ccd90a.png)
+![CI/CD 구성도 이미지](https://user-images.githubusercontent.com/40452325/141420539-0938236d-bd09-43c4-be0f-a024c3cb2cad.png)
