@@ -16,9 +16,9 @@ DevOps 공부 목적의 프로젝트입니다. [Kubernetes](https://kubernetes.
 - [EKS로 클러스터 구축하기](https://github.com/choshsh/devops-study/blob/master/docs/Terraform%20-%20EKS%EB%A1%9C%20%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%20%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0.md)
 - [Manifest 배포하기](https://github.com/choshsh/devops-study/blob/master/docs/Manifest%20%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0.md)
 
-## **Demo**
+## **Live Demo**
 
-[Demo 바로가기](https://www.choshsh.com/)
+[https://www.choshsh.com](https://www.choshsh.com/)
 
 ## CI/CD 구성도
 
