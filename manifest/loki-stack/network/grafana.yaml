@@ -15,6 +15,9 @@ spec:
             subset: grafana-subset
             port:
               number: 80
+      corsPolicy:
+        allowOrigins:
+          - regex: ".*\\.choshsh.com"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
