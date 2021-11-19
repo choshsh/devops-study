@@ -28,9 +28,8 @@ EOF
         sudo echo 0 > /proc/sys/vm/swappines
         sudo sed -e '/swap/ s/^#*/#/' -i /etc/fstab;
         sudo systemctl disable --now firewalld
+	    sudo setenforce 0 && sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
     fi
-
-    sudo setenforce 0 && sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
     cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 br_netfilter
