@@ -1,6 +1,6 @@
 locals {
-  ports_in  = [22] # inbound 허용 포트
-  ports_out = [0]  # outbound 허용 포트 (전체)
+  ports_in  = [1746] # inbound 허용 포트
+  ports_out = [0]    # outbound 허용 포트 (전체)
 }
 
 # Security Rule

@@ -2,12 +2,16 @@
 
 # Kubernetes version
 KUBE_VERSION="1.22.3"
+# SSH Port number to change
+SSH_PORT="1746"
 
 # Install kubernetes on linux dist from Red Hat
 # Use containerd as CRI
 function pre_config(){
     sudo sed -i "s/127.0.0.1/127.0.0.1 $HOSTNAME/" /etc/hosts
     sudo yum install -y iproute-tc
+    # Edit ssh port number
+    sudo sed -i "/Port 22/ c\Port $SSH_PORT" /etc/ssh/sshd_config
 
     if [ $(grep '^NAME' /etc/os-release | grep -i 'Amazon Linux' | wc -l) -gt 0 ]; then
         # setting for using kube-proxy ipvs mode
