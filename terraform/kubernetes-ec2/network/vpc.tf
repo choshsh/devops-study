@@ -28,7 +28,7 @@ resource "aws_subnet" "public" {
   vpc_id = aws_vpc.my-vpc.id
 
   count             = local.subnet_count_pair
-  cidr_block        = "${local.cidr_block_split[0]}.${local.cidr_block_split[1]}.${count.index}.0/27"
+  cidr_block        = "${local.cidr_block_split[0]}.${local.cidr_block_split[1]}.${count.index}.0/24"
   availability_zone = data.aws_availability_zones.selected.names[count.index]
 
   tags = merge(local.tags, {

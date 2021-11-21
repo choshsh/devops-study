@@ -26,7 +26,7 @@ resource "aws_instance" "master" {
   ami                         = data.aws_ami.amazon-linux-2.id
   associate_public_ip_address = true
   instance_type               = var.master_node_instance_type
-  subnet_id                   = var.public_subnet_ids[0]
+  subnet_id                   = var.public_subnet_ids[count.index % length(var.public_subnet_ids)]
   key_name                    = aws_key_pair.ssh-keypair.key_name
   user_data                   = file("${path.module}/install_k8s.sh")
   vpc_security_group_ids      = [var.linux_sg_id, var.allow_tls_sg_id]
@@ -53,7 +53,7 @@ resource "aws_instance" "worker" {
   ami                         = data.aws_ami.amazon-linux-2.id
   associate_public_ip_address = true
   instance_type               = var.worker_node_instance_type
-  subnet_id                   = var.public_subnet_ids[0]
+  subnet_id                   = var.public_subnet_ids[count.index % length(var.public_subnet_ids)]
   key_name                    = aws_key_pair.ssh-keypair.key_name
   user_data                   = file("${path.module}/install_k8s.sh")
   vpc_security_group_ids      = [var.linux_sg_id, var.allow_tls_sg_id]
