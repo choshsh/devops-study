@@ -135,7 +135,7 @@ Amazon Elastic Kubernetes Service(***EKS***)로 Kubernetes 클러스터를 구�
 2. 스토리지클래스 배포
     
     ```bash
-    kubectl apply -f https://gist.github.com/choshsh/e321761b43b5646821d3c2a6c18715f7/raw/050eeb128038ca382d2760288a324de3bb3a71ce/csi-driver-sc.yaml
+    kubectl apply -f https://gist.githubusercontent.com/choshsh/e321761b43b5646821d3c2a6c18715f7/raw/csi-driver-sc.yaml
     ```
     
     ```yaml
@@ -145,6 +145,7 @@ Amazon Elastic Kubernetes Service(***EKS***)로 Kubernetes 클러스터를 구�
       name: dynamic
     provisioner: ebs.csi.aws.com
     volumeBindingMode: WaitForFirstConsumer
+    allowVolumeExpansion: true
     parameters:
       type: gp3
       fsType: ext4
