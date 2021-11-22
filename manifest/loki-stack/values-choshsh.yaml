@@ -60,6 +60,7 @@ prometheus:
     persistentVolume:
       enabled: true
       storageClass: dynamic
+      size: 12Gi
 
   server:
     persistentVolume:
