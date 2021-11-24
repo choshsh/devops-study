@@ -115,7 +115,6 @@ pipeline {
       steps {
         container('jdk') {
           dir(env.WORKDIR) {
-            echo "123"
             sh './gradlew jib -Ptag=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USER \
                   -Djib.to.auth.password=$DOCKERHUB_PASSWORD'
           }
