@@ -45,20 +45,23 @@ spec:
             {{- with .Values.deploy.env }}
               {{- toYaml . | nindent 12 }}
             {{- end}}
-            {{- $configmapName := .Values.deploy.envFromConfigMap.configmapName}}
-            {{- range .Values.deploy.envFromConfigMap.items }}
-            - name: {{ .envName }}
+            # Configmap parameter from value file
+            {{- $configmapName := .Values.deploy.envFromConfigMap.name }}
+            {{- range $k, $v := .Values.deploy.envFromConfigMap.items }}
+            - name: {{ $v }}
               valueFrom:
                 configMapKeyRef:
                   name: {{ $configmapName }}
-                  key: {{ .key }}
+                  key: {{ $k }}
             {{- end }}
-            {{- range .Values.deploy.envFromSecret }}
-            - name: {{ .envName }}
+            # Secret parameter from value file
+            {{- $secretName := .Values.deploy.envFromSecret.name }}
+            {{- range $k, $v := .Values.deploy.envFromSecret.items }}
+            - name: {{ $v }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .secretName }}
-                  key: {{ .key }}
+                  name: {{ $secretName }}
+                  key: {{ $k }}
             {{- end}}
           {{- with .Values.deploy.args }}
           args:
