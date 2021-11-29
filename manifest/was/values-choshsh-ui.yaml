@@ -1,29 +1,25 @@
 deploy:
   env:
-  - name: TZ
-    value: Asia/Seoul
+    - name: TZ
+      value: Asia/Seoul
   envFromConfigMap:
-    configmapName: mysql
+    name: mysql
     items:
-    - envName: MYSQL_URL
-      key: url
-    - envName: MYSQL_DB
-      key: choshsh-ui
-    - envName: MYSQL_USER
-      key: user
-    - envName: MYSQL_PARAM
-      key: jdbc-param
+      url: MYSQL_URL
+      choshsh-ui: MYSQL_DB
+      user: MYSQL_USER
+      jdbc-param: MYSQL_PARAM
   envFromSecret:
-  - envName: MYSQL_PASSWORD
-    key: password
-    secretName: mysql-password
+    name: MYSQL_PASSWORD
+    items:
+      password: mysql-password
 fullnameOverride: choshsh-ui
 image:
   name: choshsh-ui
   pullPolicy: Always
-  tag: '1636561076156'
+  tag: "1636561076156"
 nameOverride: choshsh-ui
 podAnnotations:
-  sidecar.istio.io/inject: 'true'
+  sidecar.istio.io/inject: "true"
 prometheus:
   enabled: true
