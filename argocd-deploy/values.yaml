@@ -7,13 +7,23 @@ fullnameOverride: ""
 
 global:
   repoURL: "https://github.com/choshsh/devops-study.git"
-  # branch switch - prod/dev
   targetRevision: HEAD
   server: "https://kubernetes.default.svc"
 
-argocd:
+# 배포를 위한 ArgoCD 애플리케이션
+#
+# namespace       배포할 네임스페이스
+# source.path     Git Repo에서 상대경로
+# source.type     배포할 manifest의 타입 (dir or helm)
+#   1. dir        기본 (kubectl apply -f)
+#      directory  하위 폴더 배포 여부 (true or false)
+#   2. helm       helm 차트 (helm isntall <path> -f <value파일>)
+# syncPolicy      (선택) 자동 sync 여부 - 이 옵션을 활성화하면 롤백 기능 사용 불가
+# syncPolicy.automated.prune    리소스 업데이트 시 삭제하고 생성 여부
+# syncPolicy.automated.selfHeal 리소스 차이가 생길 경우 5초마다 sync 시도
+applications:
   # istio-config
-  - name: istio-default
+  istio-default:
     namespace: default
     source:
       path: manifest/istio-default
@@ -24,7 +34,7 @@ argocd:
         prune: true
         selfHeal: true
   # jenkins
-  - name: jenkins
+  jenkins:
     namespace: jenkins
     source:
       path: manifest/jenkins
@@ -33,7 +43,7 @@ argocd:
         prune: true
         selfHeal: true
   # # nfs-subdir-external-provisioner
-  # - name: nfs-subdir-external-provisioner
+  # nfs-subdir-external-provisioner
   #   namespace: default
   #   source:
   #     path: manifest/nfs-subdir-external-provisioner
@@ -46,7 +56,7 @@ argocd:
   #       prune: true
   #       selfHeal: true
   # itsm-db
-  - name: choshsh-db
+  choshsh-db:
     namespace: default
     source:
       path: manifest/mysql
@@ -56,7 +66,7 @@ argocd:
         prune: true
         selfHeal: true
   # choshsh-ui-network
-  - name: choshsh-ui-vs
+  choshsh-ui-vs:
     namespace: default
     source:
       path: manifest/was/network
@@ -66,7 +76,7 @@ argocd:
         prune: true
         selfHeal: true
   # choshsh-ui
-  - name: choshsh-ui
+  choshsh-ui:
     namespace: default
     source:
       path: manifest/was
@@ -79,7 +89,7 @@ argocd:
         prune: true
         selfHeal: true
   # choshsh-ui-loadtest
-  - name: choshsh-ui-loadtest
+  choshsh-ui-loadtest:
     namespace: default
     source:
       path: manifest/was
@@ -92,7 +102,7 @@ argocd:
         prune: true
         selfHeal: true
   # jenkins-rest
-  - name: jenkins-rest
+  jenkins-rest:
     namespace: default
     source:
       path: manifest/was
@@ -105,7 +115,7 @@ argocd:
         prune: true
         selfHeal: true
   # loki-network
-  - name: loki-network
+  loki-network:
     namespace: monitoring
     source:
       path: manifest/loki-stack/network
@@ -115,7 +125,7 @@ argocd:
         prune: true
         selfHeal: true
   # Grafana
-  - name: grafana
+  grafana:
     namespace: monitoring
     source:
       path: manifest/grafana
@@ -128,7 +138,7 @@ argocd:
         prune: true
         selfHeal: true
   # Grafana
-  - name: node-exporter
+  node-exporter:
     namespace: monitoring
     source:
       path: manifest/prometheus-node-exporter

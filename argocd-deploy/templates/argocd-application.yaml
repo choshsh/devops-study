@@ -1,27 +1,28 @@
+# Git url, 브랜치 등
 {{- $global := .Values.global }}
-{{- range .Values.argocd }}
+{{- range $k, $v := .Values.applications }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .name }}
+  name: {{ $k }}
 spec:
   destination:
     name: ""
-    namespace: {{ .namespace | default "default" }}
+    namespace: {{ $v.namespace | default "default" }}
     server: {{ $global.server }}
   source:
-    path: {{ .source.path }}
+    path: {{ $v.source.path }}
     repoURL: {{ $global.repoURL }}
     targetRevision: {{ $global.targetRevision }}
-    {{- if eq (.source.type | default "") "helm" }}
+    {{- if eq ($v.source.type | default "") "helm" }}
     helm: 
-      valueFiles: {{ .source.helm.valueFiles }}
-    {{- else if eq (.source.type | default "") "dir" }}
+      valueFiles: {{ $v.source.helm.valueFiles }}
+    {{- else if eq ($v.source.type | default "") "dir" }}
     directory:
-      recurse: true
+      recurse: {{ ($v.source.directory | default false) }}
     {{- end }}
   project: default
-  {{- with .syncPolicy }}
+  {{- with $v.syncPolicy }}
   syncPolicy:
     {{- toYaml . | nindent 4 }}
   {{- end }}

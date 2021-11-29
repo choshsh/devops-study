@@ -3,3 +3,4 @@ values-choshsh-secret.yaml
 .gradle-build
 jenkins/lib
 manifest/jenkins/cred
+.DS_Store
