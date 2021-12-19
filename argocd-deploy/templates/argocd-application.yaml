@@ -16,7 +16,7 @@ spec:
     targetRevision: {{ $global.targetRevision }}
     {{- if eq ($v.source.type | default "") "helm" }}
     helm: 
-      valueFiles: {{ $v.source.helm.valueFiles }}
+      {{ toYaml $v.source.helm | nindent 6 }}
     {{- else if eq ($v.source.type | default "") "dir" }}
     directory:
       recurse: {{ ($v.source.directory | default false) }}
