@@ -13,21 +13,5 @@ spec:
       route:
         - destination:
             host: argocd-server
-            # subset: argocd-subset
             port:
               number: 80
-# ---
-# apiVersion: networking.istio.io/v1alpha3
-# kind: DestinationRule
-# metadata:
-#   name: argocd
-#   namespace: argocd
-# spec:
-#   host: argocd-server
-#   trafficPolicy:
-#     loadBalancer:
-#       simple: ROUND_ROBIN
-#   subsets:
-#     - name: argocd-subset
-#       labels:
-#         app.kubernetes.io/name: argocd-server

@@ -1,2 +1,92 @@
 global:
   targetRevision: HEAD
+applications:
+  # istio-config
+  istio-default:
+    namespace: default
+    source:
+      path: manifest/istio-default
+      type: dir
+      directory: true
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # jenkins
+  jenkins:
+    namespace: jenkins
+    source:
+      path: manifest/jenkins
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # itsm-db
+  choshsh-db:
+    namespace: default
+    source:
+      path: manifest/mysql
+      type: dir
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # choshsh-ui-network
+  choshsh-ui-vs:
+    namespace: default
+    source:
+      path: manifest/was/network
+      type: dir
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # choshsh-ui
+  choshsh-ui:
+    namespace: default
+    source:
+      path: manifest/was
+      type: helm
+      helm:
+        valueFiles:
+          - values-choshsh-ui.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # choshsh-ui-loadtest
+  choshsh-ui-loadtest:
+    namespace: default
+    source:
+      path: manifest/was
+      type: helm
+      helm:
+        valueFiles:
+          - values-choshsh-ui-loadtest.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # jenkins-rest
+  jenkins-rest:
+    namespace: default
+    source:
+      path: manifest/was
+      type: helm
+      helm:
+        valueFiles:
+          - values-jenkins-api-springboot.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  # loki-network
+  loki-network:
+    namespace: monitoring
+    source:
+      path: manifest/loki-stack/network
+      type: dir
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
