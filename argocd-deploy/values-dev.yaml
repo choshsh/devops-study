@@ -1,2 +1,24 @@
 global:
   targetRevision: dev
+
+applications:
+  nfs-subdir-external-provisioner:
+    namespace: default
+    source:
+      path: manifest/nfs-subdir-external-provisioner
+      type: helm
+      helm:
+        valueFiles:
+          - values-choshsh.yaml
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+  jenkins:
+    namespace: jenkins
+    source:
+      path: manifest/jenkins
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
