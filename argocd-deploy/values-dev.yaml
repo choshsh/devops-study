@@ -22,3 +22,13 @@ applications:
       automated:
         prune: true
         selfHeal: true
+  # itsm-db
+  choshsh-db:
+    namespace: default
+    source:
+      path: manifest/mysql
+      type: dir
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
