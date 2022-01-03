@@ -10,9 +10,9 @@ deploy:
       user: MYSQL_USER
       jdbc-param: MYSQL_PARAM
   envFromSecret:
-    name: MYSQL_PASSWORD
+    name: mysql-password
     items:
-      password: mysql-password
+      password: MYSQL_PASSWORD
 fullnameOverride: choshsh-ui
 image:
   name: choshsh-ui
