@@ -1,4 +1,4 @@
-values-choshsh-secret.yaml
+values-secret.yaml
 .idea
 .gradle-build
 jenkins/lib

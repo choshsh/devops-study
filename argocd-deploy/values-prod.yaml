@@ -21,19 +21,6 @@ applications:
       automated:
         prune: true
         selfHeal: true
-  # # nfs-subdir-external-provisioner
-  # nfs-subdir-external-provisioner
-  #   namespace: default
-  #   source:
-  #     path: manifest/nfs-subdir-external-provisioner
-  #     type: helm
-  #     helm:
-  #       valueFiles:
-  #         - values-choshsh.yaml
-  #   syncPolicy:
-  #     automated:
-  #       prune: true
-  #       selfHeal: true
   # itsm-db
   choshsh-db:
     namespace: default
@@ -99,32 +86,6 @@ applications:
     source:
       path: manifest/loki-stack/network
       type: dir
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-  # Grafana
-  grafana:
-    namespace: monitoring
-    source:
-      path: manifest/grafana
-      type: helm
-      helm:
-        valueFiles:
-          - values-choshsh.yaml
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-  # Grafana
-  node-exporter:
-    namespace: monitoring
-    source:
-      path: manifest/prometheus-node-exporter
-      type: helm
-      helm:
-        valueFiles:
-          - values.yaml
     syncPolicy:
       automated:
         prune: true
