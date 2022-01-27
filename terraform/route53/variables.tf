@@ -4,7 +4,7 @@ variable "domain" {
 }
 
 variable "domain_alias" {
-  description = "Domain name. Ex) www"
+  description = "Domain name. Ex) [\"www\"]"
   type        = list(string)
 }
 

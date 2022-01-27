@@ -30,7 +30,7 @@ resource "aws_instance" "master" {
   key_name                    = aws_key_pair.ssh-keypair.key_name
   user_data                   = file("${path.module}/install_k8s.sh")
   vpc_security_group_ids      = [var.linux_sg_id, var.allow_tls_sg_id]
-  iam_instance_profile        = aws_iam_instance_profile.k8s-control-plane.name
+  iam_instance_profile        = aws_iam_instance_profile.k8s_control_plane.name
   root_block_device {
     volume_type           = "gp3"
     volume_size           = 30
@@ -57,7 +57,7 @@ resource "aws_instance" "worker" {
   key_name                    = aws_key_pair.ssh-keypair.key_name
   user_data                   = file("${path.module}/install_k8s.sh")
   vpc_security_group_ids      = [var.linux_sg_id, var.allow_tls_sg_id]
-  iam_instance_profile        = aws_iam_instance_profile.k8s-node.name
+  iam_instance_profile        = aws_iam_instance_profile.k8s_node.name
   root_block_device {
     volume_type           = "gp3"
     volume_size           = 30

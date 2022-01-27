@@ -21,7 +21,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Workspace                                   = "${local.workspace}"
+      Workspace                                   = terraform.Workspace
       Owner                                       = "choshsh"
       "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     }

@@ -1,44 +1,76 @@
+data "aws_iam_policy_document" "eks" {
+  statement {
+    actions = ["sts:AssumeRole"]
 
-# Cluster Service IAM
+    principals {
+      type        = "Service"
+      identifiers = ["eks.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "fargate" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["eks-fargate.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "ec2" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "cloudwatch" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com", "cloudwatch.amazonaws.com", "logs.amazonaws.com"]
+    }
+  }
+}
+
+##########################################################
+### IAM Role
+##########################################################
 resource "aws_iam_role" "cluster-service-role" {
   name               = "eks-cluster-service-role"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-  tags               = local.tags
+  assume_role_policy = data.aws_iam_policy_document.eks.json
 }
 
-# aws에서 제공하는 role 가져오기
+resource "aws_iam_role" "fargate" {
+  name               = "eks-fargate-profile"
+  assume_role_policy = data.aws_iam_policy_document.fargate.json
+}
+
+resource "aws_iam_role" "node_group" {
+  name               = "node_group"
+  assume_role_policy = data.aws_iam_policy_document.ec2.json
+}
+
+resource "aws_iam_role" "cloudwatch_grafana" {
+  name               = "cloudwatch_grafana"
+  assume_role_policy = data.aws_iam_policy_document.cloudwatch.json
+}
+
+##########################################################
+### IAM Policy Attachment
+##########################################################
 resource "aws_iam_role_policy_attachment" "my-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster-service-role.name
-}
-
-
-# Fargate IAM
-resource "aws_iam_role" "fargate" {
-  name = "eks-fargate-profile"
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "eks-fargate-pods.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
-  })
 }
 
 resource "aws_iam_role_policy_attachment" "my-AmazonEKSFargatePodExecutionRolePolicy" {
@@ -46,39 +78,30 @@ resource "aws_iam_role_policy_attachment" "my-AmazonEKSFargatePodExecutionRolePo
   role       = aws_iam_role.fargate.name
 }
 
-
-# Node Group IAM
-resource "aws_iam_role" "node-group" {
-  name = "eks-node-group"
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
-  })
-}
-
 resource "aws_iam_role_policy_attachment" "example-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.node-group.name
+  role       = aws_iam_role.node_group.name
 }
 
 resource "aws_iam_role_policy_attachment" "example-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.node-group.name
+  role       = aws_iam_role.node_group.name
 }
 
 resource "aws_iam_role_policy_attachment" "example-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.node-group.name
+  role       = aws_iam_role.node_group.name
 }
 
+resource "aws_iam_policy_attachment" "csi_driver" {
+  name       = "csi_driver"
+  roles      = [aws_iam_role.node_group.name]
+  policy_arn = aws_iam_policy.csi_driver.arn
+}
 
-# Istio IAM - aws nlb 사용을 위한 리소스 핸들
+###########################################################
+### IAM Policy
+###########################################################
 resource "aws_iam_role_policy" "istio" {
   role = aws_iam_role.cluster-service-role.name
   policy = jsonencode({
@@ -120,9 +143,8 @@ resource "aws_iam_role_policy" "istio" {
   )
 }
 
-# EBS CSI driver
-resource "aws_iam_role_policy" "ebs-csi-driver" {
-  role = aws_iam_role.node-group.name
+resource "aws_iam_policy" "csi_driver" {
+  name = "csi_driver"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -247,9 +269,9 @@ resource "aws_iam_role_policy" "ebs-csi-driver" {
 }
 
 # Grafana에서 cloudwatch 데이터소스를 사용하기 위한 IAM
-resource "aws_iam_role_policy" "cloudwatch-grafana-role-policy" {
-  name   = "cloudwatch-grafana-role"
-  role   = aws_iam_role.cloudwatch-grafana-role.id
+resource "aws_iam_role_policy" "cloudwatch_grafana" {
+  name   = "cloudwatch_grafana"
+  role   = aws_iam_role.cloudwatch_grafana.id
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -295,27 +317,4 @@ resource "aws_iam_role_policy" "cloudwatch-grafana-role-policy" {
   ]
 }
 POLICY
-}
-
-resource "aws_iam_role" "cloudwatch-grafana-role" {
-  name               = "cloudwatch-grafana"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-          "ec2.amazonaws.com",
-          "cloudwatch.amazonaws.com",
-          "logs.amazonaws.com"
-        ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-  tags               = local.tags
 }

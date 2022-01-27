@@ -32,7 +32,7 @@ resource "aws_eks_cluster" "my-eks-cluster" {
 resource "aws_eks_node_group" "my-eks-node-group" {
   cluster_name    = aws_eks_cluster.my-eks-cluster.name
   node_group_name = var.eks_node_group.name
-  node_role_arn   = aws_iam_role.node-group.arn
+  node_role_arn   = aws_iam_role.node_group.arn
   subnet_ids      = var.private_subnet_ids
   instance_types  = [var.eks_node_group.instance_type]
   ami_type        = var.eks_node_group.ami_type
@@ -46,7 +46,6 @@ resource "aws_eks_node_group" "my-eks-node-group" {
     max_size     = var.eks_node_group.max_size
     min_size     = var.eks_node_group.min_size
   }
-
 
   update_config {
     max_unavailable = 1
