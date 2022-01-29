@@ -24,3 +24,4 @@ spec:
     - ReadWriteMany
   hostPath:
     path: "/data/jenkins-caches"
+    type: DirectoryOrCreate
