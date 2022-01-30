@@ -1,0 +1,24 @@
+### (Spring Boot + Vue.js) 애플리케이션 빌드를 위한 이미지
+###
+### Maintainer  Sanghyun, Cho <cho911115@gmail.com>
+
+FROM ubuntu:18.04
+
+ARG NODE_VERSION=16
+ARG JDK_VERSION=17
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -qq update && apt-get -qq install -y curl wget software-properties-common build-essential
+
+# Nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get -qq install -y nodejs
+
+# JDK 17
+RUN wget -O- https://apt.corretto.aws/corretto.key | apt-key add - && \
+    add-apt-repository 'deb https://apt.corretto.aws stable main'
+
+RUN apt-get update && \
+    apt-get install -y \
+    java-${JDK_VERSION}-amazon-corretto-jdk \
+&& rm -rf /var/lib/apt/lists/*
