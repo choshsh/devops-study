@@ -1,6 +1,6 @@
 FROM busybox:latest as builder
-ENV KUBECTL_VERSION=v1.23.1
-RUN wget "https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" -O /tmp/kubectl && \
+ARG KUBECTL_VERSION=v1.23.1
+RUN wget "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -O /tmp/kubectl && \
     chmod +x /tmp/kubectl
 
 FROM alpine:latest
