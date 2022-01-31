@@ -1,3 +1,9 @@
+variable "slack_url" {
+  description = "Slack webhook url."
+  type        = string
+  sensitive   = true
+}
+
 resource "aws_s3_bucket" "codebuild_cache" {
   bucket = "codebuild-cache-choshsh"
 }
@@ -23,6 +29,10 @@ resource "aws_codebuild_project" "choshsh-ui" {
     image                       = "choshsh/ubuntu:jdk17-node16"
     image_pull_credentials_type = "SERVICE_ROLE"
     type                        = "LINUX_CONTAINER"
+    environment_variable {
+      name  = "SLACK_URL"
+      value = var.slack_url
+    }
   }
 
   cache {

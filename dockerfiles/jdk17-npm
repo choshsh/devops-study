@@ -22,3 +22,9 @@ RUN apt-get update && \
     apt-get install -y \
     java-${JDK_VERSION}-amazon-corretto-jdk \
 && rm -rf /var/lib/apt/lists/*
+
+# aws codebuild 환경변수를 사용하여 slack 알림을 보내는 유틸리티
+# (참고: https://github.com/choshsh/slack-go.git)
+ARG ALWAYS=1
+RUN wget -q https://github.com/choshsh/slack-go/releases/latest/download/slack-go-linux-amd64 -O /usr/local/bin/slack-go && \
+    chmod +x /usr/local/bin/slack-go
