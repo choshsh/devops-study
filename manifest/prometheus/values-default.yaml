@@ -1,3 +1,6 @@
+defaultRules:
+  create: false
+
 grafana:
   adminPassword: choshsh
   defaultDashboardsTimezone: Asia/Seoul
@@ -42,6 +45,31 @@ prometheus:
   prometheusSpec:
     scrapeInterval: 15s
     retention: 30d
+  additionalServiceMonitors:
+    # JVM 모니터링
+    - name: "jvm"
+      jobLabel: "jvm"
+      selector:
+        matchLabels:
+          monitor: jvm
+      namespaceSelector:
+        any: true
+      endpoints:
+        - port: http
+          path: "/actuator/prometheus"
+          scheme: http
+    # jenkins 모니터링
+    - name: "jenkins"
+      jobLabel: "jenkins"
+      selector:
+        matchLabels:
+          app: jenkins
+      namespaceSelector:
+        any: true
+      endpoints:
+        - port: http
+          path: "/prometheus"
+          scheme: http
 
 kube-state-metrics:
   prometheus:

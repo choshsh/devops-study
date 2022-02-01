@@ -41,16 +41,13 @@ service:
   port:
     number: 8080
     name: http
-  labels: []
+  labels:
+    monitor: jvm # prometheus serviceMonitor
   externalIPs: []
   annotations: {}
 
 actuator:
   path: "/actuator"
-
-# prometheus JVM 모니터링 설정
-prometheus:
-  enabled: false
 
 autoscaling:
   enabled: false
