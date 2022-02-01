@@ -3,14 +3,11 @@ kind: Service
 metadata:
   name: {{ include "was.fullname" . }}
   labels:
-    {{- include "was.labels" . | nindent 4 }}
+  {{- include "was.labels" . | nindent 4 }}
+  {{- with .Values.service.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   annotations:
-  {{- if .Values.prometheus.enabled }}
-    prometheus.io/path: "{{ .Values.actuator.path }}/prometheus"
-    prometheus.io/port: {{ .Values.deploy.containerPort | quote }}
-    prometheus.io/schema: "http"
-    prometheus.io/scrape: "true"
-  {{- end}}
   {{- with .Values.service.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}

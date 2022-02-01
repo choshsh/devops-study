@@ -17,6 +17,3 @@ deploy:
 
 podAnnotations:
   sidecar.istio.io/inject: "true"
-
-prometheus:
-  enabled: true
