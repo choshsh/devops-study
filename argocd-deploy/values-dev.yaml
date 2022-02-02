@@ -4,18 +4,27 @@ global:
 applications:
   nfs-subdir-external-provisioner:
     namespace: default
+    type: helmRepo
     source:
-      path: manifest/nfs-subdir-external-provisioner
-      type: helm
+      chart: nfs-subdir-external-provisioner
       helm:
-        valueFiles:
-          - values-choshsh.yaml
+        values: |-
+          nfs:
+            server: master
+            path: /data
+          podAnnotations:
+            sidecar.istio.io/inject: "false"
+          storageClass:
+            name: dynamic
+      repoURL: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+      targetRevision: 4.0.15
     syncPolicy:
       automated:
         prune: true
         selfHeal: true
   jenkins:
     namespace: jenkins
+    type: dir
     source:
       path: manifest/jenkins
     syncPolicy:
@@ -25,18 +34,18 @@ applications:
   # itsm-db
   choshsh-db:
     namespace: default
+    type: dir
     source:
       path: manifest/mysql
-      type: dir
     syncPolicy:
       automated:
         prune: true
         selfHeal: true
   choshsh-ui:
     namespace: default
+    type: helm
     source:
       path: manifest/was
-      type: helm
       helm:
         valueFiles:
           - values-choshsh-ui.yaml
