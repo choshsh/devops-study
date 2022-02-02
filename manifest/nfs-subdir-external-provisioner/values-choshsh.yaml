@@ -1,9 +1,0 @@
-nfs:
-  server: master
-  path: /data
-
-podAnnotations:
-  sidecar.istio.io/inject: "false"
-
-storageClass:
-  name: dynamic

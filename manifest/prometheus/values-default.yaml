@@ -3,6 +3,11 @@ defaultRules:
 
 grafana:
   adminPassword: choshsh
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+    security:
+      allow_embedding: true
   defaultDashboardsTimezone: Asia/Seoul
   dashboardProviders:
     dashboardproviders.yaml:
