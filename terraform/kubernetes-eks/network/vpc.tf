@@ -33,8 +33,8 @@ resource "aws_subnet" "public" {
   vpc_id = aws_vpc.my-vpc.id
 
   count             = local.subnet_count_pair
-  cidr_block        = "${local.cidr_block_split[0]}.${local.cidr_block_split[1]}.${count.index}.0/24"
-  availability_zone = data.aws_availability_zones.available-zones.names[count.index]
+  cidr_block        = cidrsubnet(var.cidr_block, 6, count.index)
+  availability_zone = data.aws_availability_zones.available-zones.names[count.index % length(data.aws_availability_zones.available-zones.names)]
 
   tags = merge(local.tags, {
     Name = "${var.workspace}-public-${count.index}"
@@ -105,8 +105,8 @@ resource "aws_subnet" "private" {
   vpc_id = aws_vpc.my-vpc.id
 
   count             = local.subnet_count_pair
-  cidr_block        = "${local.cidr_block_split[0]}.${local.cidr_block_split[1]}.${count.index + local.subnet_count_pair}.0/27"
-  availability_zone = data.aws_availability_zones.available-zones.names[count.index]
+  cidr_block        = cidrsubnet(var.cidr_block, 4, (count.index + local.subnet_count_pair))
+  availability_zone = data.aws_availability_zones.available-zones.names[count.index % length(data.aws_availability_zones.available-zones.names)]
 
   tags = merge(local.tags, {
     Name                              = "${var.workspace}-private-${count.index}"
