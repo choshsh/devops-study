@@ -5,26 +5,35 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $k }}
+  annotations:
+  {{- if eq ($v.isCrd | default false) true }}
+    argocd.argoproj.io/sync-options: Validate=false
+  {{- end}}
 spec:
+  project: default
   destination:
     name: ""
     namespace: {{ $v.namespace | default "default" }}
     server: {{ $global.server }}
   source:
+  {{- if eq ($v.type | default "") "helmRepo" }}
+    {{ toYaml $v.source | nindent 4}}
+  {{- else if or (eq ($v.type | default "") "dir") (eq ($v.type | default "") "helm") }}
     path: {{ $v.source.path }}
     repoURL: {{ $global.repoURL }}
     targetRevision: {{ $global.targetRevision }}
-    {{- if eq ($v.source.type | default "") "helm" }}
+    {{- if eq ($v.type | default "") "helm" }}
     helm: 
       {{ toYaml $v.source.helm | nindent 6 }}
     {{- else if eq ($v.source.type | default "") "dir" }}
     directory:
-      recurse: {{ ($v.source.directory | default false) }}
+      recurse: {{ ($v.source.recurse | default false) }}
     {{- end }}
-  project: default
+  {{- end }}
   {{- with $v.syncPolicy }}
   syncPolicy:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+
 ---  
 {{- end }}

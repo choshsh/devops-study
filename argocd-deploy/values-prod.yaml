@@ -4,10 +4,10 @@ applications:
   # istio-config
   istio-default:
     namespace: default
+    type: dir
     source:
       path: manifest/istio-default
-      type: dir
-      directory: true
+      recurse: true
     syncPolicy:
       automated:
         prune: true
@@ -15,6 +15,7 @@ applications:
   # jenkins
   jenkins:
     namespace: jenkins
+    type: dir
     source:
       path: manifest/jenkins
     syncPolicy:
@@ -24,9 +25,9 @@ applications:
   # itsm-db
   choshsh-db:
     namespace: default
+    type: dir
     source:
       path: manifest/mysql
-      type: dir
     syncPolicy:
       automated:
         prune: true
@@ -34,9 +35,9 @@ applications:
   # choshsh-ui-network
   choshsh-ui-vs:
     namespace: default
+    type: dir
     source:
       path: manifest/was/network
-      type: dir
     syncPolicy:
       automated:
         prune: true
@@ -44,9 +45,9 @@ applications:
   # choshsh-ui
   choshsh-ui:
     namespace: default
+    type: helm
     source:
       path: manifest/was
-      type: helm
       helm:
         valueFiles:
           - values-choshsh-ui.yaml
@@ -57,9 +58,9 @@ applications:
   # choshsh-ui-loadtest
   choshsh-ui-loadtest:
     namespace: default
+    type: helm
     source:
       path: manifest/was
-      type: helm
       helm:
         valueFiles:
           - values-choshsh-ui-loadtest.yaml
@@ -70,22 +71,12 @@ applications:
   # jenkins-rest
   jenkins-rest:
     namespace: default
+    type: helm
     source:
       path: manifest/was
-      type: helm
       helm:
         valueFiles:
           - values-jenkins-api-springboot.yaml
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-  # loki-network
-  loki-network:
-    namespace: monitoring
-    source:
-      path: manifest/loki-stack/network
-      type: dir
     syncPolicy:
       automated:
         prune: true
