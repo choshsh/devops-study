@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: zabbix-agent
+  name: zabbix-agent
+spec:
+  containers:
+    - env:
+        - name: ZBX_SERVER_HOST
+          value: zabbix
+      image: zabbix/zabbix-agent2
+      name: zabbix-agent
+      ports:
+        - containerPort: 10050
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: zabbix-agent
+  name: zabbix-agent
+spec:
+  ports:
+    - port: 10050
+      protocol: TCP
+      targetPort: 10050
+  selector:
+    run: zabbix-agent
+  type: ClusterIP
