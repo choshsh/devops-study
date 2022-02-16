@@ -8,7 +8,7 @@ spec:
   containers:
     - env:
         - name: ZBX_SERVER_HOST
-          value: zabbix
+          value: "10.32.0.5"
       image: zabbix/zabbix-agent2
       name: zabbix-agent
       ports:
