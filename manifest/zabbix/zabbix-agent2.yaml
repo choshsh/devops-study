@@ -7,6 +7,8 @@ metadata:
 spec:
   containers:
     - env:
+        # 이슈: 서비스 이름으로 설정하면 쿠버네티스 내부 dns 때문에 'cannot accept incoming connection for peer' 에러 발생
+        # 조치: zabbix server pod의 ip로 하드코딩하면 해결
         - name: ZBX_SERVER_HOST
           value: "10.32.0.5"
       image: zabbix/zabbix-agent2
