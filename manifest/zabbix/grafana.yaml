@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-zabbix
+spec:
+  selector:
+    matchLabels:
+      app: grafana-zabbix
+  template:
+    metadata:
+      labels:
+        app: grafana-zabbix
+    spec:
+      containers:
+        - name: grafana-zabbix
+          image: grafana/grafana
+          env:
+            - name: GF_INSTALL_PLUGINS
+              value: alexanderzobnin-zabbix-app
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3000
+              name: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: grafana-zabbix
+spec:
+  selector:
+    app: grafana-zabbix
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
