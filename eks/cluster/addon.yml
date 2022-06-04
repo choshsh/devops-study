@@ -14,4 +14,4 @@ addons:
     attachPolicyARNs: #optional
       - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
     tags: # optional
-      team: eks
+      Owner: choshsh
