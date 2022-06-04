@@ -6,7 +6,7 @@ spec:
   gateways:
     - default/default-gateway
   hosts:
-    - '*'
+    - 'test.choshsh.com'
   http:
     - name: 'reviews-v2-routes'
       route:
@@ -14,3 +14,17 @@ spec:
             host: nginx.default.svc.cluster.local
             port:
               number: 80
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: tcp-policy
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            methods: ['GET']
