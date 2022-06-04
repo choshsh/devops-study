@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nginx-route
+spec:
+  gateways:
+    - default/default-gateway
+  hosts:
+    - '*'
+  http:
+    - name: 'reviews-v2-routes'
+      route:
+        - destination:
+            host: nginx.default.svc.cluster.local
+            port:
+              number: 80
