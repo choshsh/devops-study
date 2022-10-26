@@ -4,3 +4,4 @@ values-secret.yaml
 jenkins/lib
 manifest/jenkins/cred
 .DS_Store
+.terraform*
