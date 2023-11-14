@@ -1,0 +1,9 @@
+service:
+  type: ClusterIP
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+podDisruptionBudget:
+  minAvailable: 1

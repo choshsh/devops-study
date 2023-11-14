@@ -1,0 +1,19 @@
+server:
+  extraArgs:
+    - --insecure
+
+configs:
+  params:
+    server.enable.gzip: true
+  secret:
+    argocdServerAdminPassword: ${admin_password}
+  credentialTemplates:
+    github-app-creds-1:
+      url: https://github.com/choshsh
+      githubAppID: '${githubAppID}'
+      githubAppInstallationID: '${githubAppInstallationID}'
+      githubAppPrivateKey: |
+        ${indent(8, githubAppPrivateKey)}
+  repositories:
+    argocd-repo:
+      url: https://github.com/choshsh/argocd
