@@ -48,6 +48,16 @@ module "eks" {
     }
   }
 
+  fargate_profiles = {
+    karpenter = {
+      namespace = "karpenter"
+      labels    = {}
+    }
+    kube-system = {
+      namespace = "kube-system"
+      labels    = {}
+    }
+  }
 
 
   tags = {}
