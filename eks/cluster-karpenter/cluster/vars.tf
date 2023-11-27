@@ -37,13 +37,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-variable "fargate_profiles" {
-  description = "클러스터의 Fargate 프로파일. (namespace: Fargate 프로파일의 네임스페이스. labels: Fargate 프로파일의 레이블 셀렉터 (네임스페이스 전체 적용 시 []))"
-  type = map(object({
-    namespace = string
-    labels    = map(string)
-  }))
-  default = {}
-}
-

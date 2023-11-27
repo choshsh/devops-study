@@ -1,0 +1,108 @@
+resource "kubernetes_manifest" "node_class_default" {
+  manifest = {
+    apiVersion = "karpenter.k8s.aws/v1beta1"
+    kind       = "EC2NodeClass"
+    metadata   = {
+      name = "default"
+    }
+    spec = {
+      amiFamily           = "AL2"
+      role                = var.karpenter_role_name
+      subnetSelectorTerms = [
+        {
+          tags = { "karpenter.sh/discovery" = var.eks_cluster_name }
+        }
+      ]
+      securityGroupSelectorTerms = [
+        {
+          tags = { "karpenter.sh/discovery" = var.eks_cluster_name }
+        }
+      ]
+      blockDeviceMappings = [
+        {
+          deviceName = "/dev/xvda"
+          ebs        = {
+            volumeSize = "20Gi"
+            volumeType = "gp3"
+            encrypted  = true
+          }
+        }
+      ]
+      tags = { "karpenter.sh/discovery" = var.eks_cluster_name }
+    }
+  }
+}
+
+# 공식문서: https://karpenter.sh/docs/concepts/disruption/
+#
+# consolidationPolicy: WhenUnderutilized | WhenEmpty
+#   - WhenUnderutilized: Karpenter는 통합을 위해 모든 노드를 고려하고 노드가 충분히 활용되지 않고 비용을 줄이기 위해 변경할 수 있다는 것을 발견했을 때 노드를 제거하거나 교체하려고 시도
+#   - WhenEmpty: 워크로드 포드가 없는 통합을 위한 노드만 고려 (데몬셋 무시)
+# consolidateAfter: 종료 결정 후 대기할 시간 (WhenEmpty 때만 사용 가능)
+# expireAfter: ttl
+resource "kubernetes_manifest" "node_pool_default" {
+  manifest = {
+    apiVersion = "karpenter.sh/v1beta1"
+    kind       = "NodePool"
+    metadata   = {
+      name = "default"
+    }
+    spec = {
+      template = {
+        spec = {
+          nodeClassRef = {
+            name = "default"
+          }
+          requirements = [
+            {
+              key      = "karpenter.k8s.aws/instance-category"
+              operator = "In"
+              values   = ["c", "m"]
+            },
+            {
+              key      = "karpenter.k8s.aws/instance-cpu"
+              operator = "In"
+              values   = ["2", "4", "8"]
+            },
+            {
+              key      = "karpenter.k8s.aws/instance-generation"
+              operator = "Gt"
+              values   = ["5"]
+            },
+            {
+              key      = "kubernetes.io/arch"
+              operator = "In"
+              values   = ["arm64"]
+            },
+            {
+              key      = "karpenter.sh/capacity-type"
+              operator = "In"
+              values   = ["spot"]
+            },
+            {
+              key      = "topology.kubernetes.io/zone"
+              operator = "In"
+              values   = var.azs
+            }
+          ]
+          kubelet = {
+            imageGCHighThresholdPercent = 75
+            imageGCLowThresholdPercent  = 70
+          }
+        }
+      }
+      limits = {
+        cpu    = "50"
+        memory = "128Gi"
+      }
+      disruption = {
+        consolidationPolicy = "WhenEmpty"
+        expireAfter         = "24h"
+        consolidateAfter    = "10s"
+      }
+    }
+  }
+  depends_on = [
+    kubernetes_manifest.node_class_default
+  ]
+}

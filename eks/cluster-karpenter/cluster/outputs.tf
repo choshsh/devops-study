@@ -13,3 +13,7 @@ output "cluster_certificate_authority_data" {
   value = module.eks.cluster_certificate_authority_data
 }
 
+# karpenter_role_name
+output "karpenter_role_name" {
+  value = module.karpenter.role_name
+}
