@@ -23,10 +23,9 @@ resource "aws_security_group" "eks_node" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name                     = "${var.cluster_name}-node"
-    "karpenter.sh/discovery" = var.cluster_name
-  }
+  tags = merge(local.eks_discovery_tag, {
+    Name = "${var.cluster_name}-node"
+  })
 
   lifecycle {
     ignore_changes = [ingress]

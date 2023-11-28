@@ -1,4 +1,7 @@
-data "aws_ecrpublic_authorization_token" "token" {}
+
+locals {
+  eks_discovery_tag = var.eks_discovery_tag
+}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -38,12 +41,12 @@ module "eks" {
   node_security_group_id     = aws_security_group.eks_node.id
 
   manage_aws_auth_configmap = true
-  aws_auth_roles            = [
+  aws_auth_roles = [
     # We need to add in the Karpenter node IAM role for nodes launched by Karpenter
     {
       rolearn  = module.karpenter.role_arn
       username = "system:node:{{EC2PrivateDNSName}}"
-      groups   = [
+      groups = [
         "system:bootstrappers",
         "system:nodes",
       ]
@@ -64,7 +67,7 @@ module "eks" {
       selectors = [
         {
           namespace = "kube-system"
-          labels    = {
+          labels = {
             "eks.amazonaws.com/component" = "coredns"
           }
         }
@@ -76,17 +79,12 @@ module "eks" {
     }
   }
 
-  tags = merge(var.tags, {
-    # NOTE - if creating multiple security groups with this module, only tag the
-    # security group that Karpenter should utilize with the following tag
-    # (i.e. - at most, only one security group should have this tag in your account)
-    "karpenter.sh/discovery" = var.cluster_name
-  })
+  tags = merge(var.tags, local.eks_discovery_tag)
 }
 
 resource "kubernetes_storage_class" "gp3" {
   metadata {
-    name        = "gp3"
+    name = "gp3"
     annotations = {
       "storageclass.kubernetes.io/is-default-class" = "true"
     }
@@ -95,7 +93,7 @@ resource "kubernetes_storage_class" "gp3" {
   reclaim_policy         = "Delete"
   volume_binding_mode    = "WaitForFirstConsumer"
   allow_volume_expansion = true
-  parameters             = {
+  parameters = {
     type                        = "gp3"
     "csi.storage.k8s.io/fstype" = "ext4"
   }

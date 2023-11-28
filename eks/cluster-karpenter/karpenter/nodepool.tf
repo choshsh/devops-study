@@ -6,19 +6,11 @@ resource "kubernetes_manifest" "node_class_default" {
       name = "default"
     }
     spec = {
-      amiFamily           = "AL2"
-      role                = var.karpenter_role_name
-      subnetSelectorTerms = [
-        {
-          tags = { "karpenter.sh/discovery" = var.eks_cluster_name }
-        }
-      ]
-      securityGroupSelectorTerms = [
-        {
-          tags = { "karpenter.sh/discovery" = var.eks_cluster_name }
-        }
-      ]
-      blockDeviceMappings = [
+      amiFamily                  = "AL2"
+      role                       = var.karpenter_role_name
+      subnetSelectorTerms        = [{ tags = var.eks_discovery_tag }]
+      securityGroupSelectorTerms = [{ tags = var.eks_discovery_tag }]
+      blockDeviceMappings        = [
         {
           deviceName = "/dev/xvda"
           ebs        = {
@@ -28,7 +20,7 @@ resource "kubernetes_manifest" "node_class_default" {
           }
         }
       ]
-      tags = { "karpenter.sh/discovery" = var.eks_cluster_name }
+      tags = var.eks_discovery_tag
     }
   }
 }
@@ -102,7 +94,5 @@ resource "kubernetes_manifest" "node_pool_default" {
       }
     }
   }
-  depends_on = [
-    kubernetes_manifest.node_class_default
-  ]
+  depends_on = [kubernetes_manifest.node_class_default]
 }

@@ -25,7 +25,7 @@ variable "control_plane_subnet_ids" {
 
 variable "cluster_addons" {
   description = "클러스터의 애드온. Ref: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#addons"
-  type = map(object({
+  type        = map(object({
     addon_version        = string
     configuration_values = string
   }))
@@ -36,4 +36,9 @@ variable "tags" {
   description = "클러스터의 태그"
   type        = map(string)
   default     = {}
+}
+
+variable "eks_discovery_tag" {
+  description = "EKS 클러스터를 찾기 위한 태그"
+  type        = map(number)
 }

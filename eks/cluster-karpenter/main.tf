@@ -1,8 +1,10 @@
 locals {
   name   = "choshsh-eks-cluster"
   region = "us-east-1"
+  eks_discovery_tag = {
+    "eks:discovery:${local.name}" = 1
+  }
 }
-
 
 module "eks" {
   source = "./cluster"
@@ -14,6 +16,8 @@ module "eks" {
   control_plane_subnet_ids = module.vpc.intra_subnets # 컨트롤 플레인 서브넷
   subnet_ids               = module.vpc.private_subnets # 워커 노드 서브넷
 
+  eks_discovery_tag = local.eks_discovery_tag
+
   cluster_addons = {
     kube-proxy = {
       addon_version        = "v1.28.2-eksbuild.2"
@@ -23,7 +27,7 @@ module "eks" {
       addon_version        = "v1.15.4-eksbuild.1"
       configuration_values = jsonencode({
         env = {
-          WARM_IP_TARGET = "4"
+          WARM_PREFIX_TARGET = "4"
         }
       })
     }
@@ -73,10 +77,25 @@ module "eks" {
   tags = {}
 }
 
+output "test" {
+  value = {
+    control_plane_security_group_id = module.eks.control_plane_security_group_id
+    cluster_security_group_id       = module.eks.cluster_security_group_id
+    node_group_security_group_id    = module.eks.node_group_security_group_id
+  }
+}
+
+variable "init" {
+  type    = bool
+  default = false
+}
+
 module "karpenter" {
   source = "./karpenter"
 
+  count = var.init ? 0 : 1
+
   azs                 = module.vpc.azs
-  eks_cluster_name    = module.eks.cluster_name
   karpenter_role_name = module.eks.karpenter_role_name
+  eks_discovery_tag   = module.eks.eks_discovery_tag
 }

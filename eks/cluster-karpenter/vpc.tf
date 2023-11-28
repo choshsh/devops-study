@@ -30,8 +30,9 @@ module "vpc" {
     "kubernetes.io/role/elb" = 1
   }
 
-  private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
-    "karpenter.sh/discovery"          = local.name
-  }
+  private_subnet_tags = merge(local.eks_discovery_tag,
+    {
+      "kubernetes.io/role/internal-elb" = 1
+    }
+  )
 }

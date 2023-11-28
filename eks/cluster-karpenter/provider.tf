@@ -26,11 +26,11 @@ provider "aws" {
   profile = local.aws_profile
 }
 
-#provider "aws" {
-#  region  = "us-east-1"
-#  alias   = "virginia"
-#  profile = local.aws_profile
-#}
+provider "aws" {
+  region  = "us-east-1"
+  alias   = "virginia"
+  profile = local.aws_profile
+}
 
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
