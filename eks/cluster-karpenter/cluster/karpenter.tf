@@ -8,8 +8,8 @@ module "karpenter" {
   # Node IAM role
   enable_karpenter_instance_profile_creation = true
 
-  iam_role_name            = "${var.cluster_name}-node"
-  iam_role_use_name_prefix = false
+  iam_role_name                = "${var.cluster_name}-node"
+  iam_role_use_name_prefix     = false
   iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
@@ -31,34 +31,21 @@ resource "helm_release" "karpenter" {
 
   name       = "karpenter"
   repository = "oci://public.ecr.aws/karpenter"
-  #  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-  #  repository_password = data.aws_ecrpublic_authorization_token.token.password
-  chart   = "karpenter"
-  version = "v0.32.2"
+  chart      = "karpenter"
+  version    = "v0.32.3"
 
-  set {
-    name  = "settings.clusterName"
-    value = module.eks.cluster_name
-  }
-
-  set {
-    name  = "settings.clusterEndpoint"
-    value = module.eks.cluster_endpoint
-  }
-
-  set {
-    name  = "settings.interruptionQueueName"
-    value = module.karpenter.queue_name
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.karpenter.irsa_arn
-  }
-
-  set {
-    name  = "replica"
-    value = 1
+  dynamic "set" {
+    for_each = {
+      "settings.clusterName"                                      = module.eks.cluster_name
+      "settings.clusterEndpoint"                                  = module.eks.cluster_endpoint
+      "settings.interruptionQueue"                                = module.karpenter.queue_name
+      "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = module.karpenter.irsa_arn
+      "replicas"                                                  = 1
+    }
+    content {
+      name  = set.key
+      value = set.value
+    }
   }
 
   lifecycle {

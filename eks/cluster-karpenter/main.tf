@@ -1,6 +1,6 @@
 locals {
-  name   = "choshsh-eks-cluster"
-  region = "us-east-1"
+  name              = "choshsh-eks-cluster"
+  region            = "us-east-1"
   eks_discovery_tag = {
     "eks:discovery:${local.name}" = 1
   }
@@ -75,6 +75,10 @@ module "eks" {
   }
 
   tags = {}
+
+  depends_on = [
+    module.vpc
+  ]
 }
 
 output "test" {

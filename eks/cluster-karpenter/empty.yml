@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: empty-spot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: empty-spot
+  template:
+    metadata:
+      labels:
+        app: empty-spot
+    spec:
+      terminationGracePeriodSeconds: 1
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: empty-spot
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: default
+          image: alpine:latest
+          command: [ "sleep", "infinity" ]
+
