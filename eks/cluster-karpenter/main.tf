@@ -25,11 +25,7 @@ module "eks" {
     }
     vpc-cni = {
       addon_version        = "v1.15.4-eksbuild.1"
-      configuration_values = jsonencode({
-        env = {
-          WARM_PREFIX_TARGET = "4"
-        }
-      })
+      configuration_values = ""
     }
     coredns = {
       addon_version        = "v1.10.1-eksbuild.6"

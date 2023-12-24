@@ -38,6 +38,9 @@ resource "kubernetes_manifest" "node_pool_default" {
     kind       = "NodePool"
     metadata   = {
       name = "default"
+      labels = {
+        "karpenter.sh/managed" = "true"
+      }
     }
     spec = {
       template = {
@@ -54,7 +57,7 @@ resource "kubernetes_manifest" "node_pool_default" {
             {
               key      = "karpenter.k8s.aws/instance-cpu"
               operator = "In"
-              values   = ["2", "4", "8"]
+              values   = ["2", "4"]
             },
             {
               key      = "karpenter.k8s.aws/instance-generation"
@@ -84,7 +87,7 @@ resource "kubernetes_manifest" "node_pool_default" {
         }
       }
       limits = {
-        cpu    = "50"
+        cpu    = "32"
         memory = "128Gi"
       }
       disruption = {
@@ -94,5 +97,10 @@ resource "kubernetes_manifest" "node_pool_default" {
       }
     }
   }
+
+  field_manager {
+    force_conflicts = true
+  }
+
   depends_on = [kubernetes_manifest.node_class_default]
 }
