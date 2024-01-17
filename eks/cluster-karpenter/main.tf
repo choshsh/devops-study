@@ -1,6 +1,6 @@
 locals {
   name              = "choshsh-eks-cluster"
-  region            = "us-east-1"
+  region            = "ap-northeast-2"
   eks_discovery_tag = {
     "eks:discovery:${local.name}" = 1
   }

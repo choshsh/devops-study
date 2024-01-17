@@ -80,7 +80,11 @@ resource "kubernetes_manifest" "node_pool_spot" {
               operator = "In"
               values   = var.azs
             },
-
+            {
+              key      = "capacity-spread"
+              operator = "In"
+              values   = ["2", "3", "4"]
+            }
           ]
           kubelet = {
             imageGCHighThresholdPercent = 75
