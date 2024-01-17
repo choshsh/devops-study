@@ -32,14 +32,15 @@ resource "kubernetes_manifest" "node_class_default" {
 #   - WhenEmpty: 워크로드 포드가 없는 통합을 위한 노드만 고려 (데몬셋 무시)
 # consolidateAfter: 종료 결정 후 대기할 시간 (WhenEmpty 때만 사용 가능)
 # expireAfter: ttl
-resource "kubernetes_manifest" "node_pool_default" {
+resource "kubernetes_manifest" "node_pool_spot" {
   manifest = {
     apiVersion = "karpenter.sh/v1beta1"
     kind       = "NodePool"
     metadata   = {
-      name = "default"
+      name   = "default-spot"
       labels = {
         "karpenter.sh/managed" = "true"
+        "role"                 = "app"
       }
     }
     spec = {
@@ -78,6 +79,86 @@ resource "kubernetes_manifest" "node_pool_default" {
               key      = "topology.kubernetes.io/zone"
               operator = "In"
               values   = var.azs
+            },
+
+          ]
+          kubelet = {
+            imageGCHighThresholdPercent = 75
+            imageGCLowThresholdPercent  = 70
+          }
+        }
+      }
+      limits = {
+        cpu    = "32"
+        memory = "128Gi"
+      }
+      disruption = {
+        consolidationPolicy = "WhenEmpty"
+        expireAfter         = "24h"
+        consolidateAfter    = "10s"
+      }
+    }
+  }
+
+  field_manager {
+    force_conflicts = true
+  }
+
+  depends_on = [kubernetes_manifest.node_class_default]
+}
+
+resource "kubernetes_manifest" "node_pool_on_demand" {
+  manifest = {
+    apiVersion = "karpenter.sh/v1beta1"
+    kind       = "NodePool"
+    metadata   = {
+      name   = "default-on-demand"
+      labels = {
+        "karpenter.sh/managed" = "true"
+        "role"                 = "app"
+      }
+    }
+    spec = {
+      template = {
+        spec = {
+          nodeClassRef = {
+            name = "default"
+          }
+          requirements = [
+            {
+              key      = "karpenter.k8s.aws/instance-category"
+              operator = "In"
+              values   = ["c", "m"]
+            },
+            {
+              key      = "karpenter.k8s.aws/instance-cpu"
+              operator = "In"
+              values   = ["2", "4"]
+            },
+            {
+              key      = "karpenter.k8s.aws/instance-generation"
+              operator = "Gt"
+              values   = ["5"]
+            },
+            {
+              key      = "kubernetes.io/arch"
+              operator = "In"
+              values   = ["arm64"]
+            },
+            {
+              key      = "karpenter.sh/capacity-type"
+              operator = "In"
+              values   = ["on-demand"]
+            },
+            {
+              key      = "topology.kubernetes.io/zone"
+              operator = "In"
+              values   = var.azs
+            },
+            {
+              key      = "capacity-spread"
+              operator = "In"
+              values   = ["1"]
             }
           ]
           kubelet = {

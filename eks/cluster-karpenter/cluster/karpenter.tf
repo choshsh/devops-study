@@ -32,7 +32,7 @@ resource "helm_release" "karpenter" {
   name       = "karpenter"
   repository = "oci://public.ecr.aws/karpenter"
   chart      = "karpenter"
-  version    = "v0.32.3"
+  version    = "v0.33.1"
 
   dynamic "set" {
     for_each = {

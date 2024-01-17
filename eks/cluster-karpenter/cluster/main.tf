@@ -55,15 +55,7 @@ module "eks" {
   fargate_profiles = {
     karpenter = {
       selectors = [
-        { namespace = "karpenter" }
-      ]
-      timeouts = {
-        create = "15m"
-        delete = "15m"
-      }
-    }
-    coredns = {
-      selectors = [
+        { namespace = "karpenter" },
         {
           namespace = "kube-system"
           labels    = {
