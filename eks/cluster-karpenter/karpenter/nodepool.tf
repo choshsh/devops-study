@@ -40,7 +40,6 @@ resource "kubernetes_manifest" "node_pool_spot" {
       name   = "default-spot"
       labels = {
         "karpenter.sh/managed" = "true"
-        "role"                 = "app"
       }
     }
     spec = {
@@ -53,7 +52,7 @@ resource "kubernetes_manifest" "node_pool_spot" {
             {
               key      = "karpenter.k8s.aws/instance-category"
               operator = "In"
-              values   = ["c", "m"]
+              values   = ["t", "c", "m"]
             },
             {
               key      = "karpenter.k8s.aws/instance-cpu"
@@ -63,7 +62,12 @@ resource "kubernetes_manifest" "node_pool_spot" {
             {
               key      = "karpenter.k8s.aws/instance-generation"
               operator = "Gt"
-              values   = ["5"]
+              values   = ["2"]
+            },
+            {
+              key      = "karpenter.k8s.aws/instance-memory"
+              operator = "Gt"
+              values   = ["2048"]
             },
             {
               key      = "kubernetes.io/arch"
@@ -81,9 +85,24 @@ resource "kubernetes_manifest" "node_pool_spot" {
               values   = var.azs
             },
             {
-              key      = "capacity-spread"
+              key      = "capacity-spread-1-1"
               operator = "In"
-              values   = ["2", "3", "4"]
+              values   = ["2"]
+            },
+            {
+              key      = "capacity-spread-1-3"
+              operator = "In"
+              values   = ["2", "3"]
+            },
+            {
+              key      = "capacity-spread-1-5"
+              operator = "In"
+              values   = ["2", "3", "4", "5"]
+            },
+            {
+              key      = "role"
+              operator = "In"
+              values   = ["app"]
             }
           ]
           kubelet = {
@@ -119,11 +138,15 @@ resource "kubernetes_manifest" "node_pool_on_demand" {
       name   = "default-on-demand"
       labels = {
         "karpenter.sh/managed" = "true"
-        "role"                 = "app"
       }
     }
     spec = {
       template = {
+        metadata = {
+          labels = {
+            role = "app"
+          }
+        }
         spec = {
           nodeClassRef = {
             name = "default"
@@ -132,7 +155,7 @@ resource "kubernetes_manifest" "node_pool_on_demand" {
             {
               key      = "karpenter.k8s.aws/instance-category"
               operator = "In"
-              values   = ["c", "m"]
+              values   = ["t", "c", "m"]
             },
             {
               key      = "karpenter.k8s.aws/instance-cpu"
@@ -142,7 +165,12 @@ resource "kubernetes_manifest" "node_pool_on_demand" {
             {
               key      = "karpenter.k8s.aws/instance-generation"
               operator = "Gt"
-              values   = ["5"]
+              values   = ["2"]
+            },
+            {
+              key      = "karpenter.k8s.aws/instance-memory"
+              operator = "Gt"
+              values   = ["2048"]
             },
             {
               key      = "kubernetes.io/arch"
@@ -160,9 +188,24 @@ resource "kubernetes_manifest" "node_pool_on_demand" {
               values   = var.azs
             },
             {
-              key      = "capacity-spread"
+              key      = "capacity-spread-1-1"
               operator = "In"
               values   = ["1"]
+            },
+            {
+              key      = "capacity-spread-1-3"
+              operator = "In"
+              values   = ["1"]
+            },
+            {
+              key      = "capacity-spread-1-5"
+              operator = "In"
+              values   = ["1"]
+            },
+            {
+              key      = "role"
+              operator = "In"
+              values   = ["app"]
             }
           ]
           kubelet = {

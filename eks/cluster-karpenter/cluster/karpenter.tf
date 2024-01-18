@@ -54,5 +54,7 @@ resource "helm_release" "karpenter" {
     ]
   }
 
+  depends_on = [module.eks.fargate_profiles]
+
   timeout = 60 * 20 # 20 minutes
 }

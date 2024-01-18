@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name empty-ondemand
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *name
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: *name
+        version: v2
+    spec:
+      terminationGracePeriodSeconds: 1
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: karpenter.sh/capacity-type
+                    operator: In
+                    values:
+                      - "on-demand"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - *name
+                  - key: version
+                    operator: In
+                    values:
+                      - v2
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: default
+          image: alpine:latest
+          command: [ "sleep", "infinity" ]
+      nodeSelector:
+        role: app
+
