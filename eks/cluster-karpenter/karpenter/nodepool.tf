@@ -85,19 +85,24 @@ resource "kubernetes_manifest" "node_pool_spot" {
               values   = var.azs
             },
             {
-              key      = "capacity-spread-1-1"
+              key      = "capacity-spread-2"
               operator = "In"
               values   = ["2"]
             },
             {
-              key      = "capacity-spread-1-3"
+              key      = "capacity-spread-3"
               operator = "In"
               values   = ["2", "3"]
             },
             {
-              key      = "capacity-spread-1-5"
+              key      = "capacity-spread-4"
               operator = "In"
-              values   = ["2", "3", "4", "5"]
+              values   = ["2", "3", "4"]
+            },
+            {
+              key      = "capacity-spread-6"
+              operator = "In"
+              values   = ["2", "3", "4", "5", "6"]
             },
             {
               key      = "role"
@@ -142,11 +147,6 @@ resource "kubernetes_manifest" "node_pool_on_demand" {
     }
     spec = {
       template = {
-        metadata = {
-          labels = {
-            role = "app"
-          }
-        }
         spec = {
           nodeClassRef = {
             name = "default"
@@ -188,17 +188,22 @@ resource "kubernetes_manifest" "node_pool_on_demand" {
               values   = var.azs
             },
             {
-              key      = "capacity-spread-1-1"
+              key      = "capacity-spread-2"
               operator = "In"
               values   = ["1"]
             },
             {
-              key      = "capacity-spread-1-3"
+              key      = "capacity-spread-3"
               operator = "In"
               values   = ["1"]
             },
             {
-              key      = "capacity-spread-1-5"
+              key      = "capacity-spread-4"
+              operator = "In"
+              values   = ["1"]
+            },
+            {
+              key      = "capacity-spread-6"
               operator = "In"
               values   = ["1"]
             },
