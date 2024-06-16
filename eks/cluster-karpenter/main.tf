@@ -10,7 +10,7 @@ module "eks" {
   source = "./cluster"
 
   cluster_name    = "choshsh-eks-cluster"
-  cluster_version = "1.28"
+  cluster_version = "1.30"
 
   vpc_id                   = module.vpc.vpc_id
   control_plane_subnet_ids = module.vpc.intra_subnets # 컨트롤 플레인 서브넷
@@ -18,17 +18,19 @@ module "eks" {
 
   eks_discovery_tag = local.eks_discovery_tag
 
+  ecr_token = data.aws_ecrpublic_authorization_token.token
+
   cluster_addons = {
     kube-proxy = {
-      addon_version        = "v1.28.2-eksbuild.2"
+      addon_version        = "v1.28.8-eksbuild.5"
       configuration_values = ""
     }
     vpc-cni = {
-      addon_version        = "v1.15.4-eksbuild.1"
+      addon_version        = "v1.18.1-eksbuild.3"
       configuration_values = ""
     }
     coredns = {
-      addon_version        = "v1.10.1-eksbuild.6"
+      addon_version        = "v1.10.1-eksbuild.11"
       configuration_values = jsonencode({
         computeType  = "Fargate"
         replicaCount = 1

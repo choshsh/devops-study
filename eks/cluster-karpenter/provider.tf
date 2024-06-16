@@ -32,6 +32,10 @@ provider "aws" {
   profile = local.aws_profile
 }
 
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.virginia
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)

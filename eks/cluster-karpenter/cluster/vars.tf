@@ -42,3 +42,8 @@ variable "eks_discovery_tag" {
   description = "EKS 클러스터를 찾기 위한 태그"
   type        = map(number)
 }
+
+variable "ecr_token" {
+    description = "ECR 토큰"
+    type        = any
+}

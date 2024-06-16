@@ -1,0 +1,45 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: istio-operator-config
+  namespace: istio-system
+spec:
+  hub: docker.io/istio
+  profile: default
+  revision: 1-22-1
+  tag: 1.22.1
+  components:
+    base:
+      enabled: true
+    egressGateways:
+      - enabled: false
+        name: istio-egressgateway
+    ingressGateways:
+      - enabled: true
+        name: istio-ingressgateway
+        k8s:
+          service:
+            type: ClusterIP
+          podAnnotations:
+            proxy.istio.io/config: |
+              proxyMetadata:
+                EXIT_ON_ZERO_ACTIVE_CONNECTIONS: 'true'
+                MINIMUM_DRAIN_DURATION: '30s'
+          overlays:
+            - kind: Deployment
+              name: istio-ingressgateway
+              patches:
+                - path: spec.template.spec.containers[0].lifecycle.preStop.exec.command
+                  value:
+                    - 'sleep'
+                    - '10'
+    pilot:
+      enabled: true
+  values:
+    defaultRevision: ""
+    gateways:
+      istio-egressgateway: { }
+      istio-ingressgateway: { }
+    global:
+      configValidation: true
+      istioNamespace: istio-system
