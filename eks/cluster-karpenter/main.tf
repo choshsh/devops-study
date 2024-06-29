@@ -22,15 +22,15 @@ module "eks" {
 
   cluster_addons = {
     kube-proxy = {
-      addon_version        = "v1.28.8-eksbuild.5"
+      addon_version        = "v1.30.0-eksbuild.3"
       configuration_values = ""
     }
     vpc-cni = {
-      addon_version        = "v1.18.1-eksbuild.3"
+      addon_version        = "v1.18.2-eksbuild.1"
       configuration_values = ""
     }
     coredns = {
-      addon_version        = "v1.10.1-eksbuild.11"
+      addon_version        = "v1.11.1-eksbuild.9"
       configuration_values = jsonencode({
         computeType  = "Fargate"
         replicaCount = 1

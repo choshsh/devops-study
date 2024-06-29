@@ -2,17 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: &name empty-spot-1-1
+  labels: &labels
+    app: *name
+    version: &version v2
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
-      app: *name
-      version: v2
+      <<: *labels
   template:
     metadata:
       labels:
-        app: *name
-        version: v2
+        <<: *labels
     spec:
       terminationGracePeriodSeconds: 1
       affinity:
@@ -27,7 +28,7 @@ spec:
                   - key: version
                     operator: In
                     values:
-                      - v2
+                      - *version
               topologyKey: kubernetes.io/hostname
       topologySpreadConstraints:
         - maxSkew: 1
