@@ -15,7 +15,7 @@ output "cluster_certificate_authority_data" {
 
 # karpenter로 생성되는 NodeGroup의 IAM Role 이름
 output "karpenter_role_name" {
-  value = module.karpenter.role_name
+  value = module.karpenter.node_iam_role_name
 }
 
 output "control_plane_security_group_id" {
