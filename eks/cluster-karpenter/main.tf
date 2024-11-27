@@ -1,6 +1,6 @@
 locals {
-  name              = "choshsh-eks-cluster"
-  region            = "ap-northeast-2"
+  name   = "choshsh-eks-cluster"
+  region = "us-east-1"
   eks_discovery_tag = {
     "eks:discovery:${local.name}" = 1
   }
@@ -9,12 +9,12 @@ locals {
 module "eks" {
   source = "./cluster"
 
-  cluster_name    = "choshsh-eks-cluster"
-  cluster_version = "1.30"
+  cluster_name    = local.name
+  cluster_version = "1.31"
 
-  vpc_id                   = module.vpc.vpc_id
+  vpc_id = module.vpc.vpc_id
   control_plane_subnet_ids = module.vpc.intra_subnets # 컨트롤 플레인 서브넷
-  subnet_ids               = module.vpc.private_subnets # 워커 노드 서브넷
+  subnet_ids = module.vpc.private_subnets # 워커 노드 서브넷
 
   eks_discovery_tag = local.eks_discovery_tag
 
@@ -22,19 +22,19 @@ module "eks" {
 
   cluster_addons = {
     kube-proxy = {
-      addon_version        = "v1.30.0-eksbuild.3"
+      addon_version        = "v1.31.2-eksbuild.3"
       configuration_values = ""
     }
     vpc-cni = {
-      addon_version        = "v1.18.2-eksbuild.1"
+      addon_version        = "v1.19.0-eksbuild.1"
       configuration_values = ""
     }
     coredns = {
-      addon_version        = "v1.11.1-eksbuild.9"
+      addon_version = "v1.11.3-eksbuild.2"
       configuration_values = jsonencode({
         computeType  = "Fargate"
         replicaCount = 1
-        resources    = {
+        resources = {
           limits = {
             cpu    = "0.25"
             memory = "256M"
@@ -46,30 +46,10 @@ module "eks" {
         }
       })
     }
-    #    aws-ebs-csi-driver = {
-    #      addon_version = "v1.25.0-eksbuild.1"
-    #      configuration_values= jsonencode({
-    #        node = {
-    #          affinity = {
-    #            nodeAffinity = {
-    #              requiredDuringSchedulingIgnoredDuringExecution = {
-    #                nodeSelectorTerms = [
-    #                  {
-    #                    matchExpressions = [
-    #                      {
-    #                        key      = "eks.amazonaws.com/nodegroup"
-    #                        operator = "In"
-    #                        values   = ["ng-1"]
-    #                      }
-    #                    ]
-    #                  }
-    #                ]
-    #              }
-    #            }
-    #          }
-    #        }
-    #      })
-    #    }
+    # aws-ebs-csi-driver = {
+    #   addon_version        = "v1.35.0-eksbuild.1"
+    #   configuration_values = ""
+    # }
   }
 
   tags = {}
@@ -100,4 +80,10 @@ module "karpenter" {
   azs                 = module.vpc.azs
   karpenter_role_name = module.eks.karpenter_role_name
   eks_discovery_tag   = module.eks.eks_discovery_tag
+}
+
+module "helm" {
+  source = "./helm"
+
+  count = var.init ? 0 : 1
 }

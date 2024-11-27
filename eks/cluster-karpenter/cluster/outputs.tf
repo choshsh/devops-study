@@ -27,7 +27,7 @@ output "cluster_security_group_id" {
 }
 
 output "node_group_security_group_id" {
-  value = module.eks.node_security_group_id
+  value = aws_security_group.eks_node.id
 }
 
 output "eks_discovery_tag" {

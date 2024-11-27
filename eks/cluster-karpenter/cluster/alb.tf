@@ -1,6 +1,6 @@
 module "aws_load_balancer_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.48.0"
 
   role_name = format("%s-lb-controller", module.eks.cluster_name)
   attach_load_balancer_controller_policy = true

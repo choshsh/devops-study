@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          #          image: nginx:stable-alpine-slim
+          image: nginx:alpine-slim
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 3
+            initialDelaySeconds: 15
+  strategy:
+    blueGreen:
+      activeService: nginx
+      previewService: nginx-preview
+      autoPromotionEnabled: true
+      maxUnavailable: 50%
+      autoPromotionSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+  selector:
+    app: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-preview
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+  selector:
+    app: nginx

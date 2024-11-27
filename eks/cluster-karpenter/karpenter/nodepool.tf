@@ -1,6 +1,6 @@
 resource "kubernetes_manifest" "node_class_default" {
   manifest = {
-    apiVersion = "karpenter.k8s.aws/v1beta1"
+    apiVersion = "karpenter.k8s.aws/v1"
     kind       = "EC2NodeClass"
     metadata = {
       name = "default"
@@ -14,12 +14,28 @@ resource "kubernetes_manifest" "node_class_default" {
         {
           deviceName = "/dev/xvda"
           ebs = {
-            volumeSize = "20Gi"
+            volumeSize = "30Gi"
             volumeType = "gp3"
             encrypted  = true
           }
-        }
+        },
+        #         {
+        #           deviceName = "/dev/xvdb"
+        #           ebs = {
+        #             volumeSize = "20Gi"
+        #             volumeType = "gp3"
+        #             encrypted  = true
+        #           }
+        #         }
       ]
+      kubelet = {
+        imageGCHighThresholdPercent = 75
+        imageGCLowThresholdPercent  = 70
+      }
+      amiSelectorTerms = [{
+        # https://karpenter.sh/v1.0/concepts/nodeclasses/#specamiselectorterms
+        alias = "al2@v20241121"
+      }]
       tags = var.eks_discovery_tag
     }
   }
@@ -34,7 +50,7 @@ resource "kubernetes_manifest" "node_class_default" {
 # expireAfter: ttl
 resource "kubernetes_manifest" "node_pool_spot" {
   manifest = {
-    apiVersion = "karpenter.sh/v1beta1"
+    apiVersion = "karpenter.sh/v1"
     kind       = "NodePool"
     metadata = {
       name = "default-spot"
@@ -46,8 +62,11 @@ resource "kubernetes_manifest" "node_pool_spot" {
       template = {
         spec = {
           nodeClassRef = {
+            group = "karpenter.k8s.aws"
+            kind = "EC2NodeClass"
             name = "default"
           }
+          expireAfter = "24h"
           requirements = [
             {
               key      = "karpenter.k8s.aws/instance-category"
@@ -57,58 +76,34 @@ resource "kubernetes_manifest" "node_pool_spot" {
             {
               key      = "karpenter.k8s.aws/instance-cpu"
               operator = "In"
-              values = ["2", "4"]
+              values = ["2", "4", "8"]
             },
             {
               key      = "karpenter.k8s.aws/instance-generation"
               operator = "Gt"
-              values = ["2"]
+              values = ["5"]
             },
             {
               key      = "karpenter.k8s.aws/instance-memory"
               operator = "Gt"
-              values = ["2048"]
+              values = ["4095"]
             },
             {
               key      = "kubernetes.io/arch"
               operator = "In"
-              values = ["arm64"]
+              values = ["amd64"]
             },
             {
               key      = "karpenter.sh/capacity-type"
               operator = "In"
-              values = ["spot"]
+              values = ["spot", "on-demand"]
             },
             {
               key      = "topology.kubernetes.io/zone"
               operator = "In"
               values   = var.azs
             },
-            {
-              key      = "capacity-spread-2"
-              operator = "In"
-              values = ["2"]
-            },
-            {
-              key      = "capacity-spread-4"
-              operator = "In"
-              values = ["2", "3", "4"]
-            },
-            {
-              key      = "capacity-spread-6"
-              operator = "In"
-              values = ["2", "3", "4", "5", "6"]
-            },
-            {
-              key      = "role"
-              operator = "In"
-              values = ["app"]
-            }
           ]
-          kubelet = {
-            imageGCHighThresholdPercent = 75
-            imageGCLowThresholdPercent  = 70
-          }
         }
       }
       limits = {
@@ -116,9 +111,11 @@ resource "kubernetes_manifest" "node_pool_spot" {
         memory = "128Gi"
       }
       disruption = {
-        consolidationPolicy = "WhenEmpty"
-        expireAfter         = "24h"
+        consolidationPolicy = "WhenEmptyOrUnderutilized"
         consolidateAfter    = "10s"
+        budgets = [
+          { nodes = "20%" }
+        ]
       }
     }
   }
