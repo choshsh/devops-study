@@ -1,0 +1,105 @@
+{{- range .Values.param }}
+{{- $default := $.Values.internal.default.nodePool }}
+{{- $name := .name }}
+{{- with .nodePool }}
+{{- range . }}
+---
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: {{ $name }}-{{ .nameSuffix }}
+  labels:
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+spec:
+  {{- with .limits | default $default.limits }}
+  limits:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  disruption:
+    consolidationPolicy: {{ .disruption.consolidationPolicy }}
+    consolidateAfter: 1m
+    budgets:
+      {{- toYaml $default.budgets.default | nindent 6 }}
+      {{- if .disruptionBudgetsPerHour }}
+      {{- toYaml $default.budgets.perHour | nindent 6 }}
+      {{- end }}
+  template:
+    spec:
+      nodeClassRef:
+        name: {{ $name }}
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+      {{- with .taints }}
+      taints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      expireAfter: {{ .expireAfter | default $default.expireAfter }}
+      requirements:
+        {{- /*
+        기본 설정
+        */}}
+        - key: app
+          operator: In
+          values: ["{{ $name }}"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.k8s.aws/instance-hypervisor
+          operator: In
+          values: ["nitro"]
+        {{- /*
+        파라미터
+        */}}
+      {{- with .requirements }}
+        {{- if .arch }}
+        - key: kubernetes.io/arch
+          operator: In
+          values: {{ .arch | toJson }}
+        {{- end }}
+        {{- if .azs }}
+        - key: topology.kubernetes.io/zone
+          operator: In
+          values: {{ .azs | toJson }}
+        {{- end }}
+        {{- if .capacityType }}
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: {{ .capacityType | toJson }}
+        {{- end }}
+        {{- if .instanceCategory }}
+        - key: karpenter.k8s.aws/instance-category
+          operator: In
+          values: {{ .instanceCategory | toJson }}
+        {{- end }}
+        {{- if .instanceFamilyExclude }}
+        - key: karpenter.k8s.aws/instance-family
+          operator: NotIn
+          values: {{ .instanceFamilyExclude | toJson }}
+        {{- end }}
+        {{- if .instanceSize }}
+        - key: karpenter.k8s.aws/instance-size
+          operator: In
+          values: {{ .instanceSize | toJson }}
+        {{- end }}
+        {{- if gt (int .minimumGeneration) 0 }}
+        - key: karpenter.k8s.aws/instance-generation
+          operator: Gt
+          values: [{{ sub (int .minimumGeneration) 1 | quote }}]
+        {{- end }}
+        {{- if gt (int .minimumCpu) 0 }}
+        - key: karpenter.k8s.aws/instance-cpu
+          operator: Gt
+          values: [{{ sub (int .minimumCpu) 1 | quote }}]
+        {{- end }}
+        {{- if gt (int .minimumMemory) 0 }}
+        - key: karpenter.k8s.aws/instance-memory
+          operator: Gt
+          values: [{{ sub (mul (int .minimumMemory) 1024) 1 | quote }}]
+        {{- end }}
+        {{- if .capacitySpreadPreset }}
+        {{- toYaml (index $default.capacitySpreadPreset .capacitySpreadPreset) | nindent 8 }}
+        {{- end }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

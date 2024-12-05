@@ -1,12 +1,12 @@
 locals {
-  eks_discovery_tag = var.eks_discovery_tag
+  karpenter_discovery_tag = var.eks_discovery_tag
 }
 
 data "aws_caller_identity" "current" {}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.30.1"
+  version = "20.31.0"
 
   cluster_name                   = var.cluster_name
   cluster_version                = var.cluster_version
@@ -47,19 +47,25 @@ module "eks" {
   # -----------------------------------------------------------------------
   authentication_mode                      = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
-  kms_key_administrators = [data.aws_caller_identity.current.arn]
+  kms_key_administrators                   = [data.aws_caller_identity.current.arn]
 
   # -----------------------------------------------------------------------
   # Fargate
   # -----------------------------------------------------------------------
   fargate_profiles = {
-    karpenter = {
+    controller = {
       selectors = [
         { namespace = "karpenter" },
         {
           namespace = "kube-system"
           labels = {
             "eks.amazonaws.com/component" = "coredns"
+          }
+        },
+        {
+          namespace = "kube-system"
+          labels = {
+            "app.kubernetes.io/name" = "aws-load-balancer-controller"
           }
         }
       ]
@@ -70,7 +76,7 @@ module "eks" {
     }
   }
 
-  tags = merge(var.tags, local.eks_discovery_tag)
+  tags = merge(var.tags, local.karpenter_discovery_tag)
 }
 
 resource "kubernetes_storage_class" "gp3" {
@@ -92,7 +98,7 @@ resource "kubernetes_storage_class" "gp3" {
 
 module "eks-aws-auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
-  version = "20.30.1"
+  version = "20.31.0"
 
   manage_aws_auth_configmap = true
 
@@ -100,7 +106,7 @@ module "eks-aws-auth" {
     {
       rolearn  = module.karpenter.instance_profile_arn
       username = "system:node:{{SessionName}}"
-      groups = ["system:bootstrappers", "system:nodes", "system:node-proxier"]
+      groups   = ["system:bootstrappers", "system:nodes", "system:node-proxier"]
     },
   ]
 
@@ -108,7 +114,7 @@ module "eks-aws-auth" {
     {
       userarn  = data.aws_caller_identity.current.arn
       username = data.aws_caller_identity.current.id
-      groups = ["system:masters"]
+      groups   = ["system:masters"]
     },
   ]
 

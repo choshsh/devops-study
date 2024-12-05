@@ -18,6 +18,10 @@ output "karpenter_role_name" {
   value = module.karpenter.node_iam_role_name
 }
 
+output "karpenter_instance_profile_name" {
+  value = module.karpenter.instance_profile_name
+}
+
 output "control_plane_security_group_id" {
   value = module.eks.cluster_primary_security_group_id
 }
@@ -31,5 +35,5 @@ output "node_group_security_group_id" {
 }
 
 output "eks_discovery_tag" {
-  value = local.eks_discovery_tag
+  value = local.karpenter_discovery_tag
 }

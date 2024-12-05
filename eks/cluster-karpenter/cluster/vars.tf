@@ -1,3 +1,8 @@
+variable "region" {
+  description = "리전"
+  type        = string
+}
+
 variable "cluster_name" {
   description = "클러스터의 이름"
   type        = string
@@ -25,7 +30,7 @@ variable "control_plane_subnet_ids" {
 
 variable "cluster_addons" {
   description = "클러스터의 애드온. Ref: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#addons"
-  type        = map(object({
+  type = map(object({
     addon_version        = string
     configuration_values = string
   }))
@@ -44,6 +49,18 @@ variable "eks_discovery_tag" {
 }
 
 variable "ecr_token" {
-    description = "ECR 토큰"
-    type        = any
+  description = "ECR 토큰"
+  type        = any
+}
+
+variable "helm_chart_versions" {
+  description = "Helm 차트들의 버전"
+  type = object({
+    aws_load_balancer_controller = string
+    karpenter                    = string
+  })
+  default = {
+    aws_load_balancer_controller = "1.10.1"
+    karpenter                    = "1.1.0"
+  }
 }

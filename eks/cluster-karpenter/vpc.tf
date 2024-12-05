@@ -11,7 +11,7 @@ locals {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.4.0"
+  version = "5.16.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -41,7 +41,7 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id          = module.vpc.vpc_id
   route_table_ids = module.vpc.private_route_table_ids
   service_name    = "com.amazonaws.${local.region}.s3"
-  tags            = {
+  tags = {
     Name = "s3-gateway-${local.region}"
   }
 }

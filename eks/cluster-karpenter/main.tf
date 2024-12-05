@@ -1,23 +1,16 @@
-locals {
-  name   = "choshsh-eks-cluster"
-  region = "us-east-1"
-  eks_discovery_tag = {
-    "eks:discovery:${local.name}" = 1
-  }
-}
-
 module "eks" {
   source = "./cluster"
 
-  cluster_name    = local.name
-  cluster_version = "1.31"
+  cluster_name      = local.name
+  cluster_version   = "1.31"
+  region            = local.region
+  eks_discovery_tag = local.eks_discovery_tag
 
-
+  # 네트워크
   vpc_id                   = module.vpc.vpc_id
   control_plane_subnet_ids = module.vpc.intra_subnets   # 컨트롤 플레인 서브넷
   subnet_ids               = module.vpc.private_subnets # 워커 노드 서브넷
 
-  eks_discovery_tag = local.eks_discovery_tag
 
   ecr_token = data.aws_ecrpublic_authorization_token.token
 
@@ -47,44 +40,41 @@ module "eks" {
         }
       })
     }
-    # aws-ebs-csi-driver = {
-    #   addon_version        = "v1.35.0-eksbuild.1"
-    #   configuration_values = ""
-    # }
   }
 
-  tags = {}
+  tags = {
+    Name = local.name
+  }
 
   depends_on = [
     module.vpc
   ]
 }
 
-output "test" {
-  value = {
-    control_plane_security_group_id = module.eks.control_plane_security_group_id
-    cluster_security_group_id       = module.eks.cluster_security_group_id
-    node_group_security_group_id    = module.eks.node_group_security_group_id
+resource "helm_release" "karpenter_resources" {
+  name        = "karpenter-resources"
+  namespace   = "karpenter"
+  chart       = "./karpenter-resources"
+  max_history = 3
+
+  values = [
+    file("./karpenter-resources/values-${var.env}.yaml")
+  ]
+
+  dynamic "set" {
+    for_each = {
+      "global.env"                                         = var.env
+      "global.instanceProfileName"                         = module.eks.karpenter_instance_profile_name
+      "global.eksDiscoveryTag.eks:discovery:${local.name}" = module.eks.eks_discovery_tag["eks:discovery:${local.name}"]
+      "global.tags.Env"                                    = var.env
+      "global.tags.Service"                                = "eks"
+      "global.tags.Team"                                   = "sre"
+    }
+    content {
+      name  = set.key
+      value = set.value
+    }
   }
-}
 
-variable "init" {
-  type    = bool
-  default = false
-}
-
-module "karpenter" {
-  source = "./karpenter"
-
-  count = var.init ? 0 : 1
-
-  azs                 = module.vpc.azs
-  karpenter_role_name = module.eks.karpenter_role_name
-  eks_discovery_tag   = module.eks.eks_discovery_tag
-}
-
-module "helm" {
-  source = "./helm"
-
-  count = var.init ? 0 : 1
+  depends_on = [module.eks]
 }

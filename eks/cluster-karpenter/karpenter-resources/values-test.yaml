@@ -1,0 +1,65 @@
+param:
+  - name: "joongna"
+    nodeClass:
+      enabled: true
+
+    nodePool:
+      - nameSuffix: "on-demand"
+        requirements:
+          arch: ["amd64", "arm64"]
+          capacityType: ["on-demand"]
+          instanceCategory: ["m", "c"]
+          instanceFamilyExclude: ["m7i-flex"]
+          minimumGeneration: 6
+        limits:
+          cpu: 160
+          memory: 512Gi
+        disruption:
+          consolidationPolicy: "WhenEmpty"
+        expireAfter: "Never"
+
+      - nameSuffix: "spot"
+        requirements:
+          arch: ["amd64", "arm64"]
+          capacityType: ["spot"]
+          instanceCategory: ["m", "c"]
+          instanceFamilyExclude: ["m7i-flex", "c6in"]
+          minimumGeneration: 6
+          capacitySpreadPreset: "spot"
+        limits:
+          cpu: 160
+          memory: 512Gi
+        disruption:
+          consolidationPolicy: "WhenEmptyOrUnderutilized"
+        expireAfter: "Never"
+        disruptionBudgetsPerHour: true
+
+  # - name: "cafemon"
+  #   nodeClass:
+  #     enabled: true
+  #     subnetSelectorTag:
+  #       Name: "cafemon"
+  #       Env: "live"
+
+  #   nodePool:
+  #     - nameSuffix: "spot"
+  #       requirements:
+  #         arch: ["amd64"]
+  #         azs: ["ap-northeast-2a", "ap-northeast-2c"]
+  #         capacityType: ["spot"]
+  #         instanceCategory: ["c"]
+  #         instanceFamilyExclude: ["c6in"]
+  #         instanceSize: ["4xlarge", "8xlarge"]
+  #         minimumCpu: 8
+  #         minimumGeneration: 6
+  #         minimumMemory: 16
+  #       taints:
+  #         - key: system
+  #           effect: NoSchedule
+  #           value: "true"
+  #       limits:
+  #         cpu: 320
+  #         memory: 640Gi
+  #       disruption:
+  #         consolidationPolicy: "WhenEmptyOrUnderutilized"
+  #       expireAfter: "Never"

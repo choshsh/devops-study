@@ -23,7 +23,7 @@ resource "aws_security_group" "eks_node" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.eks_discovery_tag, {
+  tags = merge(local.karpenter_discovery_tag, {
     Name = "${var.cluster_name}-node"
   })
 

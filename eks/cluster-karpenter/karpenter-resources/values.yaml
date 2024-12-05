@@ -1,0 +1,87 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# Global 파라미터 (대부분 인프라 관련으로 상위 테라폼 모듈에서 넘겨주는 파라미터)
+# ----------------------------------------------------------------------------------------------------------------------
+global:
+  eksDiscoveryTag: {} # Karpenter 에서 사용하는 태그
+  env: "" # 환경
+  tags: {} # 추가로 넘겨줄 태그 (EC2 인스턴스 설정)
+  instanceProfileName: "" # Karpenter 모듈에서 생성한 EC2 인스턴스의 Instance Profile 이름
+
+# ----------------------------------------------------------------------------------------------------------------------
+# 파라미터
+# ----------------------------------------------------------------------------------------------------------------------
+param:
+  - name: ""
+    nodeClass:
+      enabled: true
+      # Default: internal.default.nodeClass.amiFamily
+      amiFamily: ""
+      # Default: internal.default.nodeClass.amiSelectorAlias
+      amiSelectorAlias: ""
+      # Default: global.eksDiscoveryTag
+      subnetSelectorTag: {}
+      # Default: internal.default.nodeClass.ebsVolumeSize
+      ebsVolumeSize: ""
+
+    nodePool:
+      - nameSuffix: "" # 노드풀 이름 뒤에 붙는 이름 (결과물: ${name}-${nameSuffix})
+        requirements:
+          arch: ["amd64"]
+          azs: []
+          capacityType: ["on-demand"] # One of ["on-demand", "spot"]
+          instanceCategory: []
+          instanceFamilyExclude: []
+          instanceSize: []
+          minimumGeneration: 0
+          minimumCpu: 0
+          minimumMemory: 0
+          capacitySpreadPreset: "" # One of ["onDemand", "spot"]
+        taints: []
+        limits: {}
+        disruption:
+          consolidationPolicy: "WhenEmpty" # One of ["WhenEmpty", "WhenEmptyOrUnderutilized"]
+        expireAfter: "Never"
+        disruptionBudgetsPerHour: false
+
+# ----------------------------------------------------------------------------------------------------------------------
+# 내부 설정임 (파라미터로 넘기지 마시오)
+# ----------------------------------------------------------------------------------------------------------------------
+internal:
+  default:
+    nodeClass:
+      # 최신 버전 확인: https://karpenter.sh/v1.0/concepts/nodeclasses/#specamiselectorterms
+      amiSelectorAlias: "al2023@v20241121"
+      ebsVolumeSize: "100Gi"
+    nodePool:
+      limits:
+        cpu: 120
+        memory: 512Gi
+      expireAfter: "Never"
+      budgets:
+        default:
+          - nodes: "30%"
+        perHour:
+          - nodes: "0%"
+            schedule: "@hourly"
+            duration: "50m"
+      capacitySpreadPreset:
+        onDemand:
+          - key: capacity-spread-2
+            operator: In
+            values:
+              - "1"
+          - key: capacity-spread-4
+            operator: In
+            values:
+              - "1"
+        spot:
+          - key: capacity-spread-2
+            operator: In
+            values:
+              - "2"
+          - key: capacity-spread-4
+            operator: In
+            values:
+              - "2"
+              - "3"
+              - "4"

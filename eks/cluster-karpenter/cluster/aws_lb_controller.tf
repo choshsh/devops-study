@@ -2,7 +2,7 @@ module "aws_load_balancer_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.48.0"
 
-  role_name                              = format("%s-lb-controller", module.eks.cluster_name)
+  role_name                              = "${module.eks.cluster_name}-lb-controller"
   attach_load_balancer_controller_policy = true
   oidc_providers = {
     main = {
@@ -28,40 +28,28 @@ resource "kubernetes_service_account" "aws_load_balancer_service_account" {
       "eks.amazonaws.com/sts-regional-endpoints" = "true"
     }
   }
-
-  depends_on = [
-    module.aws_load_balancer_irsa
-  ]
 }
 
 resource "helm_release" "aws_load_balancer" {
-  name      = "aws-load-balancer-controller"
-  namespace = "kube-system"
-
+  name       = "aws-load-balancer-controller"
+  namespace  = "kube-system"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
-  version    = "1.8.1"
+  version    = var.helm_chart_versions.aws_load_balancer_controller
   wait       = false
 
   dynamic "set" {
     for_each = {
-      "region"                = "ap-northeast-2"
-      "vpcId"                 = var.vpc_id
-      "image.repository"      = "602401143452.dkr.ecr.ap-northeast-2.amazonaws.com/amazon/aws-load-balancer-controller"
+      "region" = var.region
+      "vpcId"  = var.vpc_id
+      # "image.repository"      = "602401143452.dkr.ecr.ap-northeast-2.amazonaws.com/amazon/aws-load-balancer-controller"
       "serviceAccount.create" = "false"
       "serviceAccount.name"   = kubernetes_service_account.aws_load_balancer_service_account.metadata[0].name
       "clusterName"           = module.eks.cluster_name
-      "replicaCount"          = 1
     }
     content {
       name  = set.key
       value = set.value
     }
   }
-
-  timeout = 60 * 25 # 25 minutes
-
-  depends_on = [
-    kubernetes_service_account.aws_load_balancer_service_account
-  ]
 }

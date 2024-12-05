@@ -1,0 +1,50 @@
+{{- range .Values.param }}
+---
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: {{ .name }}
+  labels:
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+spec:
+  amiSelectorTerms:
+    - alias: {{ .nodeClass.amiSelectorAlias | default $.Values.internal.default.nodeClass.amiSelectorAlias }}
+  {{- with .nodeClass.subnetSelectorTag | default $.Values.global.eksDiscoveryTag }}
+  subnetSelectorTerms:
+    - tags:
+        {{- range $key, $value := . }}
+        {{ $key | quote }}: {{ $value | quote }}
+        {{- end }}
+  {{- end }}
+  {{- with $.Values.global.eksDiscoveryTag }}
+  securityGroupSelectorTerms:
+    - tags:
+        {{- range $key, $value := . }}
+        {{ $key | quote }}: {{ $value | quote }}
+        {{- end }}
+    {{- /*
+    호환성을 위해서 v0 클러스터와의 보안그룹 추가 (TODO 테스트할 때는 제거하고 있는데 어떻게든 처리 필요)
+    */}}
+    - tags:
+        aws:eks:cluster-name: jn-eks-{{ $.Values.global.env }}
+  {{- end }}
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: {{ .nodeClass.ebsVolumeSize | default $.Values.internal.default.nodeClass.ebsVolumeSize }}
+        volumeType: gp3
+        encrypted: true
+  instanceProfile: {{ $.Values.global.instanceProfileName }}
+  metadataOptions:
+    httpTokens: optional
+  kubelet:
+    imageGCHighThresholdPercent: 75
+    imageGCLowThresholdPercent: 70
+  tags:
+  {{- range $key, $value := $.Values.global.eksDiscoveryTag }}
+    {{ $key | quote }}: {{ $value | quote }}
+  {{- end }}
+  {{- range $key, $value := $.Values.global.tags }}
+    {{ $key | quote }}: {{ $value | quote}}
+  {{- end }}
+{{- end }}

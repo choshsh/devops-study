@@ -1,6 +1,6 @@
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.30.1"
+  version = "20.31.0"
 
   cluster_name = module.eks.cluster_name
   namespace    = "karpenter"
@@ -11,14 +11,18 @@ module "karpenter" {
   enable_irsa            = true
   irsa_oidc_provider_arn = module.eks.oidc_provider_arn
 
-  create_node_iam_role = true
-  node_iam_role_name   = "${module.eks.cluster_name}-node"
+  create_node_iam_role    = true
+  create_instance_profile = true
+
+  node_iam_role_name = "${module.eks.cluster_name}-node"
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     AmazonEBSCSIDriverPolicy     = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   }
 
-  tags = var.tags
+  iam_role_tags      = merge(local.karpenter_discovery_tag, var.tags)
+  node_iam_role_tags = merge(local.karpenter_discovery_tag, var.tags)
+  tags               = merge(local.karpenter_discovery_tag, var.tags)
 }
 
 resource "helm_release" "karpenter" {
@@ -30,8 +34,9 @@ resource "helm_release" "karpenter" {
   chart               = "karpenter"
   repository_username = var.ecr_token.user_name
   repository_password = var.ecr_token.password
-  version             = "1.0.8"
+  version             = var.helm_chart_versions.karpenter
   wait                = false
+
 
   dynamic "set" {
     for_each = {
@@ -55,5 +60,5 @@ resource "helm_release" "karpenter" {
     ]
   }
 
-  timeout = 60 * 20 # 20 minutes
+  depends_on = [module.eks]
 }
