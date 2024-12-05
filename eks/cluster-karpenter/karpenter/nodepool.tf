@@ -6,9 +6,9 @@ resource "kubernetes_manifest" "node_class_default" {
       name = "default"
     }
     spec = {
-      amiFamily = "AL2"
-      role      = var.karpenter_role_name
-      subnetSelectorTerms = [{ tags = var.eks_discovery_tag }]
+      amiFamily                  = "AL2"
+      role                       = var.karpenter_role_name
+      subnetSelectorTerms        = [{ tags = var.eks_discovery_tag }]
       securityGroupSelectorTerms = [{ tags = var.eks_discovery_tag }]
       blockDeviceMappings = [
         {
@@ -19,14 +19,6 @@ resource "kubernetes_manifest" "node_class_default" {
             encrypted  = true
           }
         },
-        #         {
-        #           deviceName = "/dev/xvdb"
-        #           ebs = {
-        #             volumeSize = "20Gi"
-        #             volumeType = "gp3"
-        #             encrypted  = true
-        #           }
-        #         }
       ]
       kubelet = {
         imageGCHighThresholdPercent = 75
@@ -63,40 +55,40 @@ resource "kubernetes_manifest" "node_pool_spot" {
         spec = {
           nodeClassRef = {
             group = "karpenter.k8s.aws"
-            kind = "EC2NodeClass"
-            name = "default"
+            kind  = "EC2NodeClass"
+            name  = "default"
           }
           expireAfter = "24h"
           requirements = [
             {
               key      = "karpenter.k8s.aws/instance-category"
               operator = "In"
-              values = ["c", "m"]
+              values   = ["c", "m"]
             },
             {
               key      = "karpenter.k8s.aws/instance-cpu"
               operator = "In"
-              values = ["2", "4", "8"]
+              values   = ["2", "4", "8"]
             },
             {
               key      = "karpenter.k8s.aws/instance-generation"
               operator = "Gt"
-              values = ["5"]
+              values   = ["5"]
             },
             {
               key      = "karpenter.k8s.aws/instance-memory"
               operator = "Gt"
-              values = ["4095"]
+              values   = ["4095"]
             },
             {
               key      = "kubernetes.io/arch"
               operator = "In"
-              values = ["amd64"]
+              values   = ["amd64"]
             },
             {
               key      = "karpenter.sh/capacity-type"
               operator = "In"
-              values = ["spot", "on-demand"]
+              values   = ["spot", "on-demand"]
             },
             {
               key      = "topology.kubernetes.io/zone"
@@ -126,106 +118,3 @@ resource "kubernetes_manifest" "node_pool_spot" {
 
   depends_on = [kubernetes_manifest.node_class_default]
 }
-
-# resource "kubernetes_manifest" "node_pool_on_demand" {
-#   manifest = {
-#     apiVersion = "karpenter.sh/v1beta1"
-#     kind       = "NodePool"
-#     metadata   = {
-#       name   = "default-on-demand"
-#       labels = {
-#         "karpenter.sh/managed" = "true"
-#       }
-#     }
-#     spec = {
-#       template = {
-#         spec = {
-#           nodeClassRef = {
-#             name = "default"
-#           }
-#           requirements = [
-#             {
-#               key      = "karpenter.k8s.aws/instance-category"
-#               operator = "In"
-#               values   = ["t", "c", "m"]
-#             },
-#             {
-#               key      = "karpenter.k8s.aws/instance-cpu"
-#               operator = "In"
-#               values   = ["2", "4"]
-#             },
-#             {
-#               key      = "karpenter.k8s.aws/instance-generation"
-#               operator = "Gt"
-#               values   = ["2"]
-#             },
-#             {
-#               key      = "karpenter.k8s.aws/instance-memory"
-#               operator = "Gt"
-#               values   = ["2048"]
-#             },
-#             {
-#               key      = "kubernetes.io/arch"
-#               operator = "In"
-#               values   = ["arm64"]
-#             },
-#             {
-#               key      = "karpenter.sh/capacity-type"
-#               operator = "In"
-#               values   = ["on-demand"]
-#             },
-#             {
-#               key      = "topology.kubernetes.io/zone"
-#               operator = "In"
-#               values   = var.azs
-#             },
-#             {
-#               key      = "capacity-spread-2"
-#               operator = "In"
-#               values   = ["1"]
-#             },
-#             {
-#               key      = "capacity-spread-3"
-#               operator = "In"
-#               values   = ["1"]
-#             },
-#             {
-#               key      = "capacity-spread-4"
-#               operator = "In"
-#               values   = ["1"]
-#             },
-#             {
-#               key      = "capacity-spread-6"
-#               operator = "In"
-#               values   = ["1"]
-#             },
-#             {
-#               key      = "role"
-#               operator = "In"
-#               values   = ["app"]
-#             }
-#           ]
-#           kubelet = {
-#             imageGCHighThresholdPercent = 75
-#             imageGCLowThresholdPercent  = 70
-#           }
-#         }
-#       }
-#       limits = {
-#         cpu    = "32"
-#         memory = "128Gi"
-#       }
-#       disruption = {
-#         consolidationPolicy = "WhenEmpty"
-#         expireAfter         = "24h"
-#         consolidateAfter    = "10s"
-#       }
-#     }
-#   }
-#
-#   field_manager {
-#     force_conflicts = true
-#   }
-#
-#   depends_on = [kubernetes_manifest.node_class_default]
-# }

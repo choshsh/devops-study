@@ -12,9 +12,10 @@ module "eks" {
   cluster_name    = local.name
   cluster_version = "1.31"
 
-  vpc_id = module.vpc.vpc_id
-  control_plane_subnet_ids = module.vpc.intra_subnets # 컨트롤 플레인 서브넷
-  subnet_ids = module.vpc.private_subnets # 워커 노드 서브넷
+
+  vpc_id                   = module.vpc.vpc_id
+  control_plane_subnet_ids = module.vpc.intra_subnets   # 컨트롤 플레인 서브넷
+  subnet_ids               = module.vpc.private_subnets # 워커 노드 서브넷
 
   eks_discovery_tag = local.eks_discovery_tag
 
