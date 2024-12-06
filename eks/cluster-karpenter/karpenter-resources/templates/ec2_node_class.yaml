@@ -34,7 +34,7 @@ spec:
         volumeSize: {{ .nodeClass.ebsVolumeSize | default $.Values.internal.default.nodeClass.ebsVolumeSize }}
         volumeType: gp3
         encrypted: true
-  instanceProfile: {{ $.Values.global.instanceProfileName }}
+  instanceProfile: {{ $.Values.global.instanceProfile }}
   metadataOptions:
     httpTokens: optional
   kubelet:

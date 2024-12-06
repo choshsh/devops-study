@@ -11,10 +11,9 @@ module "karpenter" {
   enable_irsa            = true
   irsa_oidc_provider_arn = module.eks.oidc_provider_arn
 
+  create_instance_profile = false
   create_node_iam_role    = true
-  create_instance_profile = true
-
-  node_iam_role_name = "${module.eks.cluster_name}-node"
+  node_iam_role_name      = "${module.eks.cluster_name}-node"
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     AmazonEBSCSIDriverPolicy     = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
@@ -23,6 +22,12 @@ module "karpenter" {
   iam_role_tags      = merge(local.karpenter_discovery_tag, var.tags)
   node_iam_role_tags = merge(local.karpenter_discovery_tag, var.tags)
   tags               = merge(local.karpenter_discovery_tag, var.tags)
+}
+
+resource "aws_iam_instance_profile" "karpenter_node" {
+  name = "${module.eks.cluster_name}-node"
+  role = module.karpenter.node_iam_role_name
+  tags = merge(local.karpenter_discovery_tag, var.tags)
 }
 
 resource "helm_release" "karpenter" {

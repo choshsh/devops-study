@@ -5,7 +5,7 @@ global:
   eksDiscoveryTag: {} # Karpenter 에서 사용하는 태그
   env: "" # 환경
   tags: {} # 추가로 넘겨줄 태그 (EC2 인스턴스 설정)
-  instanceProfileName: "" # Karpenter 모듈에서 생성한 EC2 인스턴스의 Instance Profile 이름
+  instanceProfile: "" # Karpenter 모듈에서 생성한 EC2 인스턴스의 Instance Profile 이름
 
 # ----------------------------------------------------------------------------------------------------------------------
 # 파라미터

@@ -19,7 +19,7 @@ output "karpenter_role_name" {
 }
 
 output "karpenter_instance_profile_name" {
-  value = module.karpenter.instance_profile_name
+  value = aws_iam_instance_profile.karpenter_node.name
 }
 
 output "control_plane_security_group_id" {

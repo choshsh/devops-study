@@ -40,12 +40,12 @@ resource "helm_release" "aws_load_balancer" {
 
   dynamic "set" {
     for_each = {
-      "region" = var.region
-      "vpcId"  = var.vpc_id
-      # "image.repository"      = "602401143452.dkr.ecr.ap-northeast-2.amazonaws.com/amazon/aws-load-balancer-controller"
+      "region"                = var.region
+      "vpcId"                 = var.vpc_id
       "serviceAccount.create" = "false"
       "serviceAccount.name"   = kubernetes_service_account.aws_load_balancer_service_account.metadata[0].name
       "clusterName"           = module.eks.cluster_name
+      "replicaCount"          = 1
     }
     content {
       name  = set.key

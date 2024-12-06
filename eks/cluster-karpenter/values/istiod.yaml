@@ -1,0 +1,18 @@
+# https://github.com/istio/istio/blob/1.24.1/manifests/charts/istio-control/istio-discovery/values.yaml
+global:
+  waypoint:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 1Gi
+
+profile: ambient
+autoscaleMin: 2
+autoscaleMax: 8
+meshConfig:
+  accessLogFile: /dev/stdout
+  proxyMetadata:
+    EXIT_ON_ZERO_ACTIVE_CONNECTIONS: "true"
+    MINIMUM_DRAIN_DURATION: 10s
